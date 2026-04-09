@@ -1,0 +1,6 @@
+.DS_Store
+node_modules/
+
+# Large original export files (not needed for web)
+21FC Exports March 26/
+21FC logo and branding project ALL FORMATS/
