@@ -1,5 +1,8 @@
 .DS_Store
 node_modules/
+dist/
+.netlify/
+*.zip
 
 # Large original export files (not needed for web)
 21FC Exports March 26/
