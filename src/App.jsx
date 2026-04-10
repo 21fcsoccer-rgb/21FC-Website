@@ -7,6 +7,8 @@ const App = () => {
   const [heroIdx, setHeroIdx] = useState(0);
   const [visible, setVisible] = useState({});
   const [menuOpen, setMenuOpen] = useState(false);
+  const [splashDone, setSplashDone] = useState(false);
+  const [splashFading, setSplashFading] = useState(false);
 
   // ── palette ──
   const c = {
@@ -46,6 +48,14 @@ const App = () => {
     return () => obs.disconnect();
   }, []);
 
+  // ── splash sequence ──
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    const fadeTimer = setTimeout(() => setSplashFading(true), 2800);
+    const doneTimer = setTimeout(() => { setSplashDone(true); document.body.style.overflow = ''; }, 3600);
+    return () => { clearTimeout(fadeTimer); clearTimeout(doneTimer); };
+  }, []);
+
   // ── reveal helper ──
   const reveal = (id, delay = 0) => ({
     opacity: visible[id] ? 1 : 0,
@@ -63,6 +73,10 @@ const App = () => {
     @keyframes up{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}
     @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
     @keyframes pulse{0%,100%{box-shadow:0 0 16px rgba(237,17,113,.12)}50%{box-shadow:0 0 32px rgba(237,17,113,.25)}}
+    @keyframes splashLogo{0%{opacity:0;transform:scale(.7)}40%{opacity:1;transform:scale(1.02)}60%{transform:scale(1)}100%{opacity:1;transform:scale(1)}}
+    @keyframes splashText{0%{opacity:0;transform:translateY(16px);letter-spacing:12px}100%{opacity:1;transform:translateY(0);letter-spacing:6px}}
+    @keyframes splashLine{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+    @keyframes splashTagline{0%{opacity:0}100%{opacity:.6}}
   `;
 
   // ═══════════════════════════════════════════
@@ -75,14 +89,14 @@ const App = () => {
       background: scrolled ? 'rgba(10,10,20,.97)' : 'transparent',
       backdropFilter: scrolled ? 'blur(12px)' : 'none',
       borderBottom: scrolled ? '1px solid rgba(255,255,255,.05)' : 'none',
-      padding: scrolled ? '.7rem 2.5rem' : '1.2rem 2.5rem',
+      padding: scrolled ? '.6rem 2.5rem' : '1rem 2.5rem',
       display:'flex',justifyContent:'space-between',alignItems:'center',
       transition:`all .5s ${ease}`,
     }}>
       <div style={{display:'flex',alignItems:'center',gap:'.5rem'}}>
         <img src={BASE+"images/logo-court-baller-white.png"} alt="21FC"
-          style={{height: scrolled ? '28px' : '36px',width:'auto',transition:`height .4s ${ease}`}} />
-        <span style={{fontSize:'clamp(15px,1.8vw,20px)',fontWeight:700,letterSpacing:'-.5px'}}>21FC</span>
+          style={{height: scrolled ? '38px' : '52px',width:'auto',transition:`height .4s ${ease}`}} />
+        <span style={{fontSize:'clamp(18px,2.2vw,26px)',fontWeight:700,letterSpacing:'-.5px'}}>21FC</span>
       </div>
       <nav style={{display:'flex',gap:'1.8rem',alignItems:'center'}}>
         {['About','Schedule','Gallery','Join'].map(s=>(
@@ -595,11 +609,84 @@ const App = () => {
   );
 
   // ═══════════════════════════════════════════
+  //  SPLASH SCREEN
+  // ═══════════════════════════════════════════
+  const Splash = () => (
+    <div style={{
+      position:'fixed',inset:0,zIndex:9999,
+      background:c.bg,
+      display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+      opacity: splashFading ? 0 : 1,
+      transition:'opacity .8s ease-in-out',
+      pointerEvents: splashFading ? 'none' : 'all',
+    }}>
+      {/* Subtle radial glow behind logo */}
+      <div style={{
+        position:'absolute',width:'400px',height:'400px',
+        background:'radial-gradient(circle, rgba(237,17,113,.08) 0%, transparent 70%)',
+        borderRadius:'50%',
+      }}/>
+
+      {/* Logo */}
+      <img src={BASE+"images/logo-full-white.png"} alt="21FC"
+        style={{
+          height:'clamp(80px,18vw,140px)',width:'auto',
+          animation:'splashLogo 1.2s cubic-bezier(.16,1,.3,1) forwards',
+          position:'relative',
+          filter:'drop-shadow(0 0 40px rgba(237,17,113,.15))',
+        }}
+      />
+
+      {/* Pink line accent */}
+      <div style={{
+        width:'60px',height:'2px',background:c.pink,
+        margin:'1.5rem 0 1.2rem',
+        animation:'splashLine .6s ease-out .8s both',
+        transformOrigin:'center',
+      }}/>
+
+      {/* Club name */}
+      <div style={{
+        fontSize:'clamp(11px,1.5vw,14px)',fontWeight:700,
+        textTransform:'uppercase',color:c.white,
+        animation:'splashText .8s ease-out .6s both',
+        position:'relative',
+      }}>
+        TWENTY ONE FC
+      </div>
+
+      {/* Tagline */}
+      <div style={{
+        fontSize:'clamp(10px,1.2vw,12px)',fontWeight:300,
+        color:c.muted,marginTop:'.6rem',
+        animation:'splashTagline .8s ease-out 1.4s both',
+        letterSpacing:'2px',textTransform:'uppercase',
+      }}>
+        Members Only
+      </div>
+
+      {/* Loading bar */}
+      <div style={{
+        position:'absolute',bottom:'clamp(40px,8vh,80px)',
+        width:'120px',height:'1px',background:'rgba(255,255,255,.08)',
+        borderRadius:'1px',overflow:'hidden',
+      }}>
+        <div style={{
+          height:'100%',background:c.pink,
+          animation:'splashLine 2.4s ease-in-out .4s both',
+          transformOrigin:'left',
+        }}/>
+      </div>
+    </div>
+  );
+
+  // ═══════════════════════════════════════════
   //  PAGE LAYOUT — strategic section ordering
   // ═══════════════════════════════════════════
   return (
     <>
       <style>{css}</style>
+      {!splashDone && <Splash />}
       <Header />
       <Hero />
       <Stats />
