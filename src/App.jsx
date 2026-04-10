@@ -278,23 +278,8 @@ const Footer = () => (
 
 /* ═══════════════════ MAIN APP ═══════════════════ */
 const App = () => {
-  const [heroIdx, setHeroIdx] = useState(0);
   const [splashDone, setSplashDone] = useState(false);
   const [splashFade, setSplashFade] = useState(false);
-
-  const heroes = [
-    { src: BASE + 'images/DSC08619.jpg', pos: 'center 18%' },
-    { src: BASE + 'images/DSC08800.jpg', pos: 'center 22%' },
-    { src: BASE + 'images/DSC08641.jpg', pos: 'center 28%' },
-    { src: BASE + 'images/DSC08674.jpg', pos: 'center 22%' },
-    { src: BASE + 'images/DSC08823.jpg', pos: 'center 18%' },
-  ];
-
-  /* hero rotation */
-  useEffect(() => {
-    const t = setInterval(() => setHeroIdx(i => (i + 1) % 5), 5500);
-    return () => clearInterval(t);
-  }, []);
 
   /* splash */
   useEffect(() => {
@@ -347,9 +332,8 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 
 /* ─── HERO ─── */
 .hero{position:relative;height:100vh;max-height:1000px;overflow:hidden}
-.hero-slide{position:absolute;inset:0;transition:opacity 1.4s ease}
-.hero-slide img{width:100%;height:100%;object-fit:cover}
-.hero-grad{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(10,10,15,.5) 0%,transparent 30%,transparent 45%,rgba(10,10,15,.7) 75%,rgba(10,10,15,1) 100%)}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.hero-grad{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(10,10,15,.6) 0%,rgba(10,10,15,.3) 30%,rgba(10,10,15,.3) 45%,rgba(10,10,15,.75) 75%,rgba(10,10,15,1) 100%)}
 .hero-content{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:0 clamp(2rem,6vw,5rem) clamp(3rem,7vh,5.5rem)}
 .hero-label{font-size:10px;font-weight:700;color:${pk};text-transform:uppercase;letter-spacing:3.5px;margin-bottom:10px;animation:fadeUp .5s ${ease} .1s both}
 .hero-h1{font-weight:900;line-height:.88;letter-spacing:-.05em;margin-bottom:.2em;animation:fadeUp .5s ${ease} .2s both}
@@ -519,11 +503,16 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 
       {/* HERO */}
       <section className="hero">
-        {heroes.map((h, i) => (
-          <div key={i} className="hero-slide" style={{ opacity: heroIdx === i ? 1 : 0 }}>
-            <img src={h.src} alt="" loading={i === 0 ? 'eager' : 'lazy'} style={{ objectPosition: h.pos }} />
-          </div>
-        ))}
+        <video
+          className="hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster={BASE + 'images/DSC08619.jpg'}
+        >
+          <source src={BASE + 'images/hero-bg.mp4'} type="video/mp4" />
+        </video>
         <div className="hero-grad" />
         <div className="hero-content">
           <div className="hero-label">Clifton, NJ — Indoor Turf</div>
