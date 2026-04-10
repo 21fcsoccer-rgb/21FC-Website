@@ -2,43 +2,301 @@ import { useState, useEffect, useRef } from 'react';
 
 const BASE = import.meta.env.BASE_URL;
 
-/* ─── 21FC — Nike Football–inspired rebuild ─── */
+/* ─── palette + shared ─── */
+const pk = '#ED1171';
+const bg = '#0A0A0F';
+const card = '#0F0F18';
+const wh = '#F0EFEF';
+const mt = '#7A7F8A';
+const ease = 'cubic-bezier(.25,.46,.45,.94)';
+
+/* ─── CTA button (reusable) ─── */
+const Btn = ({ href, big, children }) => (
+  <a href={href} target="_blank" rel="noopener noreferrer" className={big ? 'btn-cta btn-big' : 'btn-cta'}>{children}</a>
+);
+
+/* ─── HEADER (CSS-only scroll transition — zero JS state) ─── */
+const Header = () => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    const fn = () => {
+      if (window.scrollY > 50) el.classList.add('hdr-solid');
+      else el.classList.remove('hdr-solid');
+    };
+    window.addEventListener('scroll', fn, { passive: true });
+    fn();
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+  return (
+    <header ref={ref} className="hdr">
+      <img src={BASE + 'images/logo-full-white.png'} alt="21FC" className="hdr-logo" />
+      <nav className="navL">
+        {['About', 'Schedule', 'Gallery', 'Join'].map(s => (
+          <a key={s} href={`#${s.toLowerCase()}`} className="nav-link">{s}</a>
+        ))}
+        <a href="https://opensports.net/21fc" target="_blank" rel="noopener noreferrer" className="nav-btn">Book Now</a>
+      </nav>
+    </header>
+  );
+};
+
+/* ─── STATS ─── */
+const Stats = () => (
+  <section className="stats-bar">
+    <div className="stats-grid g4">
+      {[{ v: '200+', l: 'Players' }, { v: '4×', l: 'Weekly' }, { v: '7 AM', l: 'Kickoff' }, { v: '3+', l: 'Years' }].map((s, i) => (
+        <div key={i} className={`rv d${i + 1}`}>
+          <div className="stat-val">{s.v}</div>
+          <div className="stat-lbl">{s.l}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+);
+
+/* ─── ABOUT ─── */
+const About = () => (
+  <section id="about">
+    <div className="about-grid g2">
+      <div className="rv about-img-wrap">
+        <img src={BASE + 'images/DSC08671.jpg'} alt="" loading="lazy" className="about-img" />
+      </div>
+      <div className="rv d2 about-text">
+        <div className="accent-line" />
+        <div className="label">Our Mission</div>
+        <h2 className="sec-heading">Unite skilled players<br />in real competition</h2>
+        <p className="sec-sub">
+          21FC brings together dedicated players in a competitive, respectful, and community-driven environment.
+          Organized, high-level adult pickup soccer where you push your game and build real connections.
+        </p>
+        <div className="about-meta">
+          <div><span className="meta-label">Location</span><span className="meta-val">Clifton, NJ</span></div>
+          <div><span className="meta-label">Game Days</span><span className="meta-val">Mon · Wed · Fri · Sun</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+/* ─── IMAGE BAND (static 3 col) ─── */
+const ImageBand = () => (
+  <section className="img-band">
+    {[
+      { src: BASE + 'images/DSC08584.jpg', pos: 'center 28%' },
+      { src: BASE + 'images/DSC08712.jpg', pos: 'center 30%' },
+      { src: BASE + 'images/DSC08730.jpg', pos: 'center 25%' },
+    ].map((img, i) => (
+      <div key={i} className={`rv d${i + 1} img-band-cell`}>
+        <img src={img.src} alt="" loading="lazy" style={{ objectPosition: img.pos }} />
+      </div>
+    ))}
+  </section>
+);
+
+/* ─── SCHEDULE ─── */
+const Schedule = () => (
+  <section id="schedule" className="section">
+    <div className="container">
+      <div className="rv">
+        <div className="accent-line" />
+        <h2 className="sec-heading">Weekly Schedule</h2>
+        <p className="sec-sub">High-level play. Every session.</p>
+      </div>
+      <div className="sched-grid g4">
+        {['Monday', 'Wednesday', 'Friday', 'Sunday'].map((day, i) => (
+          <div key={i} className={`rv d${i + 1} sched-card`}>
+            <div className="sched-day">{day}</div>
+            <div className="sched-time">7:00 AM</div>
+            <div className="sched-info">60 min · Indoor Turf</div>
+          </div>
+        ))}
+      </div>
+      <div className="rv d5" style={{ marginTop: '1.8rem' }}>
+        <Btn href="https://opensports.net/21fc">Reserve Your Spot</Btn>
+      </div>
+    </div>
+  </section>
+);
+
+/* ─── GALLERY ─── */
+const Gallery = () => {
+  const imgs = [
+    { src: BASE + 'images/DSC08823.jpg', pos: 'center 20%', tall: true },
+    { src: BASE + 'images/DSC08634.jpg', pos: 'center 35%' },
+    { src: BASE + 'images/DSC08703.jpg', pos: 'center 30%' },
+    { src: BASE + 'images/DSC08806.jpg', pos: 'center 32%' },
+    { src: BASE + 'images/DSC08820.jpg', pos: 'center 28%' },
+    { src: BASE + 'images/DSC08674.jpg', pos: 'center 22%', tall: true },
+  ];
+  return (
+    <section id="gallery" className="section">
+      <div className="container-wide">
+        <div className="rv">
+          <div className="accent-line" />
+          <h2 className="sec-heading">Gallery</h2>
+          <p className="sec-sub">Moments from the pitch</p>
+        </div>
+        <div className="gallery-grid imgG">
+          {imgs.map((img, i) => (
+            <div key={i} className={`rv d${Math.min(i + 1, 5)} gal-cell${img.tall ? ' gal-tall' : ''}`}>
+              <img src={img.src} alt="" loading="lazy" style={{ objectPosition: img.pos }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ─── MEMBERSHIP ─── */
+const Membership = () => (
+  <section id="membership" className="section section-alt">
+    <div className="container">
+      <div className="rv" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+        <div className="accent-line" style={{ margin: '0 auto .8rem' }} />
+        <h2 className="sec-heading">Membership</h2>
+        <p className="sec-sub">Choose your commitment level</p>
+      </div>
+      <div className="mem-grid g3">
+        {[
+          { name: 'Drop-In', price: '$20', per: '/session', feats: ['Single match access', 'No commitment', 'Walk-on flexibility'], pop: false },
+          { name: 'Player', price: '$120', per: '/month', feats: ['Unlimited games', 'Priority booking', 'Player community', 'Kit discounts'], pop: true },
+          { name: 'Captain', price: '$200', per: '/month', feats: ['Reserved team slots', 'Coach access', 'Premium stats', 'Exclusive events'], pop: false },
+        ].map((p, i) => (
+          <div key={i} className={`rv d${i + 1} mem-card${p.pop ? ' mem-pop' : ''}`}>
+            {p.pop && <div className="mem-badge">Popular</div>}
+            <div className="mem-name">{p.name}</div>
+            <div className="mem-price"><span>{p.price}</span><small>{p.per}</small></div>
+            <div className="mem-feats">
+              {p.feats.map((f, fi) => (
+                <div key={fi} className="mem-feat"><span className="dot" />{f}</div>
+              ))}
+            </div>
+            <button className={`mem-btn${p.pop ? ' mem-btn-pop' : ''}`}>Choose Plan</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+/* ─── BIG CTA ─── */
+const CTA = () => (
+  <section className="cta-section">
+    <div className="cta-glow" />
+    <div className="rv cta-inner">
+      <div className="accent-line" style={{ margin: '0 auto 1.5rem' }} />
+      <h2 className="cta-heading">Ready to Play?</h2>
+      <p className="cta-sub">The most competitive pickup soccer community in New Jersey.<br />200+ players show up every week.</p>
+      <Btn href="https://opensports.net/21fc" big>Join Now</Btn>
+      <div className="cta-note">Via OpenSports — takes 30 seconds</div>
+    </div>
+  </section>
+);
+
+/* ─── CONTACT ─── */
+const Contact = () => (
+  <section id="join" className="section">
+    <div className="container-sm">
+      <div className="rv">
+        <div className="accent-line" />
+        <h2 className="sec-heading">Get in Touch</h2>
+        <p className="sec-sub">Questions? We're here.</p>
+      </div>
+      <div className="contact-grid g2">
+        <div>
+          {[{ l: 'Instagram', v: '@21fc.soccer' }, { l: 'Location', v: 'Clifton, NJ' }, { l: 'Schedule', v: 'Mon, Wed, Fri, Sun — 7 AM' }].map((x, i) => (
+            <div key={i} className={`rv d${i + 1} contact-item`}>
+              <div className="label" style={{ fontSize: '9px' }}>{x.l}</div>
+              <div className="meta-val">{x.v}</div>
+            </div>
+          ))}
+        </div>
+        <form className="rv d2 contact-form" onSubmit={e => e.preventDefault()}>
+          <input type="text" placeholder="Your name" className="input" />
+          <input type="email" placeholder="your@email.com" className="input" />
+          <textarea placeholder="Your message" rows="3" className="input textarea" />
+          <button type="submit" className="btn-cta" style={{ alignSelf: 'flex-start' }}>Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+);
+
+/* ─── LOCATION ─── */
+const Location = () => (
+  <section id="location" className="section" style={{ background: '#07070E' }}>
+    <div className="container">
+      <div className="loc-grid g2">
+        <div className="rv">
+          <div className="accent-line" />
+          <h2 className="sec-heading">Find Us</h2>
+          <p className="sec-sub" style={{ marginBottom: '1.5rem' }}>Indoor turf in Clifton, NJ</p>
+          {[
+            { l: 'Location', v: 'Clifton, NJ — Indoor Turf' },
+            { l: 'Game Days', v: 'Mon · Wed · Fri · Sun' },
+            { l: 'Kickoff', v: '7:00 AM Sharp' },
+          ].map((x, i) => (
+            <div key={i} className="loc-item">
+              <div className="label" style={{ fontSize: '9px' }}>{x.l}</div>
+              <div className="meta-val">{x.v}</div>
+            </div>
+          ))}
+          <a href="https://opensports.net/21fc" target="_blank" rel="noopener noreferrer" className="loc-link">Book on OpenSports</a>
+          <a href="https://www.google.com/maps/search/Indoor+Turf+Soccer+Clifton+NJ" target="_blank" rel="noopener noreferrer" className="loc-link loc-maps">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></svg>
+            Open in Google Maps
+          </a>
+        </div>
+        <div className="rv d2 loc-map-wrap">
+          <iframe title="21FC — Clifton, NJ"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d48338.1!2d-74.1637!3d40.8584!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2f9b4b5cc7c6b%3A0xa27b78b5b3bfc7e!2sClifton%2C%20NJ!5e0!3m2!1sen!2sus!4v1"
+            width="100%" height="100%"
+            style={{ border: 0, display: 'block', filter: 'invert(90%) hue-rotate(180deg) saturate(.3) brightness(.65)' }}
+            allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+/* ─── FOOTER ─── */
+const Footer = () => (
+  <footer className="footer">
+    <div className="container footer-inner">
+      <img src={BASE + 'images/logo-full-white.png'} alt="21FC" className="footer-logo" loading="lazy" />
+      <div className="footer-links">
+        {[{ t: 'Instagram', h: 'https://instagram.com/21fc.soccer' }, { t: 'OpenSports', h: 'https://opensports.net/21fc' }, { t: 'Contact', h: '#join' }].map(l => (
+          <a key={l.t} href={l.h} target={l.h.startsWith('#') ? '_self' : '_blank'} rel="noopener noreferrer">{l.t}</a>
+        ))}
+      </div>
+    </div>
+    <div className="container footer-copy">© 2026 21FC. All rights reserved.</div>
+  </footer>
+);
+
+/* ═══════════════════ MAIN APP ═══════════════════ */
 const App = () => {
   const [heroIdx, setHeroIdx] = useState(0);
   const [splashDone, setSplashDone] = useState(false);
   const [splashFade, setSplashFade] = useState(false);
-  const [headerSolid, setHeaderSolid] = useState(false);
 
-  /* palette */
-  const pk = '#ED1171';
-  const bg = '#0A0A0F';
-  const card = '#0F0F18';
-  const wh = '#F0EFEF';
-  const mt = '#7A7F8A';
-
-  /* hero images */
   const heroes = [
-    { src: BASE+'images/DSC08619.jpg', pos: 'center 18%' },
-    { src: BASE+'images/DSC08800.jpg', pos: 'center 22%' },
-    { src: BASE+'images/DSC08641.jpg', pos: 'center 28%' },
-    { src: BASE+'images/DSC08674.jpg', pos: 'center 22%' },
-    { src: BASE+'images/DSC08823.jpg', pos: 'center 18%' },
+    { src: BASE + 'images/DSC08619.jpg', pos: 'center 18%' },
+    { src: BASE + 'images/DSC08800.jpg', pos: 'center 22%' },
+    { src: BASE + 'images/DSC08641.jpg', pos: 'center 28%' },
+    { src: BASE + 'images/DSC08674.jpg', pos: 'center 22%' },
+    { src: BASE + 'images/DSC08823.jpg', pos: 'center 18%' },
   ];
 
-  /* timers */
+  /* hero rotation */
   useEffect(() => {
-    const t = setInterval(() => setHeroIdx(i => (i+1) % heroes.length), 5500);
+    const t = setInterval(() => setHeroIdx(i => (i + 1) % 5), 5500);
     return () => clearInterval(t);
   }, []);
 
-  /* header scroll */
-  useEffect(() => {
-    const fn = () => setHeaderSolid(window.scrollY > 50);
-    window.addEventListener('scroll', fn, { passive: true });
-    return () => window.removeEventListener('scroll', fn);
-  }, []);
-
-  /* splash — 1.6s total */
+  /* splash */
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     const a = setTimeout(() => setSplashFade(true), 1100);
@@ -46,518 +304,247 @@ const App = () => {
     return () => { clearTimeout(a); clearTimeout(b); };
   }, []);
 
-  /* reveal on scroll — runs ONCE, not every render */
-  const observed = useRef(false);
+  /* reveal observer — runs ONCE, never re-runs, never disconnects early */
   useEffect(() => {
-    if (observed.current) return;
-    observed.current = true;
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
-    }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
-    /* observe after splash clears so all elements register */
-    const timer = setTimeout(() => {
+    let obs;
+    const setup = () => {
+      obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.08 });
       document.querySelectorAll('.rv').forEach(el => obs.observe(el));
-    }, 1800);
-    return () => { clearTimeout(timer); obs.disconnect(); };
-  }, []);
+    };
+    const timer = setTimeout(setup, 1700);
+    return () => { clearTimeout(timer); if (obs) obs.disconnect(); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /* ── global css ── */
-  const css = `
+  return (
+    <>
+      <style>{`
+/* ─── RESET ─── */
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-/* reveal */
-.rv{opacity:0;transform:translateY(24px);transition:opacity .65s cubic-bezier(.25,.46,.45,.94),transform .65s cubic-bezier(.25,.46,.45,.94)}
+/* ─── REVEAL (CSS only, no JS state) ─── */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .6s ${ease},transform .6s ${ease}}
 .rv.vis{opacity:1;transform:translateY(0)}
-.rv.d1{transition-delay:.07s}.rv.d2{transition-delay:.14s}.rv.d3{transition-delay:.21s}
-.rv.d4{transition-delay:.28s}.rv.d5{transition-delay:.35s}.rv.d6{transition-delay:.42s}
+.rv.d1{transition-delay:.06s}.rv.d2{transition-delay:.12s}.rv.d3{transition-delay:.18s}
+.rv.d4{transition-delay:.24s}.rv.d5{transition-delay:.3s}.rv.d6{transition-delay:.36s}
 
-/* hero fade */
-@keyframes heroScale{0%{transform:scale(1)}100%{transform:scale(1.04)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+/* ─── HEADER (CSS transition, no JS rerender) ─── */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;
+  padding:.9rem 2rem;background:transparent;transition:all .4s ${ease}}
+.hdr-solid{background:rgba(10,10,15,.96);backdrop-filter:blur(10px);padding:.5rem 2rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.hdr-logo{height:46px;width:auto;transition:height .4s ${ease}}
+.hdr-solid .hdr-logo{height:34px}
+.navL{display:flex;gap:1.5rem;align-items:center}
+.nav-link{color:rgba(240,239,239,.55);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:color .3s ease}
+.nav-link:hover{color:${pk}}
+.nav-btn{padding:7px 16px;background:${pk};color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;text-decoration:none;transition:all .3s ease}
+.nav-btn:hover{background:#fff;color:${bg}}
+
+/* ─── HERO ─── */
+.hero{position:relative;height:100vh;max-height:1000px;overflow:hidden}
+.hero-slide{position:absolute;inset:0;transition:opacity 1.4s ease}
+.hero-slide img{width:100%;height:100%;object-fit:cover}
+.hero-grad{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(10,10,15,.5) 0%,transparent 30%,transparent 45%,rgba(10,10,15,.7) 75%,rgba(10,10,15,1) 100%)}
+.hero-content{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:0 clamp(2rem,6vw,5rem) clamp(3rem,7vh,5.5rem)}
+.hero-label{font-size:10px;font-weight:700;color:${pk};text-transform:uppercase;letter-spacing:3.5px;margin-bottom:10px;animation:fadeUp .5s ${ease} .1s both}
+.hero-h1{font-weight:900;line-height:.88;letter-spacing:-.05em;margin-bottom:.2em;animation:fadeUp .5s ${ease} .2s both}
+.hero-h1 .big{display:block;font-size:clamp(56px,11vw,140px)}
+.hero-h1 .sub{display:block;font-size:clamp(36px,7vw,92px);font-weight:200;letter-spacing:-.02em;color:rgba(240,239,239,.7)}
+.hero-p{font-size:clamp(14px,1.4vw,17px);font-weight:300;line-height:1.7;color:rgba(240,239,239,.5);max-width:420px;margin-bottom:1.8rem;animation:fadeUp .5s ${ease} .35s both}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .5s ${ease} .45s both}
+.ghost-btn{padding:16px 26px;border:1px solid rgba(255,255,255,.12);color:rgba(240,239,239,.6);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:2px;text-decoration:none;transition:all .3s ease}
+.ghost-btn:hover{border-color:rgba(255,255,255,.35);color:${wh}}
+.scroll-ind{position:absolute;bottom:1.2rem;left:50%;transform:translateX(-50%);z-index:3;opacity:.3}
+.scroll-pill{width:18px;height:28px;border:1px solid rgba(255,255,255,.18);border-radius:9px;display:flex;justify-content:center;padding-top:5px}
+.scroll-dot{width:2px;height:5px;background:${pk};border-radius:1px;animation:bounce 1.4s ease-in-out infinite}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
-@keyframes glow{0%,100%{box-shadow:0 0 18px rgba(237,17,113,.25)}50%{box-shadow:0 0 44px rgba(237,17,113,.45)}}
+@keyframes glow{0%,100%{box-shadow:0 0 16px rgba(237,17,113,.22)}50%{box-shadow:0 0 40px rgba(237,17,113,.42)}}
 
-/* splash */
+/* ─── BUTTONS ─── */
+.btn-cta{display:inline-block;padding:13px 34px;background:${pk};color:#fff;text-decoration:none;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2px;border:none;cursor:pointer;font-family:inherit;animation:glow 3s ease-in-out infinite;transition:all .3s ease}
+.btn-cta:hover{background:#fff;color:${bg};transform:translateY(-2px)}
+.btn-big{padding:17px 50px;font-size:14px;letter-spacing:3px}
+
+/* ─── STATS ─── */
+.stats-bar{background:${card};border-bottom:1px solid rgba(237,17,113,.05);padding:1.6rem 1.5rem}
+.stats-grid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;text-align:center}
+.stat-val{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1}
+.stat-lbl{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:${mt};margin-top:.2rem}
+
+/* ─── SECTIONS ─── */
+.section{padding:clamp(3.5rem,7vh,6rem) clamp(1.5rem,5vw,4rem)}
+.section-alt{background:${card};border-top:1px solid rgba(255,255,255,.03)}
+.container{max-width:1100px;margin:0 auto}
+.container-wide{max-width:1200px;margin:0 auto}
+.container-sm{max-width:900px;margin:0 auto}
+.accent-line{width:28px;height:2px;background:${pk};margin-bottom:.8rem}
+.label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:${pk};margin-bottom:.4rem}
+.sec-heading{font-size:clamp(28px,5vw,48px);font-weight:700;line-height:1.1;letter-spacing:-.02em;margin-bottom:.2rem}
+.sec-sub{font-size:clamp(14px,1.4vw,16px);font-weight:300;line-height:1.7;color:rgba(240,239,239,.55);margin-top:.25rem;margin-bottom:1.8rem}
+
+/* ─── ABOUT ─── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;min-height:400px}
+.about-img-wrap{overflow:hidden;position:relative}
+.about-img{width:100%;height:100%;min-height:280px;object-fit:cover;object-position:center 25%;transition:transform 5s ease}
+.about-img-wrap:hover .about-img{transform:scale(1.03)}
+.about-text{background:${card};padding:clamp(2.5rem,4vw,4rem);display:flex;flex-direction:column;justify-content:center;border-left:1px solid rgba(255,255,255,.04)}
+.about-meta{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.meta-label{display:block;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:${pk};margin-bottom:.15rem}
+.meta-val{font-size:15px;font-weight:600}
+
+/* ─── IMAGE BAND ─── */
+.img-band{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;background:${bg}}
+.img-band-cell{overflow:hidden;height:clamp(150px,20vw,260px)}
+.img-band-cell img{width:100%;height:100%;object-fit:cover;filter:brightness(.8);transition:all .5s ease}
+.img-band-cell:hover img{filter:brightness(1);transform:scale(1.03)}
+
+/* ─── SCHEDULE ─── */
+.sched-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:0}
+.sched-card{padding:clamp(1.2rem,2vw,1.6rem);background:${card};border-left:2px solid ${pk};transition:all .35s ease;cursor:pointer}
+.sched-card:hover{background:#161622;border-left-color:#D3DE25;transform:translateY(-2px)}
+.sched-day{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:${mt};margin-bottom:.4rem}
+.sched-time{font-size:clamp(20px,3vw,26px);font-weight:700;margin-bottom:.1rem}
+.sched-info{font-size:12px;color:${mt}}
+
+/* ─── GALLERY ─── */
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;grid-auto-rows:175px}
+.gal-cell{overflow:hidden}
+.gal-tall{grid-row:span 2}
+.gal-cell img{width:100%;height:100%;object-fit:cover;filter:brightness(.78);transition:all .45s ease;cursor:pointer}
+.gal-cell:hover img{filter:brightness(1);transform:scale(1.04)}
+
+/* ─── MEMBERSHIP ─── */
+.mem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mem-card{padding:clamp(1.5rem,2.5vw,2rem);background:${bg};border:1px solid rgba(255,255,255,.05);position:relative;transition:all .35s ease}
+.mem-card:hover{border-color:${pk};transform:translateY(-3px);box-shadow:0 10px 36px rgba(0,0,0,.4)}
+.mem-pop{background:rgba(237,17,113,.03);border-color:rgba(237,17,113,.15)}
+.mem-badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:${pk};color:#fff;padding:3px 14px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.mem-name{font-size:14px;font-weight:700;margin-bottom:.3rem}
+.mem-price{margin-bottom:1rem;display:flex;align-items:baseline;gap:.3rem}
+.mem-price span{font-size:clamp(26px,4vw,32px);font-weight:800}
+.mem-price small{font-size:12px;color:${mt}}
+.mem-feats{border-top:1px solid rgba(255,255,255,.05);padding-top:.7rem;margin-bottom:1.1rem}
+.mem-feat{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem;font-size:13px;color:rgba(240,239,239,.7)}
+.dot{width:4px;height:4px;background:${pk};border-radius:50%;flex-shrink:0}
+.mem-btn{width:100%;padding:10px;background:transparent;color:${wh};border:1px solid rgba(255,255,255,.1);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-family:inherit;transition:all .3s ease}
+.mem-btn:hover{background:rgba(255,255,255,.05)}
+.mem-btn-pop{background:${pk};color:#fff;border:none}
+.mem-btn-pop:hover{background:#fff;color:${bg}}
+
+/* ─── CTA ─── */
+.cta-section{position:relative;padding:clamp(5rem,12vh,9rem) 2rem;overflow:hidden;text-align:center;
+  background:linear-gradient(135deg,rgba(237,17,113,.07) 0%,${bg} 40%,${bg} 60%,rgba(211,222,37,.03) 100%);
+  border-top:1px solid rgba(237,17,113,.08);border-bottom:1px solid rgba(237,17,113,.08)}
+.cta-glow{position:absolute;top:-40%;left:-15%;width:450px;height:450px;background:radial-gradient(circle,rgba(237,17,113,.06) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.cta-inner{position:relative;z-index:1;max-width:620px;margin:0 auto}
+.cta-heading{font-size:clamp(36px,8vw,76px);font-weight:900;line-height:.95;letter-spacing:-.04em;margin-bottom:.8rem}
+.cta-sub{font-size:clamp(15px,1.6vw,19px);color:rgba(240,239,239,.5);font-weight:300;line-height:1.7;max-width:460px;margin:0 auto 2.2rem}
+.cta-note{margin-top:1rem;font-size:11px;color:${mt};letter-spacing:1px}
+
+/* ─── CONTACT ─── */
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:2.5rem}
+.contact-item{margin-bottom:.8rem;padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.contact-form{display:flex;flex-direction:column;gap:.7rem}
+.input{background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.07);color:${wh};padding:.5rem 0;font-size:14px;font-family:inherit;outline:none;transition:border-color .3s ease}
+.input:focus{border-bottom-color:${pk}}
+.textarea{border:1px solid rgba(255,255,255,.07);padding:.5rem;resize:none}
+.textarea:focus{border-color:${pk}}
+
+/* ─── LOCATION ─── */
+.loc-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:clamp(1.5rem,3vw,3rem);align-items:start}
+.loc-item{padding-bottom:.7rem;margin-bottom:.7rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.loc-link{display:inline-flex;align-items:center;gap:.4rem;margin-top:.6rem;margin-right:.8rem;padding:8px 16px;border:1px solid rgba(237,17,113,.18);color:${wh};font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;text-decoration:none;transition:all .3s ease}
+.loc-link:hover{border-color:${pk};background:rgba(237,17,113,.04)}
+.loc-map-wrap{overflow:hidden;border:1px solid rgba(255,255,255,.04);height:320px}
+
+/* ─── FOOTER ─── */
+.footer{background:${bg};border-top:1px solid rgba(255,255,255,.04);padding:1.5rem 2rem .8rem}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1rem}
+.footer-logo{height:24px;width:auto}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{color:${mt};text-decoration:none;font-size:12px;font-weight:500;transition:color .3s ease}
+.footer-links a:hover{color:${wh}}
+.footer-copy{border-top:1px solid rgba(255,255,255,.04);padding-top:.7rem;text-align:center;font-size:11px;color:${mt}}
+
+/* ─── SPLASH ─── */
 @keyframes sLogo{0%{opacity:0;transform:scale(.75)}60%{opacity:1;transform:scale(1.01)}100%{transform:scale(1)}}
 @keyframes sLine{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
 @keyframes sText{0%{opacity:0;letter-spacing:10px}100%{opacity:1;letter-spacing:5px}}
 
-/* responsive */
+/* ─── RESPONSIVE ─── */
 @media(max-width:960px){
   .g2{grid-template-columns:1fr!important}
   .g4{grid-template-columns:repeat(2,1fr)!important}
   .g3{grid-template-columns:1fr!important}
   .imgG{grid-template-columns:repeat(2,1fr)!important}
-  .imgG>*{grid-column:auto!important;grid-row:auto!important}
+  .imgG .gal-tall{grid-row:auto}
   .navL{display:none!important}
-  .heroH1{font-size:clamp(44px,13vw,90px)!important}
-  .heroH2{font-size:clamp(26px,8vw,56px)!important}
-  .ctaH{font-size:clamp(30px,9vw,60px)!important}
+  .hero-h1 .big{font-size:clamp(44px,13vw,90px)}
+  .hero-h1 .sub{font-size:clamp(26px,8vw,56px)}
+  .cta-heading{font-size:clamp(30px,9vw,60px)}
+  .about-text{border-left:none;border-top:1px solid rgba(255,255,255,.04)}
+  .img-band{grid-template-columns:1fr 1fr}
+  .img-band-cell:last-child{display:none}
 }
 @media(max-width:600px){
   .g4{grid-template-columns:1fr!important}
   .imgG{grid-template-columns:1fr!important}
+  .img-band{grid-template-columns:1fr}
+  .img-band-cell:last-child{display:block}
 }
-  `;
+      `}</style>
 
-  /* ═══ shared ═══ */
-  const sec = (py = 'clamp(4rem,8vh,7rem)') => ({ padding: `${py} clamp(1.5rem,5vw,4rem)` });
-  const wrap = (mw = '1200px') => ({ maxWidth: mw, margin: '0 auto' });
-  const label = { fontSize: '10px', fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: pk };
-  const heading = (sz = 'clamp(28px,5vw,48px)') => ({ fontSize: sz, fontWeight: 700, lineHeight: 1.1, letterSpacing: '-.02em' });
-  const sub = { fontSize: 'clamp(14px,1.4vw,17px)', fontWeight: 300, lineHeight: 1.75, color: 'rgba(240,239,239,.6)' };
-
-  const Btn = ({ href, big, children }) => (
-    <a href={href} target="_blank" rel="noopener noreferrer"
-      style={{
-        display: 'inline-block', padding: big ? '17px 52px' : '14px 36px',
-        background: pk, color: '#fff', textDecoration: 'none',
-        fontSize: big ? '14px' : '12px', fontWeight: 800,
-        textTransform: 'uppercase', letterSpacing: big ? '3px' : '2px',
-        animation: 'glow 3s ease-in-out infinite',
-        transition: 'all .35s cubic-bezier(.25,.46,.45,.94)',
-      }}
-      onMouseEnter={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = bg; e.currentTarget.style.transform = 'translateY(-3px)'; }}
-      onMouseLeave={e => { e.currentTarget.style.background = pk; e.currentTarget.style.color = '#fff'; e.currentTarget.style.transform = 'translateY(0)'; }}
-    >{children}</a>
-  );
-
-  /* ═══ SPLASH ═══ */
-  const Splash = () => (
-    <div style={{ position:'fixed',inset:0,zIndex:9999,background:bg,display:'flex',flexDirection:'column',
-      alignItems:'center',justifyContent:'center',opacity:splashFade?0:1,transition:'opacity .5s ease',
-      pointerEvents:splashFade?'none':'all' }}>
-      <img src={BASE+'images/logo-full-white.png'} alt="21FC"
-        style={{ height:'clamp(60px,14vw,110px)',width:'auto',animation:'sLogo .7s cubic-bezier(.16,1,.3,1) forwards',
-          filter:'drop-shadow(0 0 30px rgba(237,17,113,.15))' }} />
-      <div style={{ width:'40px',height:'2px',background:pk,margin:'1rem 0 .8rem',animation:'sLine .35s ease-out .35s both',transformOrigin:'center' }} />
-      <div style={{ fontSize:'12px',fontWeight:700,textTransform:'uppercase',animation:'sText .45s ease-out .25s both' }}>Twenty One FC</div>
-    </div>
-  );
-
-  /* ═══ HEADER ═══ */
-  const Header = () => (
-    <header style={{
-      position:'fixed',top:0,left:0,right:0,zIndex:1000,
-      background: headerSolid ? 'rgba(10,10,15,.96)' : 'transparent',
-      backdropFilter: headerSolid ? 'blur(10px)' : 'none',
-      borderBottom: headerSolid ? '1px solid rgba(255,255,255,.04)' : 'none',
-      padding: headerSolid ? '.55rem 2rem' : '.9rem 2rem',
-      display:'flex',justifyContent:'space-between',alignItems:'center',
-      transition: 'all .45s cubic-bezier(.25,.46,.45,.94)',
-    }}>
-      <img src={BASE+'images/logo-full-white.png'} alt="21FC"
-        style={{ height: headerSolid ? '34px' : '46px', width:'auto', transition:'height .4s ease' }} />
-      <nav className="navL" style={{ display:'flex',gap:'1.6rem',alignItems:'center' }}>
-        {['About','Schedule','Gallery','Join'].map(s => (
-          <a key={s} href={`#${s.toLowerCase()}`}
-            style={{ color:'rgba(240,239,239,.6)',textDecoration:'none',fontSize:'12px',fontWeight:600,
-              letterSpacing:'1px',textTransform:'uppercase',transition:'color .3s ease' }}
-            onMouseEnter={e => e.target.style.color = pk}
-            onMouseLeave={e => e.target.style.color = 'rgba(240,239,239,.6)'}
-          >{s}</a>
-        ))}
-        <a href="https://opensports.net/21fc" target="_blank" rel="noopener noreferrer"
-          style={{ padding:'8px 18px',background:pk,color:'#fff',fontSize:'10px',fontWeight:700,
-            textTransform:'uppercase',letterSpacing:'1.5px',textDecoration:'none',transition:'all .3s ease' }}
-          onMouseEnter={e => { e.currentTarget.style.background='#fff'; e.currentTarget.style.color=bg; }}
-          onMouseLeave={e => { e.currentTarget.style.background=pk; e.currentTarget.style.color='#fff'; }}
-        >Book Now</a>
-      </nav>
-    </header>
-  );
-
-  /* ═══ HERO — full-bleed Nike style ═══ */
-  const Hero = () => (
-    <section style={{ position:'relative',height:'100vh',maxHeight:'1000px',overflow:'hidden' }}>
-      {heroes.map((h, i) => (
-        <div key={i} style={{ position:'absolute',inset:0,opacity:heroIdx===i?1:0,transition:'opacity 1.4s ease' }}>
-          <img src={h.src} alt="" loading={i===0?'eager':'lazy'}
-            style={{ width:'100%',height:'100%',objectFit:'cover',objectPosition:h.pos,
-              animation: heroIdx===i ? 'heroScale 12s ease forwards' : 'none' }} />
+      {/* SPLASH */}
+      {!splashDone && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 9999, background: bg,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          opacity: splashFade ? 0 : 1, transition: 'opacity .5s ease',
+          pointerEvents: splashFade ? 'none' : 'all',
+        }}>
+          <img src={BASE + 'images/logo-full-white.png'} alt="21FC"
+            style={{ height: 'clamp(60px,14vw,110px)', width: 'auto', animation: 'sLogo .7s cubic-bezier(.16,1,.3,1) forwards',
+              filter: 'drop-shadow(0 0 30px rgba(237,17,113,.15))' }} />
+          <div style={{ width: '40px', height: '2px', background: pk, margin: '1rem 0 .8rem', animation: 'sLine .35s ease-out .35s both', transformOrigin: 'center' }} />
+          <div style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', animation: 'sText .45s ease-out .25s both' }}>Twenty One FC</div>
         </div>
-      ))}
-      {/* gradient — dark at bottom for text legibility */}
-      <div style={{ position:'absolute',inset:0,zIndex:2,
-        background:'linear-gradient(180deg,rgba(10,10,15,.5) 0%,rgba(10,10,15,0) 30%,rgba(10,10,15,0) 45%,rgba(10,10,15,.7) 75%,rgba(10,10,15,1) 100%)' }} />
+      )}
 
-      <div style={{ position:'absolute',bottom:0,left:0,right:0,zIndex:3,
-        padding:'0 clamp(2rem,6vw,5rem) clamp(3.5rem,8vh,6rem)' }}>
-        <div style={{ ...label, marginBottom:'12px', animation:'fadeUp .5s ease .1s both' }}>Clifton, NJ &mdash; Indoor Turf</div>
-        <h1 style={{ fontWeight:900,lineHeight:.88,letterSpacing:'-.05em',marginBottom:'.25em',animation:'fadeUp .5s ease .2s both' }}>
-          <span className="heroH1" style={{ display:'block',fontSize:'clamp(56px,11vw,140px)' }}>7 AM.</span>
-          <span className="heroH2" style={{ display:'block',fontSize:'clamp(36px,7vw,92px)',fontWeight:200,letterSpacing:'-.02em',color:'rgba(240,239,239,.75)' }}>No Excuses.</span>
-        </h1>
-        <p style={{ ...sub, maxWidth:'420px',marginBottom:'2rem',animation:'fadeUp .5s ease .35s both' }}>
-          High-level adult pickup soccer. Organized matches, real competition, no shortcuts.
-        </p>
-        <div style={{ display:'flex',gap:'12px',flexWrap:'wrap',animation:'fadeUp .5s ease .45s both' }}>
-          <Btn href="https://opensports.net/21fc" big>Reserve Your Spot</Btn>
-          <a href="#schedule" style={{ padding:'17px 28px',border:'1px solid rgba(255,255,255,.15)',color:'rgba(240,239,239,.65)',
-            fontSize:'12px',fontWeight:600,textTransform:'uppercase',letterSpacing:'2px',textDecoration:'none',
-            transition:'all .35s ease' }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(255,255,255,.4)'; e.currentTarget.style.color=wh; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(255,255,255,.15)'; e.currentTarget.style.color='rgba(240,239,239,.65)'; }}
-          >View Schedule</a>
-        </div>
-      </div>
-
-      {/* scroll indicator */}
-      <div style={{ position:'absolute',bottom:'1.5rem',left:'50%',transform:'translateX(-50%)',zIndex:3,opacity:.3 }}>
-        <div style={{ width:'18px',height:'30px',border:'1px solid rgba(255,255,255,.2)',borderRadius:'9px',display:'flex',justifyContent:'center',paddingTop:'5px' }}>
-          <div style={{ width:'2px',height:'5px',background:pk,borderRadius:'1px',animation:'bounce 1.4s ease-in-out infinite' }} />
-        </div>
-      </div>
-    </section>
-  );
-
-  /* ═══ STATS BAR ═══ */
-  const Stats = () => (
-    <section style={{ background:card,borderBottom:`1px solid rgba(237,17,113,.06)`,padding:'1.8rem 1.5rem' }}>
-      <div className="g4" style={{ ...wrap('900px'),display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'1rem',textAlign:'center' }}>
-        {[{v:'200+',l:'Players'},{v:'4×',l:'Weekly'},{v:'7 AM',l:'Kickoff'},{v:'3+',l:'Years'}].map((s,i) => (
-          <div key={i} className={`rv d${i+1}`}>
-            <div style={{ fontSize:'clamp(28px,5vw,44px)',fontWeight:800,lineHeight:1 }}>{s.v}</div>
-            <div style={{ fontSize:'10px',fontWeight:600,letterSpacing:'2.5px',textTransform:'uppercase',color:mt,marginTop:'.25rem' }}>{s.l}</div>
+      {/* HERO */}
+      <section className="hero">
+        {heroes.map((h, i) => (
+          <div key={i} className="hero-slide" style={{ opacity: heroIdx === i ? 1 : 0 }}>
+            <img src={h.src} alt="" loading={i === 0 ? 'eager' : 'lazy'} style={{ objectPosition: h.pos }} />
           </div>
         ))}
-      </div>
-    </section>
-  );
-
-  /* ═══ ABOUT — split layout ═══ */
-  const About = () => (
-    <section id="about" style={{ background:bg }}>
-      <div className="g2" style={{ display:'grid',gridTemplateColumns:'1fr 1fr',minHeight:'420px' }}>
-        <div className="rv" style={{ overflow:'hidden',position:'relative' }}>
-          <img src={BASE+'images/DSC08671.jpg'} alt="" loading="lazy"
-            style={{ width:'100%',height:'100%',minHeight:'300px',objectFit:'cover',objectPosition:'center 25%',
-              transition:'transform 5s ease' }}
-            onMouseEnter={e => e.target.style.transform='scale(1.03)'}
-            onMouseLeave={e => e.target.style.transform='scale(1)'} />
-          <div style={{ position:'absolute',inset:0,background:'linear-gradient(90deg,transparent 70%,rgba(10,10,15,.3) 100%)' }} />
-        </div>
-        <div className="rv d2" style={{ background:card,padding:'clamp(2.5rem,4vw,4rem)',display:'flex',flexDirection:'column',justifyContent:'center',
-          borderLeft:'1px solid rgba(255,255,255,.04)' }}>
-          <div style={{ width:'28px',height:'2px',background:pk,marginBottom:'1.2rem' }} />
-          <div style={{ ...label, marginBottom:'.5rem' }}>Our Mission</div>
-          <h2 style={{ ...heading(),marginBottom:'1rem' }}>Unite skilled players<br/>in real competition</h2>
-          <p style={{ ...sub,marginBottom:'1.8rem' }}>
-            21FC brings together dedicated players in a competitive, respectful, and community-driven environment. Organized, high-level adult pickup soccer where you push your game and build real connections.
-          </p>
-          <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:'1rem' }}>
-            {[{l:'Location',v:'Clifton, NJ'},{l:'Game Days',v:'Mon · Wed · Fri · Sun'}].map((x,i) => (
-              <div key={i}>
-                <div style={{ ...label,fontSize:'9px',marginBottom:'.25rem' }}>{x.l}</div>
-                <div style={{ fontSize:'15px',fontWeight:600 }}>{x.v}</div>
-              </div>
-            ))}
+        <div className="hero-grad" />
+        <div className="hero-content">
+          <div className="hero-label">Clifton, NJ — Indoor Turf</div>
+          <h1 className="hero-h1">
+            <span className="big">7 AM.</span>
+            <span className="sub">No Excuses.</span>
+          </h1>
+          <p className="hero-p">High-level adult pickup soccer. Organized matches, real competition, no shortcuts.</p>
+          <div className="hero-btns">
+            <Btn href="https://opensports.net/21fc" big>Reserve Your Spot</Btn>
+            <a href="#schedule" className="ghost-btn">View Schedule</a>
           </div>
         </div>
-      </div>
-    </section>
-  );
-
-  /* ═══ IMAGE BAND — Nike-style 3-column grid, no carousel ═══ */
-  const ImageBand = () => {
-    const imgs = [
-      { src: BASE+'images/DSC08584.jpg', pos:'center 28%' },
-      { src: BASE+'images/DSC08712.jpg', pos:'center 30%' },
-      { src: BASE+'images/DSC08730.jpg', pos:'center 25%' },
-    ];
-    return (
-      <section style={{ background:bg,padding:'3px' }}>
-        <div style={{ display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'3px' }}>
-          {imgs.map((img,i) => (
-            <div key={i} className={`rv d${i+1}`} style={{ overflow:'hidden',height:'clamp(160px,22vw,280px)' }}>
-              <img src={img.src} alt="" loading="lazy"
-                style={{ width:'100%',height:'100%',objectFit:'cover',objectPosition:img.pos,
-                  filter:'brightness(.82)',transition:'all .6s ease',cursor:'pointer' }}
-                onMouseEnter={e => { e.target.style.filter='brightness(1)'; e.target.style.transform='scale(1.04)'; }}
-                onMouseLeave={e => { e.target.style.filter='brightness(.82)'; e.target.style.transform='scale(1)'; }} />
-            </div>
-          ))}
-        </div>
+        <div className="scroll-ind"><div className="scroll-pill"><div className="scroll-dot" /></div></div>
       </section>
-    );
-  };
 
-  /* ═══ SCHEDULE ═══ */
-  const Schedule = () => (
-    <section id="schedule" style={{ ...sec(),background:bg }}>
-      <div style={wrap('1100px')}>
-        <div className="rv" style={{ marginBottom:'2rem' }}>
-          <div style={{ width:'28px',height:'2px',background:pk,marginBottom:'1rem' }} />
-          <h2 style={heading()}>Weekly Schedule</h2>
-          <p style={{ ...sub,marginTop:'.3rem' }}>High-level play. Every session.</p>
-        </div>
-        <div className="g4" style={{ display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'8px' }}>
-          {['Monday','Wednesday','Friday','Sunday'].map((day,i) => (
-            <div key={i} className={`rv d${i+1}`}
-              style={{ padding:'clamp(1.2rem,2vw,1.8rem)',background:card,borderLeft:`2px solid ${pk}`,
-                transition:'all .4s ease',cursor:'pointer' }}
-              onMouseEnter={e => { e.currentTarget.style.background='#161622'; e.currentTarget.style.borderLeftColor='#D3DE25'; e.currentTarget.style.transform='translateY(-2px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background=card; e.currentTarget.style.borderLeftColor=pk; e.currentTarget.style.transform='translateY(0)'; }}
-            >
-              <div style={{ fontSize:'10px',fontWeight:700,letterSpacing:'2.5px',textTransform:'uppercase',color:mt,marginBottom:'.5rem' }}>{day}</div>
-              <div style={{ fontSize:'clamp(20px,3vw,26px)',fontWeight:700,marginBottom:'.15rem' }}>7:00 AM</div>
-              <div style={{ fontSize:'12px',color:mt }}>60 min · Indoor Turf</div>
-            </div>
-          ))}
-        </div>
-        <div className="rv d5" style={{ marginTop:'1.8rem' }}>
-          <Btn href="https://opensports.net/21fc">Reserve Your Spot</Btn>
-        </div>
-      </div>
-    </section>
-  );
-
-  /* ═══ FULL-BLEED IMAGE BREAK ═══ */
-  const ImageBreak = ({ src, pos='center 25%', h='clamp(200px,35vh,400px)' }) => (
-    <section style={{ position:'relative',height:h,overflow:'hidden' }}>
-      <img src={src} alt="" loading="lazy"
-        style={{ width:'100%',height:'100%',objectFit:'cover',objectPosition:pos,filter:'brightness(.7)' }} />
-      <div style={{ position:'absolute',inset:0,background:'linear-gradient(180deg,rgba(10,10,15,.3) 0%,rgba(10,10,15,.1) 50%,rgba(10,10,15,.5) 100%)' }} />
-    </section>
-  );
-
-  /* ═══ GALLERY — staggered grid ═══ */
-  const Gallery = () => {
-    const imgs = [
-      { src:BASE+'images/DSC08823.jpg', pos:'center 20%', tall:true },
-      { src:BASE+'images/DSC08634.jpg', pos:'center 35%', tall:false },
-      { src:BASE+'images/DSC08703.jpg', pos:'center 30%', tall:false },
-      { src:BASE+'images/DSC08806.jpg', pos:'center 32%', tall:false },
-      { src:BASE+'images/DSC08820.jpg', pos:'center 28%', tall:false },
-      { src:BASE+'images/DSC08674.jpg', pos:'center 22%', tall:true },
-    ];
-    return (
-      <section id="gallery" style={{ ...sec(),background:bg }}>
-        <div style={wrap()}>
-          <div className="rv" style={{ marginBottom:'2rem' }}>
-            <div style={{ width:'28px',height:'2px',background:pk,marginBottom:'1rem' }} />
-            <h2 style={heading()}>Gallery</h2>
-            <p style={{ ...sub,marginTop:'.3rem' }}>Moments from the pitch</p>
-          </div>
-          <div className="imgG" style={{ display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'4px',gridAutoRows:'180px' }}>
-            {imgs.map((img,i) => (
-              <div key={i} className={`rv d${Math.min(i+1,6)}`}
-                style={{ overflow:'hidden', gridRow: img.tall ? 'span 2' : 'span 1' }}>
-                <img src={img.src} alt="" loading="lazy"
-                  style={{ width:'100%',height:'100%',objectFit:'cover',objectPosition:img.pos,
-                    filter:'brightness(.8)',transition:'all .5s ease',cursor:'pointer' }}
-                  onMouseEnter={e => { e.target.style.filter='brightness(1)'; e.target.style.transform='scale(1.04)'; }}
-                  onMouseLeave={e => { e.target.style.filter='brightness(.8)'; e.target.style.transform='scale(1)'; }} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  };
-
-  /* ═══ MEMBERSHIP ═══ */
-  const Membership = () => (
-    <section id="membership" style={{ ...sec(),background:card,borderTop:'1px solid rgba(255,255,255,.03)' }}>
-      <div style={wrap('1100px')}>
-        <div className="rv" style={{ textAlign:'center',marginBottom:'2.5rem' }}>
-          <div style={{ width:'28px',height:'2px',background:pk,margin:'0 auto 1rem' }} />
-          <h2 style={heading()}>Membership</h2>
-          <p style={{ ...sub,marginTop:'.3rem' }}>Choose your commitment level</p>
-        </div>
-        <div className="g3" style={{ display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'10px' }}>
-          {[
-            { name:'Drop-In',price:'$20',per:'/session',feats:['Single match access','No commitment','Walk-on flexibility'],pop:false },
-            { name:'Player',price:'$120',per:'/month',feats:['Unlimited games','Priority booking','Player community','Kit discounts'],pop:true },
-            { name:'Captain',price:'$200',per:'/month',feats:['Reserved team slots','Coach access','Premium stats','Exclusive events'],pop:false },
-          ].map((p,i) => (
-            <div key={i} className={`rv d${i+1}`}
-              style={{
-                padding:'clamp(1.5rem,2.5vw,2.2rem)',background:p.pop?'rgba(237,17,113,.03)':bg,
-                border:p.pop?`1px solid rgba(237,17,113,.18)`:'1px solid rgba(255,255,255,.05)',
-                position:'relative',transition:'all .4s ease',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor=pk; e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='0 12px 40px rgba(0,0,0,.4)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor=p.pop?'rgba(237,17,113,.18)':'rgba(255,255,255,.05)'; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='none'; }}
-            >
-              {p.pop && <div style={{ position:'absolute',top:'-9px',left:'50%',transform:'translateX(-50)',
-                background:pk,color:'#fff',padding:'3px 14px',fontSize:'9px',fontWeight:700,letterSpacing:'1.5px',textTransform:'uppercase' }}>Popular</div>}
-              <div style={{ fontSize:'14px',fontWeight:700,marginBottom:'.4rem' }}>{p.name}</div>
-              <div style={{ display:'flex',alignItems:'baseline',gap:'.3rem',marginBottom:'1.2rem' }}>
-                <span style={{ fontSize:'clamp(26px,4vw,34px)',fontWeight:800 }}>{p.price}</span>
-                <span style={{ fontSize:'12px',color:mt }}>{p.per}</span>
-              </div>
-              <div style={{ borderTop:'1px solid rgba(255,255,255,.05)',paddingTop:'.8rem',marginBottom:'1.2rem' }}>
-                {p.feats.map((f,fi) => (
-                  <div key={fi} style={{ display:'flex',alignItems:'center',gap:'.4rem',marginBottom:'.4rem',fontSize:'13px',color:'rgba(240,239,239,.7)' }}>
-                    <div style={{ width:'4px',height:'4px',background:pk,borderRadius:'50%',flexShrink:0 }} />{f}
-                  </div>
-                ))}
-              </div>
-              <button style={{ width:'100%',padding:'11px',background:p.pop?pk:'transparent',
-                color:p.pop?'#fff':wh,border:p.pop?'none':'1px solid rgba(255,255,255,.12)',
-                fontSize:'11px',fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',cursor:'pointer',transition:'all .3s ease' }}
-                onMouseEnter={e => { e.target.style.background=p.pop?'#fff':'rgba(255,255,255,.06)'; if(p.pop) e.target.style.color=bg; }}
-                onMouseLeave={e => { e.target.style.background=p.pop?pk:'transparent'; if(p.pop) e.target.style.color='#fff'; }}
-              >Choose Plan</button>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-
-  /* ═══ BIG CTA — full width, in-your-face ═══ */
-  const CTA = () => (
-    <section style={{ position:'relative',padding:'clamp(5rem,12vh,9rem) 2rem',overflow:'hidden',
-      background:`linear-gradient(135deg, rgba(237,17,113,.08) 0%, ${bg} 40%, ${bg} 60%, rgba(211,222,37,.04) 100%)`,
-      borderTop:'1px solid rgba(237,17,113,.1)',borderBottom:'1px solid rgba(237,17,113,.1)' }}>
-      {/* ambient glow */}
-      <div style={{ position:'absolute',top:'-40%',left:'-15%',width:'500px',height:'500px',
-        background:'radial-gradient(circle,rgba(237,17,113,.07) 0%,transparent 70%)',borderRadius:'50%',pointerEvents:'none' }} />
-      <div className="rv" style={{ maxWidth:'650px',margin:'0 auto',textAlign:'center',position:'relative',zIndex:1 }}>
-        <div style={{ width:'36px',height:'2px',background:pk,margin:'0 auto 1.5rem' }} />
-        <h2 className="ctaH" style={{ fontSize:'clamp(36px,8vw,76px)',fontWeight:900,lineHeight:.95,letterSpacing:'-.04em',marginBottom:'1rem' }}>
-          Ready to<br/>Play?
-        </h2>
-        <p style={{ ...sub,maxWidth:'460px',margin:'0 auto 2.5rem',color:'rgba(240,239,239,.55)' }}>
-          The most competitive pickup soccer community in New Jersey. 200+ players show up every week.
-        </p>
-        <Btn href="https://opensports.net/21fc" big>Join Now</Btn>
-        <div style={{ marginTop:'1rem',fontSize:'11px',color:mt,letterSpacing:'1px' }}>Via OpenSports — takes 30 seconds</div>
-      </div>
-    </section>
-  );
-
-  /* ═══ CONTACT ═══ */
-  const Contact = () => (
-    <section id="join" style={{ ...sec(),background:bg,borderTop:'1px solid rgba(255,255,255,.03)' }}>
-      <div style={wrap('900px')}>
-        <div className="rv" style={{ marginBottom:'2rem' }}>
-          <div style={{ width:'28px',height:'2px',background:pk,marginBottom:'1rem' }} />
-          <h2 style={heading()}>Get in Touch</h2>
-          <p style={{ ...sub,marginTop:'.3rem' }}>Questions? We're here.</p>
-        </div>
-        <div className="g2" style={{ display:'grid',gridTemplateColumns:'1fr 1.2fr',gap:'2.5rem' }}>
-          <div>
-            {[{l:'Instagram',v:'@21fc.soccer'},{l:'Location',v:'Clifton, NJ'},{l:'Schedule',v:'Mon, Wed, Fri, Sun — 7 AM'}].map((x,i) => (
-              <div key={i} className={`rv d${i+1}`} style={{ marginBottom:'1rem',paddingBottom:'1rem',borderBottom:'1px solid rgba(255,255,255,.05)' }}>
-                <div style={{ ...label,fontSize:'9px',marginBottom:'.15rem' }}>{x.l}</div>
-                <div style={{ fontSize:'15px',fontWeight:600 }}>{x.v}</div>
-              </div>
-            ))}
-          </div>
-          <form className="rv d2" style={{ display:'flex',flexDirection:'column',gap:'.8rem' }} onSubmit={e => e.preventDefault()}>
-            {['Your name','your@email.com'].map((ph,i) => (
-              <input key={i} type={i===1?'email':'text'} placeholder={ph}
-                style={{ background:'transparent',border:'none',borderBottom:'1px solid rgba(255,255,255,.08)',
-                  color:wh,padding:'.55rem 0',fontSize:'14px',fontFamily:'Red Hat Display, sans-serif',outline:'none',
-                  transition:'border-color .3s ease' }}
-                onFocus={e => e.target.style.borderBottomColor=pk}
-                onBlur={e => e.target.style.borderBottomColor='rgba(255,255,255,.08)'} />
-            ))}
-            <textarea placeholder="Your message" rows="3"
-              style={{ background:'transparent',border:'1px solid rgba(255,255,255,.08)',color:wh,
-                padding:'.55rem',fontSize:'14px',fontFamily:'Red Hat Display, sans-serif',outline:'none',resize:'none',
-                transition:'border-color .3s ease' }}
-              onFocus={e => e.target.style.borderColor=pk}
-              onBlur={e => e.target.style.borderColor='rgba(255,255,255,.08)'} />
-            <button type="submit" style={{ padding:'11px 22px',background:pk,color:'#fff',border:'none',fontSize:'11px',
-              fontWeight:700,textTransform:'uppercase',letterSpacing:'1px',cursor:'pointer',transition:'all .3s ease',alignSelf:'flex-start' }}
-              onMouseEnter={e => { e.target.style.background='#fff'; e.target.style.color=bg; }}
-              onMouseLeave={e => { e.target.style.background=pk; e.target.style.color='#fff'; }}
-            >Send Message</button>
-          </form>
-        </div>
-      </div>
-    </section>
-  );
-
-  /* ═══ LOCATION + MAP ═══ */
-  const Location = () => (
-    <section id="location" style={{ ...sec(),background:'#07070E',borderTop:'1px solid rgba(255,255,255,.03)' }}>
-      <div style={wrap('1100px')}>
-        <div className="g2" style={{ display:'grid',gridTemplateColumns:'1fr 1.6fr',gap:'clamp(1.5rem,3vw,3rem)',alignItems:'start' }}>
-          <div className="rv">
-            <div style={{ width:'28px',height:'2px',background:pk,marginBottom:'1rem' }} />
-            <h2 style={heading()}>Find Us</h2>
-            <p style={{ ...sub,marginTop:'.3rem',marginBottom:'1.5rem' }}>Indoor turf in Clifton, NJ</p>
-            {[
-              {l:'Location',v:'Clifton, NJ — Indoor Turf'},
-              {l:'Game Days',v:'Mon · Wed · Fri · Sun'},
-              {l:'Kickoff',v:'7:00 AM Sharp'},
-              {l:'Book Via',v:'OpenSports',link:'https://opensports.net/21fc'},
-            ].map((x,i) => (
-              <div key={i} style={{ paddingBottom:'.8rem',marginBottom:'.8rem',borderBottom:'1px solid rgba(255,255,255,.04)' }}>
-                <div style={{ ...label,fontSize:'9px',marginBottom:'.15rem' }}>{x.l}</div>
-                {x.link ? (
-                  <a href={x.link} target="_blank" rel="noopener noreferrer"
-                    style={{ fontSize:'15px',fontWeight:600,color:wh,textDecoration:'none',
-                      borderBottom:'1px solid rgba(237,17,113,.25)',paddingBottom:'1px',transition:'border-color .3s ease' }}
-                    onMouseEnter={e => e.currentTarget.style.borderColor=pk}
-                    onMouseLeave={e => e.currentTarget.style.borderColor='rgba(237,17,113,.25)'}
-                  >{x.v}</a>
-                ) : <div style={{ fontSize:'15px',fontWeight:600 }}>{x.v}</div>}
-              </div>
-            ))}
-            <a href="https://www.google.com/maps/search/Indoor+Turf+Soccer+Clifton+NJ" target="_blank" rel="noopener noreferrer"
-              style={{ display:'inline-flex',alignItems:'center',gap:'.4rem',marginTop:'.8rem',
-                padding:'9px 18px',border:'1px solid rgba(237,17,113,.2)',color:wh,fontSize:'11px',fontWeight:600,
-                textTransform:'uppercase',letterSpacing:'1.5px',textDecoration:'none',transition:'all .35s ease' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor=pk; e.currentTarget.style.background='rgba(237,17,113,.05)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(237,17,113,.2)'; e.currentTarget.style.background='transparent'; }}
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              Open in Google Maps
-            </a>
-          </div>
-          <div className="rv d2" style={{ overflow:'hidden',border:'1px solid rgba(255,255,255,.04)',height:'340px' }}>
-            <iframe title="21FC — Clifton, NJ"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d48338.1!2d-74.1637!3d40.8584!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2f9b4b5cc7c6b%3A0xa27b78b5b3bfc7e!2sClifton%2C%20NJ!5e0!3m2!1sen!2sus!4v1"
-              width="100%" height="100%"
-              style={{ border:0,display:'block',filter:'invert(90%) hue-rotate(180deg) saturate(.3) brightness(.65)' }}
-              allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-
-  /* ═══ FOOTER ═══ */
-  const Footer = () => (
-    <footer style={{ background:bg,borderTop:'1px solid rgba(255,255,255,.04)',padding:'1.8rem 2rem 1rem' }}>
-      <div style={{ ...wrap('1100px'),display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:'1rem' }}>
-        <img src={BASE+'images/logo-full-white.png'} alt="21FC" style={{ height:'26px',width:'auto' }} loading="lazy" />
-        <div style={{ display:'flex',gap:'1.5rem' }}>
-          {[{t:'Instagram',h:'https://instagram.com/21fc.soccer'},{t:'OpenSports',h:'https://opensports.net/21fc'},{t:'Contact',h:'#join'}].map(l => (
-            <a key={l.t} href={l.h} target={l.h.startsWith('#')?'_self':'_blank'} rel="noopener noreferrer"
-              style={{ color:mt,textDecoration:'none',fontSize:'12px',fontWeight:500,transition:'color .3s ease' }}
-              onMouseEnter={e => e.target.style.color=wh}
-              onMouseLeave={e => e.target.style.color=mt}
-            >{l.t}</a>
-          ))}
-        </div>
-      </div>
-      <div style={{ ...wrap('1100px'),borderTop:'1px solid rgba(255,255,255,.04)',marginTop:'1rem',paddingTop:'.8rem',textAlign:'center' }}>
-        <p style={{ fontSize:'11px',color:mt }}>© 2026 21FC. All rights reserved.</p>
-      </div>
-    </footer>
-  );
-
-  /* ═══ PAGE LAYOUT ═══ */
-  return (
-    <>
-      <style>{css}</style>
-      {!splashDone && <Splash />}
       <Header />
-      <Hero />
       <Stats />
       <About />
       <ImageBand />
       <Schedule />
-      <ImageBreak src={BASE+'images/DSC08619.jpg'} pos="center 22%" />
       <Gallery />
       <Membership />
       <CTA />
