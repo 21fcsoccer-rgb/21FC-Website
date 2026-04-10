@@ -312,6 +312,23 @@ const App = () => {
 html{scroll-behavior:smooth}
 body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
+/* ─── AMBIENT BACKGROUND ─── */
+.site-wrap{position:relative;overflow:hidden}
+.site-wrap::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 600px 600px at 10% 20%, rgba(237,17,113,.04) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at 85% 60%, rgba(211,222,37,.03) 0%, transparent 70%),
+    radial-gradient(ellipse 700px 400px at 50% 90%, rgba(237,17,113,.03) 0%, transparent 70%),
+    ${bg};
+  animation:ambientShift 20s ease-in-out infinite alternate}
+@keyframes ambientShift{
+  0%{background-position:0% 0%,100% 50%,50% 100%}
+  50%{background-position:20% 30%,70% 40%,40% 80%}
+  100%{background-position:10% 50%,90% 70%,60% 90%}
+}
+/* section dividers — subtle pink glow lines */
+.glow-div{height:1px;background:linear-gradient(90deg,transparent 0%,rgba(237,17,113,.15) 20%,rgba(237,17,113,.25) 50%,rgba(237,17,113,.15) 80%,transparent 100%);margin:0}
+
 /* ─── REVEAL (CSS only, no JS state) ─── */
 .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ${ease},transform .6s ${ease}}
 .rv.vis{opacity:1;transform:translateY(0)}
@@ -357,14 +374,15 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .btn-big{padding:17px 50px;font-size:14px;letter-spacing:3px}
 
 /* ─── STATS ─── */
-.stats-bar{background:${card};border-bottom:1px solid rgba(237,17,113,.05);padding:1.6rem 1.5rem}
+.stats-bar{background:linear-gradient(180deg,${card} 0%,rgba(237,17,113,.02) 100%);border-bottom:1px solid rgba(237,17,113,.05);padding:1.6rem 1.5rem;position:relative}
+.stats-bar::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(237,17,113,.2),transparent)}
 .stats-grid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;text-align:center}
 .stat-val{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1}
 .stat-lbl{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:${mt};margin-top:.2rem}
 
 /* ─── SECTIONS ─── */
-.section{padding:clamp(3.5rem,7vh,6rem) clamp(1.5rem,5vw,4rem)}
-.section-alt{background:${card};border-top:1px solid rgba(255,255,255,.03)}
+.section{padding:clamp(3.5rem,7vh,6rem) clamp(1.5rem,5vw,4rem);position:relative}
+.section-alt{background:linear-gradient(180deg,${card} 0%,rgba(15,15,24,.95) 50%,${card} 100%);border-top:1px solid rgba(255,255,255,.03)}
 .container{max-width:1100px;margin:0 auto}
 .container-wide{max-width:1200px;margin:0 auto}
 .container-sm{max-width:900px;margin:0 auto}
@@ -391,18 +409,29 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 
 /* ─── SCHEDULE ─── */
 .sched-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:0}
-.sched-card{padding:clamp(1.2rem,2vw,1.6rem);background:${card};border-left:2px solid ${pk};transition:all .35s ease;cursor:pointer}
-.sched-card:hover{background:#161622;border-left-color:#D3DE25;transform:translateY(-2px)}
+.sched-card{padding:clamp(1.2rem,2vw,1.6rem);background:linear-gradient(135deg,${card} 0%,rgba(237,17,113,.02) 100%);border-left:2px solid ${pk};transition:all .4s cubic-bezier(.25,.46,.45,.94);cursor:pointer;position:relative;overflow:hidden}
+.sched-card::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;background:radial-gradient(circle,rgba(237,17,113,.06) 0%,transparent 70%);transition:all .4s ease;opacity:0}
+.sched-card:hover{background:linear-gradient(135deg,#161622 0%,rgba(237,17,113,.04) 100%);border-left-color:#D3DE25;transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.sched-card:hover::before{opacity:1;width:100px;height:100px}
 .sched-day{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:${mt};margin-bottom:.4rem}
 .sched-time{font-size:clamp(20px,3vw,26px);font-weight:700;margin-bottom:.1rem}
 .sched-info{font-size:12px;color:${mt}}
 
 /* ─── GALLERY ─── */
-.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;grid-auto-rows:175px}
-.gal-cell{overflow:hidden}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;grid-auto-rows:185px}
+.gal-cell{overflow:hidden;position:relative;cursor:pointer}
 .gal-tall{grid-row:span 2}
-.gal-cell img{width:100%;height:100%;object-fit:cover;filter:brightness(.78);transition:all .45s ease;cursor:pointer}
-.gal-cell:hover img{filter:brightness(1);transform:scale(1.04)}
+.gal-cell img{width:100%;height:100%;object-fit:cover;filter:brightness(.7) saturate(.9);transition:all .5s cubic-bezier(.25,.46,.45,.94)}
+.gal-cell:hover img{filter:brightness(1.05) saturate(1.1);transform:scale(1.06)}
+/* pink border glow on hover */
+.gal-cell::before{content:'';position:absolute;inset:0;z-index:2;border:2px solid transparent;transition:border-color .4s ease,box-shadow .4s ease;pointer-events:none}
+.gal-cell:hover::before{border-color:rgba(237,17,113,.5);box-shadow:inset 0 0 30px rgba(237,17,113,.1)}
+/* overlay label */
+.gal-cell::after{content:'View';position:absolute;bottom:0;left:0;right:0;z-index:3;
+  padding:.6rem;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-align:center;
+  color:#fff;background:linear-gradient(transparent,rgba(10,10,15,.7));
+  opacity:0;transform:translateY(8px);transition:all .4s ease;pointer-events:none}
+.gal-cell:hover::after{opacity:1;transform:translateY(0)}
 
 /* ─── MEMBERSHIP ─── */
 .mem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -424,9 +453,10 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 
 /* ─── CTA ─── */
 .cta-section{position:relative;padding:clamp(5rem,12vh,9rem) 2rem;overflow:hidden;text-align:center;
-  background:linear-gradient(135deg,rgba(237,17,113,.07) 0%,${bg} 40%,${bg} 60%,rgba(211,222,37,.03) 100%);
-  border-top:1px solid rgba(237,17,113,.08);border-bottom:1px solid rgba(237,17,113,.08)}
-.cta-glow{position:absolute;top:-40%;left:-15%;width:450px;height:450px;background:radial-gradient(circle,rgba(237,17,113,.06) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+  background:linear-gradient(135deg,rgba(237,17,113,.08) 0%,${bg} 35%,${bg} 55%,rgba(211,222,37,.04) 100%);
+  border-top:1px solid rgba(237,17,113,.1);border-bottom:1px solid rgba(237,17,113,.1)}
+.cta-glow{position:absolute;top:-40%;left:-15%;width:500px;height:500px;background:radial-gradient(circle,rgba(237,17,113,.07) 0%,transparent 70%);border-radius:50%;pointer-events:none;animation:ctaPulse 8s ease-in-out infinite alternate}
+@keyframes ctaPulse{0%{transform:translate(0,0) scale(1)}50%{transform:translate(5%,5%) scale(1.1)}100%{transform:translate(-3%,3%) scale(.95)}}
 .cta-inner{position:relative;z-index:1;max-width:620px;margin:0 auto}
 .cta-heading{font-size:clamp(36px,8vw,76px);font-weight:900;line-height:.95;letter-spacing:-.04em;margin-bottom:.8rem}
 .cta-sub{font-size:clamp(15px,1.6vw,19px);color:rgba(240,239,239,.5);font-weight:300;line-height:1.7;max-width:460px;margin:0 auto 2.2rem}
@@ -529,17 +559,25 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
         <div className="scroll-ind"><div className="scroll-pill"><div className="scroll-dot" /></div></div>
       </section>
 
+      <div className="site-wrap">
       <Header />
       <Stats />
+      <div className="glow-div" />
       <About />
       <ImageBand />
+      <div className="glow-div" />
       <Schedule />
+      <div className="glow-div" />
       <Gallery />
+      <div className="glow-div" />
       <Membership />
       <CTA />
+      <div className="glow-div" />
       <Contact />
+      <div className="glow-div" />
       <Location />
       <Footer />
+      </div>
     </>
   );
 };
