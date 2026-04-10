@@ -79,13 +79,13 @@ const About = () => (
   </section>
 );
 
-/* ─── IMAGE BAND (static 3 col) ─── */
+/* ─── IMAGE BAND (static 3 col) — objectPosition tuned to show faces ─── */
 const ImageBand = () => (
   <section className="img-band">
     {[
-      { src: BASE + 'images/DSC08584.jpg', pos: 'center 28%' },
-      { src: BASE + 'images/DSC08712.jpg', pos: 'center 30%' },
-      { src: BASE + 'images/DSC08730.jpg', pos: 'center 25%' },
+      { src: BASE + 'images/DSC08584.jpg', pos: 'center 15%' },
+      { src: BASE + 'images/DSC08712.jpg', pos: 'center 12%' },
+      { src: BASE + 'images/DSC08730.jpg', pos: 'center 10%' },
     ].map((img, i) => (
       <div key={i} className={`rv d${i + 1} img-band-cell`}>
         <img src={img.src} alt="" loading="lazy" style={{ objectPosition: img.pos }} />
@@ -94,53 +94,103 @@ const ImageBand = () => (
   </section>
 );
 
-/* ─── SCHEDULE ─── */
-const Schedule = () => (
-  <section id="schedule" className="section">
-    <div className="container">
-      <div className="rv">
-        <div className="accent-line" />
-        <h2 className="sec-heading">Weekly Schedule</h2>
-        <p className="sec-sub">High-level play. Every session.</p>
-      </div>
-      <div className="sched-grid g4">
-        {['Monday', 'Wednesday', 'Friday', 'Sunday'].map((day, i) => (
-          <div key={i} className={`rv d${i + 1} sched-card`}>
-            <div className="sched-day">{day}</div>
-            <div className="sched-time">7:00 AM</div>
-            <div className="sched-info">60 min · Indoor Turf</div>
-          </div>
-        ))}
-      </div>
-      <div className="rv d5" style={{ marginTop: '1.8rem' }}>
-        <Btn href="https://opensports.net/21fc">Reserve Your Spot</Btn>
-      </div>
-    </div>
-  </section>
-);
-
-/* ─── GALLERY ─── */
-const Gallery = () => {
-  const imgs = [
-    { src: BASE + 'images/DSC08823.jpg', pos: 'center 20%', tall: true },
-    { src: BASE + 'images/DSC08634.jpg', pos: 'center 35%' },
-    { src: BASE + 'images/DSC08703.jpg', pos: 'center 30%' },
-    { src: BASE + 'images/DSC08806.jpg', pos: 'center 32%' },
-    { src: BASE + 'images/DSC08820.jpg', pos: 'center 28%' },
-    { src: BASE + 'images/DSC08674.jpg', pos: 'center 22%', tall: true },
+/* ─── SCHEDULE — professional fixture roster ─── */
+const Schedule = () => {
+  const matches = [
+    { day: 'MON', date: 'Every Week', time: '7:00 AM', type: 'Competitive', spots: '22', status: 'OPEN' },
+    { day: 'WED', date: 'Every Week', time: '7:00 AM', type: 'Competitive', spots: '22', status: 'OPEN' },
+    { day: 'FRI', date: 'Every Week', time: '7:00 AM', type: 'Competitive', spots: '22', status: 'OPEN' },
+    { day: 'SUN', date: 'Every Week', time: '7:00 AM', type: 'Open Run', spots: '30', status: 'OPEN' },
   ];
   return (
-    <section id="gallery" className="section">
-      <div className="container-wide">
+    <section id="schedule" className="section">
+      <div className="container">
         <div className="rv">
           <div className="accent-line" />
-          <h2 className="sec-heading">Gallery</h2>
-          <p className="sec-sub">Moments from the pitch</p>
+          <h2 className="sec-heading">Match Schedule</h2>
+          <p className="sec-sub">Weekly fixtures · Indoor Turf · Clifton, NJ</p>
         </div>
-        <div className="gallery-grid imgG">
-          {imgs.map((img, i) => (
-            <div key={i} className={`rv d${Math.min(i + 1, 5)} gal-cell${img.tall ? ' gal-tall' : ''}`}>
+        {/* fixture board */}
+        <div className="rv d1 fixture-board">
+          <div className="fixture-header">
+            <div className="fixture-h-cell fx-day">Day</div>
+            <div className="fixture-h-cell fx-time">Kickoff</div>
+            <div className="fixture-h-cell fx-type">Format</div>
+            <div className="fixture-h-cell fx-spots">Spots</div>
+            <div className="fixture-h-cell fx-status">Status</div>
+            <div className="fixture-h-cell fx-action"></div>
+          </div>
+          {matches.map((m, i) => (
+            <div key={i} className={`rv d${i + 1} fixture-row`}>
+              <div className="fixture-cell fx-day">
+                <span className="fixture-day-badge">{m.day}</span>
+                <span className="fixture-date">{m.date}</span>
+              </div>
+              <div className="fixture-cell fx-time">
+                <span className="fixture-time">{m.time}</span>
+                <span className="fixture-dur">60 min</span>
+              </div>
+              <div className="fixture-cell fx-type">
+                <span className="fixture-type-badge" data-type={m.type}>{m.type}</span>
+              </div>
+              <div className="fixture-cell fx-spots">
+                <span className="fixture-spots">{m.spots}</span>
+                <span className="fixture-spots-label">players</span>
+              </div>
+              <div className="fixture-cell fx-status">
+                <span className="fixture-status-dot" />
+                <span className="fixture-status-text">{m.status}</span>
+              </div>
+              <div className="fixture-cell fx-action">
+                <a href="https://opensports.net/21fc" target="_blank" rel="noopener noreferrer" className="fixture-book-btn">Book</a>
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* venue info bar */}
+        <div className="rv d5 fixture-venue">
+          <div className="fixture-venue-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Indoor Turf · Clifton, NJ
+          </div>
+          <div className="fixture-venue-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Gates open 6:45 AM
+          </div>
+          <Btn href="https://opensports.net/21fc">Reserve Your Spot</Btn>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ─── GALLERY — auto-scrolling carousel with face-framed crops ─── */
+const Gallery = () => {
+  const imgs = [
+    { src: BASE + 'images/DSC08823.jpg', pos: 'center 10%' },
+    { src: BASE + 'images/DSC08634.jpg', pos: 'center 12%' },
+    { src: BASE + 'images/DSC08703.jpg', pos: 'center 10%' },
+    { src: BASE + 'images/DSC08806.jpg', pos: 'center 8%' },
+    { src: BASE + 'images/DSC08820.jpg', pos: 'center 10%' },
+    { src: BASE + 'images/DSC08674.jpg', pos: 'center 8%' },
+    { src: BASE + 'images/DSC08737.jpg', pos: 'center 12%' },
+    { src: BASE + 'images/DSC08712.jpg', pos: 'center 10%' },
+  ];
+  /* duplicate for seamless loop */
+  const doubled = [...imgs, ...imgs];
+  return (
+    <section id="gallery" className="carousel-section">
+      <div className="container-wide rv">
+        <div className="accent-line" />
+        <h2 className="sec-heading">On the Pitch</h2>
+        <p className="sec-sub">Matchday moments</p>
+      </div>
+      <div className="carousel-track-wrap">
+        <div className="carousel-track">
+          {doubled.map((img, i) => (
+            <div key={i} className="carousel-card">
               <img src={img.src} alt="" loading="lazy" style={{ objectPosition: img.pos }} />
+              <div className="carousel-card-overlay" />
             </div>
           ))}
         </div>
@@ -394,7 +444,7 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 /* ─── ABOUT ─── */
 .about-grid{display:grid;grid-template-columns:1fr 1fr;min-height:400px}
 .about-img-wrap{overflow:hidden;position:relative}
-.about-img{width:100%;height:100%;min-height:280px;object-fit:cover;object-position:center 25%;transition:transform 5s ease}
+.about-img{width:100%;height:100%;min-height:280px;object-fit:cover;object-position:center 10%;transition:transform 5s ease}
 .about-img-wrap:hover .about-img{transform:scale(1.03)}
 .about-text{background:${card};padding:clamp(2.5rem,4vw,4rem);display:flex;flex-direction:column;justify-content:center;border-left:1px solid rgba(255,255,255,.04)}
 .about-meta{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -407,31 +457,45 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .img-band-cell img{width:100%;height:100%;object-fit:cover;filter:brightness(.8);transition:all .5s ease}
 .img-band-cell:hover img{filter:brightness(1);transform:scale(1.03)}
 
-/* ─── SCHEDULE ─── */
-.sched-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:0}
-.sched-card{padding:clamp(1.2rem,2vw,1.6rem);background:linear-gradient(135deg,${card} 0%,rgba(237,17,113,.02) 100%);border-left:2px solid ${pk};transition:all .4s cubic-bezier(.25,.46,.45,.94);cursor:pointer;position:relative;overflow:hidden}
-.sched-card::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;background:radial-gradient(circle,rgba(237,17,113,.06) 0%,transparent 70%);transition:all .4s ease;opacity:0}
-.sched-card:hover{background:linear-gradient(135deg,#161622 0%,rgba(237,17,113,.04) 100%);border-left-color:#D3DE25;transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.3)}
-.sched-card:hover::before{opacity:1;width:100px;height:100px}
-.sched-day{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:${mt};margin-bottom:.4rem}
-.sched-time{font-size:clamp(20px,3vw,26px);font-weight:700;margin-bottom:.1rem}
-.sched-info{font-size:12px;color:${mt}}
+/* ─── SCHEDULE — fixture roster ─── */
+.fixture-board{background:${card};border:1px solid rgba(255,255,255,.04);overflow:hidden}
+.fixture-header{display:grid;grid-template-columns:1.3fr 1fr .8fr .7fr .7fr .6fr;padding:.7rem 1.2rem;background:rgba(237,17,113,.04);border-bottom:1px solid rgba(237,17,113,.1)}
+.fixture-h-cell{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:${mt}}
+.fixture-row{display:grid;grid-template-columns:1.3fr 1fr .8fr .7fr .7fr .6fr;padding:.9rem 1.2rem;align-items:center;border-bottom:1px solid rgba(255,255,255,.03);transition:background .3s ease}
+.fixture-row:last-child{border-bottom:none}
+.fixture-row:hover{background:rgba(237,17,113,.02)}
+.fixture-cell{display:flex;flex-direction:column;gap:2px}
+.fixture-day-badge{font-size:16px;font-weight:800;letter-spacing:1px}
+.fixture-date{font-size:10px;color:${mt};font-weight:500}
+.fixture-time{font-size:16px;font-weight:700}
+.fixture-dur{font-size:10px;color:${mt};font-weight:500}
+.fixture-type-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:4px 10px;
+  background:rgba(237,17,113,.06);color:${pk};border:1px solid rgba(237,17,113,.12);display:inline-block;width:fit-content}
+.fixture-type-badge[data-type="Open Run"]{background:rgba(211,222,37,.06);color:#D3DE25;border-color:rgba(211,222,37,.15)}
+.fixture-spots{font-size:16px;font-weight:700}
+.fixture-spots-label{font-size:10px;color:${mt}}
+.fixture-status-dot{width:6px;height:6px;border-radius:50%;background:#2ECC71;display:inline-block;box-shadow:0 0 8px rgba(46,204,113,.4);flex-shrink:0}
+.fixture-status-text{font-size:11px;font-weight:700;color:#2ECC71;letter-spacing:1.5px}
+.fx-status{flex-direction:row;gap:6px;align-items:center}
+.fixture-book-btn{padding:7px 16px;background:${pk};color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;text-decoration:none;transition:all .3s ease;text-align:center;display:block}
+.fixture-book-btn:hover{background:#fff;color:${bg};transform:translateY(-1px)}
+.fixture-venue{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.04)}
+.fixture-venue-item{display:flex;align-items:center;gap:.4rem;font-size:12px;color:${mt};font-weight:500}
+.fixture-venue-item svg{color:${pk}}
 
-/* ─── GALLERY ─── */
-.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;grid-auto-rows:185px}
-.gal-cell{overflow:hidden;position:relative;cursor:pointer}
-.gal-tall{grid-row:span 2}
-.gal-cell img{width:100%;height:100%;object-fit:cover;filter:brightness(.7) saturate(.9);transition:all .5s cubic-bezier(.25,.46,.45,.94)}
-.gal-cell:hover img{filter:brightness(1.05) saturate(1.1);transform:scale(1.06)}
-/* pink border glow on hover */
-.gal-cell::before{content:'';position:absolute;inset:0;z-index:2;border:2px solid transparent;transition:border-color .4s ease,box-shadow .4s ease;pointer-events:none}
-.gal-cell:hover::before{border-color:rgba(237,17,113,.5);box-shadow:inset 0 0 30px rgba(237,17,113,.1)}
-/* overlay label */
-.gal-cell::after{content:'View';position:absolute;bottom:0;left:0;right:0;z-index:3;
-  padding:.6rem;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-align:center;
-  color:#fff;background:linear-gradient(transparent,rgba(10,10,15,.7));
-  opacity:0;transform:translateY(8px);transition:all .4s ease;pointer-events:none}
-.gal-cell:hover::after{opacity:1;transform:translateY(0)}
+/* ─── GALLERY — auto-scrolling carousel ─── */
+.carousel-section{padding:clamp(3rem,6vh,5rem) 0;overflow:hidden}
+.carousel-section .container-wide{padding:0 clamp(1.5rem,5vw,4rem);margin-bottom:1.5rem}
+.carousel-track-wrap{overflow:hidden;width:100%;mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%)}
+.carousel-track{display:flex;gap:8px;width:fit-content;animation:carouselScroll 40s linear infinite}
+.carousel-track:hover{animation-play-state:paused}
+.carousel-card{width:clamp(260px,30vw,380px);height:clamp(180px,22vw,260px);flex-shrink:0;overflow:hidden;position:relative;cursor:pointer}
+.carousel-card img{width:100%;height:100%;object-fit:cover;filter:brightness(.75) saturate(.9);transition:all .5s ${ease}}
+.carousel-card:hover img{filter:brightness(1.05) saturate(1.1);transform:scale(1.05)}
+.carousel-card-overlay{position:absolute;inset:0;border:2px solid transparent;transition:all .4s ease;pointer-events:none;
+  background:linear-gradient(transparent 60%,rgba(10,10,15,.4) 100%)}
+.carousel-card:hover .carousel-card-overlay{border-color:rgba(237,17,113,.4);box-shadow:inset 0 0 20px rgba(237,17,113,.08)}
+@keyframes carouselScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ─── MEMBERSHIP ─── */
 .mem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -497,8 +561,6 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
   .g2{grid-template-columns:1fr!important}
   .g4{grid-template-columns:repeat(2,1fr)!important}
   .g3{grid-template-columns:1fr!important}
-  .imgG{grid-template-columns:repeat(2,1fr)!important}
-  .imgG .gal-tall{grid-row:auto}
   .navL{display:none!important}
   .hero-h1 .big{font-size:clamp(44px,13vw,90px)}
   .hero-h1 .sub{font-size:clamp(26px,8vw,56px)}
@@ -506,12 +568,16 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
   .about-text{border-left:none;border-top:1px solid rgba(255,255,255,.04)}
   .img-band{grid-template-columns:1fr 1fr}
   .img-band-cell:last-child{display:none}
+  .fixture-header{display:none}
+  .fixture-row{grid-template-columns:1fr 1fr 1fr;gap:.6rem;padding:.8rem 1rem}
+  .fx-type,.fx-spots{display:none}
+  .fixture-venue{flex-direction:column;align-items:flex-start;gap:1rem}
 }
 @media(max-width:600px){
   .g4{grid-template-columns:1fr!important}
-  .imgG{grid-template-columns:1fr!important}
   .img-band{grid-template-columns:1fr}
   .img-band-cell:last-child{display:block}
+  .fixture-row{grid-template-columns:1fr 1fr auto}
 }
       `}</style>
 
