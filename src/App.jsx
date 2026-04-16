@@ -330,12 +330,28 @@ const Footer = () => (
 const App = () => {
   const [splashDone, setSplashDone] = useState(false);
   const [splashFade, setSplashFade] = useState(false);
+  const heroVideoRef = useRef(null);
 
-  /* splash */
+  /* after splash lifts, force-play the video (iOS sometimes pauses autoplay) */
+  useEffect(() => {
+    if (!splashDone) return;
+    const v = heroVideoRef.current;
+    if (!v) return;
+    const tryPlay = () => { v.play().catch(() => {}); };
+    tryPlay();
+    const t = setTimeout(tryPlay, 300);
+    // one-shot user-interaction unlock for stricter mobile browsers
+    const unlock = () => { tryPlay(); document.removeEventListener('touchstart', unlock); document.removeEventListener('click', unlock); };
+    document.addEventListener('touchstart', unlock, { once: true, passive: true });
+    document.addEventListener('click', unlock, { once: true });
+    return () => { clearTimeout(t); document.removeEventListener('touchstart', unlock); document.removeEventListener('click', unlock); };
+  }, [splashDone]);
+
+  /* splash — ball rolls → logo reveals → splash lifts */
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    const a = setTimeout(() => setSplashFade(true), 1100);
-    const b = setTimeout(() => { setSplashDone(true); document.body.style.overflow = ''; }, 1600);
+    const a = setTimeout(() => setSplashFade(true), 2600); // lift
+    const b = setTimeout(() => { setSplashDone(true); document.body.style.overflow = ''; }, 3400);
     return () => { clearTimeout(a); clearTimeout(b); };
   }, []);
 
@@ -353,6 +369,31 @@ const App = () => {
     const timer = setTimeout(setup, 1700);
     return () => { clearTimeout(timer); if (obs) obs.disconnect(); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /* parallax: scroll-linked transforms so sections fall into each other */
+  useEffect(() => {
+    let raf;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        document.querySelectorAll('.prlx').forEach(el => {
+          const rect = el.getBoundingClientRect();
+          const vh = window.innerHeight;
+          const center = rect.top + rect.height / 2 - vh / 2;
+          const n = Math.max(-1.2, Math.min(1.2, center / vh));
+          const rate = parseFloat(el.dataset.rate || '0.15');
+          el.style.setProperty('--prlx-y', `${(-n * rate * 100).toFixed(2)}px`);
+        });
+        const hero = document.querySelector('.hero-poster');
+        if (hero) hero.style.transform = `scale(${1.05 + Math.min(y, 600) / 3000}) translateY(${y * 0.2}px)`;
+        raf = null;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => { window.removeEventListener('scroll', onScroll); if (raf) cancelAnimationFrame(raf); };
+  }, []);
 
   return (
     <>
@@ -385,6 +426,10 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .rv.d1{transition-delay:.06s}.rv.d2{transition-delay:.12s}.rv.d3{transition-delay:.18s}
 .rv.d4{transition-delay:.24s}.rv.d5{transition-delay:.3s}.rv.d6{transition-delay:.36s}
 
+/* ─── PARALLAX ─── sections translate at different rates so they fall into each other */
+.prlx{--prlx-y:0px;transform:translate3d(0,var(--prlx-y),0);will-change:transform;transition:transform .1s linear}
+@media(prefers-reduced-motion:reduce){.prlx{transform:none!important}}
+
 /* ─── HEADER (CSS transition, no JS rerender) ─── */
 .hdr{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;
   padding:.9rem 2rem;background:transparent;transition:all .4s ${ease}}
@@ -398,9 +443,12 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .nav-btn:hover{background:#fff;color:${bg}}
 
 /* ─── HERO ─── */
-.hero{position:relative;height:100vh;max-height:1000px;overflow:hidden}
-.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.hero{position:relative;height:100vh;max-height:1000px;overflow:hidden;background:${bg}}
+.hero-poster{position:absolute;inset:0;z-index:0;background-image:url('${BASE}images/21fc-hero-blue.jpg');background-size:cover;background-position:center;animation:kenBurns 18s ease-in-out infinite alternate;filter:saturate(.85) contrast(1.05)}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:0;animation:videoFade 1s ease 1.6s forwards;pointer-events:none}
 .hero-grad{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(10,10,15,.6) 0%,rgba(10,10,15,.3) 30%,rgba(10,10,15,.3) 45%,rgba(10,10,15,.75) 75%,rgba(10,10,15,1) 100%)}
+@keyframes videoFade{to{opacity:1}}
+@keyframes kenBurns{0%{transform:scale(1.05) translate(0,0)}100%{transform:scale(1.18) translate(-2%,-1%)}}
 .hero-content{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:0 clamp(2rem,6vw,5rem) clamp(3rem,7vh,5.5rem)}
 .hero-label{font-size:10px;font-weight:700;color:${pk};text-transform:uppercase;letter-spacing:3.5px;margin-bottom:10px;animation:fadeUp .5s ${ease} .1s both}
 .hero-h1{font-weight:900;line-height:.88;letter-spacing:-.05em;margin-bottom:.2em;animation:fadeUp .5s ${ease} .2s both}
@@ -552,9 +600,27 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .footer-copy{border-top:1px solid rgba(255,255,255,.04);padding-top:.7rem;text-align:center;font-size:11px;color:${mt}}
 
 /* ─── SPLASH ─── */
-@keyframes sLogo{0%{opacity:0;transform:scale(.75)}60%{opacity:1;transform:scale(1.01)}100%{transform:scale(1)}}
-@keyframes sLine{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
-@keyframes sText{0%{opacity:0;letter-spacing:10px}100%{opacity:1;letter-spacing:5px}}
+.splash{position:fixed;inset:0;z-index:9999;background:${bg};display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .8s cubic-bezier(.83,0,.17,1), opacity .8s ease;will-change:transform,opacity}
+.splash-lift{transform:translateY(-100%);opacity:0;pointer-events:none}
+.splash-stage{position:relative;width:min(520px,78vw);height:clamp(120px,22vw,180px);display:flex;align-items:center;justify-content:center}
+.splash-ball{position:absolute;top:50%;left:50%;width:clamp(48px,9vw,72px);height:clamp(48px,9vw,72px);transform:translate(-50%,-50%);animation:ballRoll 1.8s cubic-bezier(.4,0,.2,1) forwards;filter:drop-shadow(0 8px 24px rgba(237,17,113,.35))}
+.splash-logo{position:absolute;top:50%;left:50%;height:clamp(70px,16vw,130px);width:auto;transform:translate(-50%,-50%) scale(.55);opacity:0;filter:drop-shadow(0 0 40px rgba(237,17,113,.25));animation:logoReveal 1.1s cubic-bezier(.16,1,.3,1) 1.2s forwards}
+.splash-tag{margin-top:1.5rem;font-size:11px;font-weight:700;color:${mt};text-transform:uppercase;letter-spacing:4px;opacity:0;animation:tagIn .7s ease 2s forwards}
+.splash-ring{position:absolute;top:50%;left:50%;width:6px;height:6px;border-radius:50%;border:1px solid ${pk};transform:translate(-50%,-50%);opacity:0;animation:ringPulse 1.4s cubic-bezier(.16,1,.3,1) 1.2s forwards}
+@keyframes ballRoll{
+  0%{transform:translate(calc(-50% - 60vw),-50%) rotate(0deg);opacity:0}
+  8%{opacity:1}
+  48%{transform:translate(calc(-50% + 0vw),-50%) rotate(720deg);opacity:1}
+  92%{transform:translate(calc(-50% + 60vw),-50%) rotate(1440deg);opacity:1}
+  100%{transform:translate(calc(-50% + 60vw),-50%) rotate(1440deg);opacity:0}
+}
+@keyframes logoReveal{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.55);filter:drop-shadow(0 0 0 rgba(237,17,113,0)) blur(8px)}
+  60%{opacity:1;transform:translate(-50%,-50%) scale(1.03);filter:drop-shadow(0 0 48px rgba(237,17,113,.4)) blur(0)}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1);filter:drop-shadow(0 0 24px rgba(237,17,113,.18)) blur(0)}
+}
+@keyframes tagIn{0%{opacity:0;letter-spacing:10px}100%{opacity:.8;letter-spacing:4px}}
+@keyframes ringPulse{0%{width:6px;height:6px;opacity:.8;border-width:1px}100%{width:clamp(240px,45vw,420px);height:clamp(240px,45vw,420px);opacity:0;border-width:1px}}
 
 /* ─── RESPONSIVE ─── */
 @media(max-width:960px){
@@ -581,31 +647,45 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 }
       `}</style>
 
-      {/* SPLASH */}
+      {/* SPLASH — ball rolls in, logo reveals in its wake, splash lifts */}
       {!splashDone && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999, background: bg,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          opacity: splashFade ? 0 : 1, transition: 'opacity .5s ease',
-          pointerEvents: splashFade ? 'none' : 'all',
-        }}>
-          <img src={BASE + 'images/logo-full-white.png'} alt="21FC"
-            style={{ height: 'clamp(60px,14vw,110px)', width: 'auto', animation: 'sLogo .7s cubic-bezier(.16,1,.3,1) forwards',
-              filter: 'drop-shadow(0 0 30px rgba(237,17,113,.15))' }} />
-          <div style={{ width: '40px', height: '2px', background: pk, margin: '1rem 0 .8rem', animation: 'sLine .35s ease-out .35s both', transformOrigin: 'center' }} />
-          <div style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', animation: 'sText .45s ease-out .25s both' }}>Twenty One FC</div>
+        <div className={`splash ${splashFade ? 'splash-lift' : ''}`}>
+          <div className="splash-stage">
+            {/* the rolling ball */}
+            <svg className="splash-ball" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="50" cy="50" r="48" fill="#F0EFEF" />
+              <g fill="#0A0A0F">
+                <polygon points="50,22 62,31 58,46 42,46 38,31" />
+                <polygon points="22,46 34,37 38,52 30,65 18,58" />
+                <polygon points="78,46 82,58 70,65 62,52 66,37" />
+                <polygon points="38,68 62,68 58,82 42,82" />
+              </g>
+            </svg>
+            {/* the logo */}
+            <img
+              src={BASE + 'images/logo-full-white.png'}
+              alt="21FC"
+              className="splash-logo"
+            />
+          </div>
+          <div className="splash-tag">Twenty One FC · EST 2022</div>
+          <div className="splash-ring" />
         </div>
       )}
 
       {/* HERO */}
       <section className="hero">
+        <div className="hero-poster" aria-hidden="true" />
         <video
+          ref={heroVideoRef}
           className="hero-video"
           autoPlay
           muted
           loop
           playsInline
+          preload="auto"
           poster={BASE + 'images/DSC08619.jpg'}
+          onCanPlay={(e) => { try { e.currentTarget.play(); } catch(_){} }}
         >
           <source src={BASE + 'images/hero-bg.mp4'} type="video/mp4" />
         </video>
@@ -627,21 +707,21 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 
       <div className="site-wrap">
       <Header />
-      <Stats />
+      <div className="prlx" data-rate="0.08"><Stats /></div>
       <div className="glow-div" />
-      <About />
-      <ImageBand />
+      <div className="prlx" data-rate="0.18"><About /></div>
+      <div className="prlx" data-rate="0.12"><ImageBand /></div>
       <div className="glow-div" />
-      <Schedule />
+      <div className="prlx" data-rate="0.15"><Schedule /></div>
       <div className="glow-div" />
-      <Gallery />
+      <div className="prlx" data-rate="0.2"><Gallery /></div>
       <div className="glow-div" />
-      <Membership />
-      <CTA />
+      <div className="prlx" data-rate="0.1"><Membership /></div>
+      <div className="prlx" data-rate="0.22"><CTA /></div>
       <div className="glow-div" />
-      <Contact />
+      <div className="prlx" data-rate="0.12"><Contact /></div>
       <div className="glow-div" />
-      <Location />
+      <div className="prlx" data-rate="0.08"><Location /></div>
       <Footer />
       </div>
     </>
