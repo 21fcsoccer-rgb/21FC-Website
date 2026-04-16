@@ -51,6 +51,60 @@ const useCountUp = (target, duration = 1600) => {
   return [ref, val];
 };
 
+/* 3D perspective tilt that follows cursor — used on membership cards */
+const useTilt = (max = 8) => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || window.matchMedia('(hover: none)').matches) return;
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      const rx = (0.5 - py) * max;
+      const ry = (px - 0.5) * max;
+      el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+      el.style.setProperty('--mx', `${px * 100}%`);
+      el.style.setProperty('--my', `${py * 100}%`);
+    };
+    const onLeave = () => {
+      el.style.transform = '';
+      el.style.setProperty('--mx', '50%');
+      el.style.setProperty('--my', '50%');
+    };
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+    return () => { el.removeEventListener('mousemove', onMove); el.removeEventListener('mouseleave', onLeave); };
+  }, [max]);
+  return ref;
+};
+
+/* split a string into animated words, each revealing on scroll */
+const SplitText = ({ children, stagger = 60, delay = 0, as: Tag = 'span' }) => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        el.classList.add('split-in');
+        io.disconnect();
+      }
+    }, { threshold: 0.2 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const words = String(children).split(/(\s+)/);
+  return (
+    <Tag ref={ref} className="split" style={{'--base-delay': `${delay}ms`}}>
+      {words.map((w, i) => w.match(/^\s+$/)
+        ? <span key={i}>{w}</span>
+        : <span key={i} className="split-word" style={{'--i': i}}><span className="split-inner" style={{'--d': `${i * stagger}ms`}}>{w}</span></span>
+      )}
+    </Tag>
+  );
+};
+
 /* ─── palette + shared ─── */
 const pk = '#ED1171';
 const vt = '#D3DE25';  // volt yellow accent (from logo)
@@ -265,6 +319,23 @@ const Gallery = () => {
 };
 
 /* ─── MEMBERSHIP ─── */
+const TiltMemCard = ({ p, i }) => {
+  const ref = useTilt(6);
+  return (
+    <div ref={ref} className={`rv d${i + 1} mem-card tilt-card${p.pop ? ' mem-pop' : ''}`}>
+      <div className="tilt-glow" />
+      {p.pop && <div className="mem-badge">Popular</div>}
+      <div className="mem-name">{p.name}</div>
+      <div className="mem-price"><span>{p.price}</span><small>{p.per}</small></div>
+      <div className="mem-feats">
+        {p.feats.map((f, fi) => (
+          <div key={fi} className="mem-feat"><span className="dot" />{f}</div>
+        ))}
+      </div>
+      <button className={`mem-btn${p.pop ? ' mem-btn-pop' : ''}`}>Choose Plan</button>
+    </div>
+  );
+};
 const Membership = () => (
   <section id="membership" className="section section-alt">
     <div className="container">
@@ -278,19 +349,7 @@ const Membership = () => (
           { name: 'Drop-In', price: '$20', per: '/session', feats: ['Single match access', 'No commitment', 'Walk-on flexibility'], pop: false },
           { name: 'Player', price: '$120', per: '/month', feats: ['Unlimited games', 'Priority booking', 'Player community', 'Kit discounts'], pop: true },
           { name: 'Captain', price: '$200', per: '/month', feats: ['Reserved team slots', 'Coach access', 'Premium stats', 'Exclusive events'], pop: false },
-        ].map((p, i) => (
-          <div key={i} className={`rv d${i + 1} mem-card${p.pop ? ' mem-pop' : ''}`}>
-            {p.pop && <div className="mem-badge">Popular</div>}
-            <div className="mem-name">{p.name}</div>
-            <div className="mem-price"><span>{p.price}</span><small>{p.per}</small></div>
-            <div className="mem-feats">
-              {p.feats.map((f, fi) => (
-                <div key={fi} className="mem-feat"><span className="dot" />{f}</div>
-              ))}
-            </div>
-            <button className={`mem-btn${p.pop ? ' mem-btn-pop' : ''}`}>Choose Plan</button>
-          </div>
-        ))}
+        ].map((p, i) => <TiltMemCard key={i} p={p} i={i} />)}
       </div>
     </div>
   </section>
@@ -303,7 +362,7 @@ const CTA = () => (
     <div className="cta-glow-2" />
     <div className="rv cta-inner">
       <div className="accent-line" style={{ margin: '0 auto 1.5rem' }} />
-      <h2 className="cta-heading">Ready to Play?</h2>
+      <h2 className="cta-heading"><SplitText stagger={80}>Ready to Play?</SplitText></h2>
       <p className="cta-sub">The most competitive pickup soccer community in New Jersey.<br />200+ players show up every week.</p>
       <Btn href="https://opensports.net/21fc" big>Join Now</Btn>
       <div className="cta-note">Via OpenSports — takes 30 seconds</div>
@@ -392,7 +451,24 @@ const Footer = () => (
   </footer>
 );
 
-/* ═══════════════════ MAIN APP ═══════════════════ */
+/* ─── SESSION MARQUEE ─── horizontal auto-scroll of upcoming dates */
+const SessionMarquee = () => {
+  const items = ['TUE · 04.21 · 7AM', 'THU · 04.23 · 7AM', 'SAT · 04.25 · 9AM', 'SUN · 04.26 · 10AM', 'TUE · 04.28 · 7AM', 'THU · 04.30 · 7AM'];
+  const loop = [...items, ...items, ...items];
+  return (
+    <div className="sess-marq" aria-hidden="true">
+      <div className="sess-marq-track">
+        {loop.map((t, i) => (
+          <span key={i} className="sess-marq-item">
+            <span className="sess-marq-dot" /> {t}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ─── MAIN APP ═══════════════════ */
 const App = () => {
   const [splashDone, setSplashDone] = useState(false);
   const [splashFade, setSplashFade] = useState(false);
@@ -471,6 +547,24 @@ const App = () => {
     return () => { window.removeEventListener('scroll', onScroll); if (raf) cancelAnimationFrame(raf); };
   }, []);
 
+  /* cursor-follow spotlight — soft glow trails the mouse across the page */
+  useEffect(() => {
+    if (window.matchMedia('(hover: none)').matches) return;
+    let raf, tx = 0, ty = 0, cx = 0, cy = 0;
+    const spot = document.getElementById('cursor-spot');
+    if (!spot) return;
+    const onMove = (e) => { tx = e.clientX; ty = e.clientY; };
+    const tick = () => {
+      cx += (tx - cx) * 0.12;
+      cy += (ty - cy) * 0.12;
+      spot.style.transform = `translate3d(${cx}px, ${cy}px, 0) translate(-50%,-50%)`;
+      raf = requestAnimationFrame(tick);
+    };
+    document.addEventListener('mousemove', onMove);
+    raf = requestAnimationFrame(tick);
+    return () => { document.removeEventListener('mousemove', onMove); cancelAnimationFrame(raf); };
+  }, []);
+
   return (
     <>
       <style>{`
@@ -520,6 +614,37 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 /* ─── PARALLAX ─── sections translate at different rates so they fall into each other */
 .prlx{--prlx-y:0px;transform:translate3d(0,var(--prlx-y),0);will-change:transform;transition:transform .1s linear}
 @media(prefers-reduced-motion:reduce){.prlx{transform:none!important}}
+
+/* ─── CURSOR SPOTLIGHT ─── soft glow follows mouse */
+.cursor-spot{position:fixed;top:0;left:0;width:600px;height:600px;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,rgba(211,222,37,.08) 0%,rgba(237,17,113,.04) 30%,transparent 60%);
+  mix-blend-mode:screen;transform:translate(-50%,-50%);will-change:transform;transition:opacity .3s ease}
+@media(hover:none){.cursor-spot{display:none}}
+@media(prefers-reduced-motion:reduce){.cursor-spot{display:none}}
+
+/* ─── TILT CARDS ─── */
+.tilt-card{transform-style:preserve-3d;transition:transform .35s ${ease},box-shadow .35s ease,border-color .35s ease}
+.tilt-card .tilt-glow{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .4s ease;
+  background:radial-gradient(ellipse 60% 60% at var(--mx,50%) var(--my,50%),rgba(211,222,37,.15),transparent 60%)}
+.tilt-card:hover .tilt-glow{opacity:1}
+.tilt-card > *{transform:translateZ(30px)}
+.tilt-card .tilt-glow{transform:none}
+
+/* ─── SESSION MARQUEE ─── */
+.sess-marq{overflow:hidden;background:linear-gradient(90deg,transparent,rgba(237,17,113,.03) 20%,rgba(211,222,37,.03) 50%,rgba(237,17,113,.03) 80%,transparent);border-top:1px solid rgba(237,17,113,.08);border-bottom:1px solid rgba(211,222,37,.08);padding:1.2rem 0;position:relative;mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent)}
+.sess-marq-track{display:flex;gap:0;white-space:nowrap;animation:sessScroll 35s linear infinite;width:fit-content}
+.sess-marq-item{display:inline-flex;align-items:center;gap:.8rem;padding:0 2.5rem;font-family:'Red Hat Display',sans-serif;font-size:clamp(16px,2.2vw,24px);font-weight:800;letter-spacing:2px;text-transform:uppercase;color:${wh};opacity:.85;border-right:1px solid rgba(255,255,255,.06)}
+.sess-marq-item:nth-child(3n){color:${vt}}
+.sess-marq-item:nth-child(3n+2){color:${pk}}
+.sess-marq-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor;flex-shrink:0}
+@keyframes sessScroll{0%{transform:translateX(0)}100%{transform:translateX(-33.333%)}}
+.sess-marq:hover .sess-marq-track{animation-play-state:paused}
+
+/* ─── SPLIT TEXT ─── */
+.split{display:inline-block}
+.split-word{display:inline-block;overflow:hidden;vertical-align:top}
+.split-inner{display:inline-block;transform:translateY(110%);transition:transform .7s cubic-bezier(.22,1,.36,1);transition-delay:var(--d,0ms)}
+.split.split-in .split-inner{transform:translateY(0)}
 
 /* ─── HEADER (CSS transition, no JS rerender) ─── */
 .hdr{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;
@@ -758,6 +883,9 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 }
       `}</style>
 
+      {/* CURSOR SPOTLIGHT — soft glow follows mouse */}
+      <div id="cursor-spot" className="cursor-spot" aria-hidden="true" />
+
       {/* SPLASH — ball rolls in, logo reveals in its wake, splash lifts */}
       {!splashDone && (
         <div className={`splash ${splashFade ? 'splash-lift' : ''}`}>
@@ -861,6 +989,7 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
       <div className="glow-div" />
       <div className="prlx" data-rate="0.18"><About /></div>
       <div className="prlx" data-rate="0.12"><ImageBand /></div>
+      <SessionMarquee />
       <div className="glow-div" />
       <div className="prlx" data-rate="0.15"><Schedule /></div>
       <div className="glow-div" />
