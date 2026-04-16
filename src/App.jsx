@@ -4,6 +4,7 @@ const BASE = import.meta.env.BASE_URL;
 
 /* ─── palette + shared ─── */
 const pk = '#ED1171';
+const vt = '#D3DE25';  // volt yellow accent (from logo)
 const bg = '#0A0A0F';
 const card = '#0F0F18';
 const wh = '#F0EFEF';
@@ -235,6 +236,7 @@ const Membership = () => (
 const CTA = () => (
   <section className="cta-section">
     <div className="cta-glow" />
+    <div className="cta-glow-2" />
     <div className="rv cta-inner">
       <div className="accent-line" style={{ margin: '0 auto 1.5rem' }} />
       <h2 className="cta-heading">Ready to Play?</h2>
@@ -405,20 +407,35 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 
 /* ─── AMBIENT BACKGROUND ─── */
 .site-wrap{position:relative;overflow:hidden}
-.site-wrap::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;
+.site-wrap::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;pointer-events:none;
   background:
-    radial-gradient(ellipse 600px 600px at 10% 20%, rgba(237,17,113,.04) 0%, transparent 70%),
-    radial-gradient(ellipse 500px 500px at 85% 60%, rgba(211,222,37,.03) 0%, transparent 70%),
-    radial-gradient(ellipse 700px 400px at 50% 90%, rgba(237,17,113,.03) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 600px at 10% 20%, rgba(237,17,113,.06) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at 85% 60%, rgba(211,222,37,.05) 0%, transparent 70%),
+    radial-gradient(ellipse 700px 400px at 50% 90%, rgba(237,17,113,.04) 0%, transparent 70%),
     ${bg};
   animation:ambientShift 20s ease-in-out infinite alternate}
+/* pulsating volt surge — a large soft volt-yellow orb that drifts across the whole site */
+.site-wrap::after{content:'';position:fixed;top:-30%;left:-20%;width:140%;height:160%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 40% 30% at 20% 30%, rgba(211,222,37,.09) 0%, rgba(211,222,37,.03) 40%, transparent 70%),
+    radial-gradient(ellipse 35% 25% at 80% 70%, rgba(237,17,113,.07) 0%, rgba(237,17,113,.02) 40%, transparent 70%);
+  filter:blur(40px);
+  animation:voltSurge 14s ease-in-out infinite alternate;
+  mix-blend-mode:screen}
 @keyframes ambientShift{
   0%{background-position:0% 0%,100% 50%,50% 100%}
   50%{background-position:20% 30%,70% 40%,40% 80%}
   100%{background-position:10% 50%,90% 70%,60% 90%}
 }
-/* section dividers — subtle pink glow lines */
-.glow-div{height:1px;background:linear-gradient(90deg,transparent 0%,rgba(237,17,113,.15) 20%,rgba(237,17,113,.25) 50%,rgba(237,17,113,.15) 80%,transparent 100%);margin:0}
+@keyframes voltSurge{
+  0%{transform:translate(0,0) scale(1);opacity:.8}
+  33%{transform:translate(6%,-4%) scale(1.1);opacity:1}
+  66%{transform:translate(-4%,5%) scale(.95);opacity:.9}
+  100%{transform:translate(3%,3%) scale(1.05);opacity:1}
+}
+/* section dividers — now pink-to-volt glow lines */
+.glow-div{height:1px;background:linear-gradient(90deg,transparent 0%,rgba(237,17,113,.15) 20%,rgba(211,222,37,.3) 50%,rgba(237,17,113,.15) 80%,transparent 100%);margin:0;animation:divPulse 5s ease-in-out infinite}
+@keyframes divPulse{0%,100%{opacity:.6}50%{opacity:1}}
 
 /* ─── REVEAL (CSS only, no JS state) ─── */
 .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ${ease},transform .6s ${ease}}
@@ -439,8 +456,8 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .navL{display:flex;gap:1.5rem;align-items:center}
 .nav-link{color:rgba(240,239,239,.55);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:color .3s ease}
 .nav-link:hover{color:${pk}}
-.nav-btn{padding:7px 16px;background:${pk};color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;text-decoration:none;transition:all .3s ease}
-.nav-btn:hover{background:#fff;color:${bg}}
+.nav-btn{position:relative;padding:8px 18px;background:${pk};color:#fff;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;text-decoration:none;overflow:hidden;box-shadow:0 0 14px rgba(237,17,113,.35);transition:all .3s ${ease}}
+.nav-btn:hover{background:${vt};color:${bg};box-shadow:0 0 22px rgba(211,222,37,.55);transform:translateY(-1px)}
 
 /* ─── HERO ─── */
 .hero{position:relative;height:100vh;max-height:1000px;overflow:hidden;background:${bg}}
@@ -456,8 +473,8 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .hero-h1 .sub{display:block;font-size:clamp(36px,7vw,92px);font-weight:200;letter-spacing:-.02em;color:rgba(240,239,239,.7)}
 .hero-p{font-size:clamp(14px,1.4vw,17px);font-weight:300;line-height:1.7;color:rgba(240,239,239,.5);max-width:420px;margin-bottom:1.8rem;animation:fadeUp .5s ${ease} .35s both}
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .5s ${ease} .45s both}
-.ghost-btn{padding:16px 26px;border:1px solid rgba(255,255,255,.12);color:rgba(240,239,239,.6);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:2px;text-decoration:none;transition:all .3s ease}
-.ghost-btn:hover{border-color:rgba(255,255,255,.35);color:${wh}}
+.ghost-btn{padding:17px 28px;border:1px solid rgba(255,255,255,.2);color:rgba(240,239,239,.75);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:2px;text-decoration:none;transition:all .3s ${ease};backdrop-filter:blur(6px)}
+.ghost-btn:hover{border-color:${vt};color:${vt};transform:translateY(-2px);box-shadow:0 0 20px rgba(211,222,37,.25)}
 .scroll-ind{position:absolute;bottom:1.2rem;left:50%;transform:translateX(-50%);z-index:3;opacity:.3}
 .scroll-pill{width:18px;height:28px;border:1px solid rgba(255,255,255,.18);border-radius:9px;display:flex;justify-content:center;padding-top:5px}
 .scroll-dot{width:2px;height:5px;background:${pk};border-radius:1px;animation:bounce 1.4s ease-in-out infinite}
@@ -467,15 +484,24 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 @keyframes glow{0%,100%{box-shadow:0 0 16px rgba(237,17,113,.22)}50%{box-shadow:0 0 40px rgba(237,17,113,.42)}}
 
 /* ─── BUTTONS ─── */
-.btn-cta{display:inline-block;padding:13px 34px;background:${pk};color:#fff;text-decoration:none;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2px;border:none;cursor:pointer;font-family:inherit;animation:glow 3s ease-in-out infinite;transition:all .3s ease}
-.btn-cta:hover{background:#fff;color:${bg};transform:translateY(-2px)}
-.btn-big{padding:17px 50px;font-size:14px;letter-spacing:3px}
+.btn-cta{position:relative;display:inline-block;padding:14px 36px;background:${pk};color:#fff;text-decoration:none;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2px;border:none;cursor:pointer;font-family:inherit;overflow:hidden;box-shadow:0 0 0 rgba(237,17,113,0),0 4px 18px rgba(0,0,0,.3);animation:btnPulse 2.4s ease-in-out infinite;transition:transform .3s ${ease}, box-shadow .3s ${ease}, background .3s ${ease}, color .3s ${ease}}
+.btn-cta::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);transform:translateX(-100%);transition:transform .7s ease}
+.btn-cta::after{content:'';position:absolute;inset:-2px;border:1px solid ${vt};opacity:0;transition:opacity .3s ease;pointer-events:none}
+.btn-cta:hover{background:${vt};color:${bg};transform:translateY(-3px) scale(1.02);box-shadow:0 0 30px rgba(211,222,37,.6),0 10px 30px rgba(0,0,0,.4);animation-play-state:paused}
+.btn-cta:hover::before{transform:translateX(100%)}
+.btn-cta:hover::after{opacity:1}
+.btn-cta:active{transform:translateY(-1px) scale(1)}
+.btn-big{padding:18px 52px;font-size:14px;letter-spacing:3px}
+@keyframes btnPulse{0%,100%{box-shadow:0 0 0 0 rgba(237,17,113,.5),0 4px 18px rgba(0,0,0,.3)}50%{box-shadow:0 0 0 14px rgba(237,17,113,0),0 4px 22px rgba(237,17,113,.35)}}
 
 /* ─── STATS ─── */
-.stats-bar{background:linear-gradient(180deg,${card} 0%,rgba(237,17,113,.02) 100%);border-bottom:1px solid rgba(237,17,113,.05);padding:1.6rem 1.5rem;position:relative}
-.stats-bar::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(237,17,113,.2),transparent)}
+.stats-bar{background:linear-gradient(180deg,${card} 0%,rgba(237,17,113,.04) 100%);border-top:1px solid rgba(237,17,113,.12);border-bottom:1px solid rgba(237,17,113,.12);padding:2rem 1.5rem;position:relative}
+.stats-bar::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(211,222,37,.35),transparent)}
 .stats-grid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;text-align:center}
-.stat-val{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1}
+.stats-grid > div{padding:.5rem;position:relative;transition:transform .3s ${ease}}
+.stats-grid > div:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;bottom:20%;width:1px;background:linear-gradient(180deg,transparent,rgba(237,17,113,.2),transparent)}
+.stats-grid > div:hover{transform:translateY(-3px)}
+.stat-val{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1;background:linear-gradient(180deg,${wh} 0%,${pk} 140%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:${wh}}
 .stat-lbl{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:${mt};margin-top:.2rem}
 
 /* ─── SECTIONS ─── */
@@ -506,12 +532,12 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .img-band-cell:hover img{filter:brightness(1);transform:scale(1.03)}
 
 /* ─── SCHEDULE — fixture roster ─── */
-.fixture-board{background:${card};border:1px solid rgba(255,255,255,.04);overflow:hidden}
-.fixture-header{display:grid;grid-template-columns:1.3fr 1fr .8fr .7fr .7fr .6fr;padding:.7rem 1.2rem;background:rgba(237,17,113,.04);border-bottom:1px solid rgba(237,17,113,.1)}
+.fixture-board{background:linear-gradient(180deg,${card} 0%,rgba(15,15,24,.6) 100%);border:1px solid rgba(237,17,113,.12);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.3)}
+.fixture-header{display:grid;grid-template-columns:1.3fr 1fr .8fr .7fr .7fr .6fr;padding:.9rem 1.2rem;background:rgba(237,17,113,.06);border-bottom:1px solid rgba(237,17,113,.2)}
 .fixture-h-cell{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:${mt}}
-.fixture-row{display:grid;grid-template-columns:1.3fr 1fr .8fr .7fr .7fr .6fr;padding:.9rem 1.2rem;align-items:center;border-bottom:1px solid rgba(255,255,255,.03);transition:background .3s ease}
+.fixture-row{display:grid;grid-template-columns:1.3fr 1fr .8fr .7fr .7fr .6fr;padding:1rem 1.2rem;align-items:center;border-bottom:1px solid rgba(255,255,255,.05);transition:background .3s ease,border-left-color .3s ease;border-left:3px solid transparent}
 .fixture-row:last-child{border-bottom:none}
-.fixture-row:hover{background:rgba(237,17,113,.02)}
+.fixture-row:hover{background:rgba(237,17,113,.05);border-left-color:${vt}}
 .fixture-cell{display:flex;flex-direction:column;gap:2px}
 .fixture-day-badge{font-size:16px;font-weight:800;letter-spacing:1px}
 .fixture-date{font-size:10px;color:${mt};font-weight:500}
@@ -535,43 +561,48 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .carousel-section{padding:clamp(3rem,6vh,5rem) 0;overflow:hidden}
 .carousel-section .container-wide{padding:0 clamp(1.5rem,5vw,4rem);margin-bottom:1.5rem}
 .carousel-track-wrap{overflow:hidden;width:100%;mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%)}
-.carousel-track{display:flex;gap:8px;width:fit-content;animation:carouselScroll 40s linear infinite}
+.carousel-track{display:flex;gap:14px;width:fit-content;animation:carouselScroll 40s linear infinite}
 .carousel-track:hover{animation-play-state:paused}
-.carousel-card{width:clamp(260px,30vw,380px);height:clamp(180px,22vw,260px);flex-shrink:0;overflow:hidden;position:relative;cursor:pointer}
-.carousel-card img{width:100%;height:100%;object-fit:cover;filter:brightness(.75) saturate(.9);transition:all .5s ${ease}}
-.carousel-card:hover img{filter:brightness(1.05) saturate(1.1);transform:scale(1.05)}
+.carousel-card{width:clamp(260px,30vw,380px);height:clamp(180px,22vw,260px);flex-shrink:0;overflow:hidden;position:relative;cursor:pointer;border:1px solid rgba(255,255,255,.05);transition:border-color .4s ease,box-shadow .4s ease}
+.carousel-card img{width:100%;height:100%;object-fit:cover;filter:brightness(.72) saturate(.9);transition:all .6s ${ease}}
+.carousel-card:hover{border-color:${vt};box-shadow:0 0 30px rgba(211,222,37,.25)}
+.carousel-card:hover img{filter:brightness(1.08) saturate(1.15);transform:scale(1.06)}
 .carousel-card-overlay{position:absolute;inset:0;border:2px solid transparent;transition:all .4s ease;pointer-events:none;
   background:linear-gradient(transparent 60%,rgba(10,10,15,.4) 100%)}
 .carousel-card:hover .carousel-card-overlay{border-color:rgba(237,17,113,.4);box-shadow:inset 0 0 20px rgba(237,17,113,.08)}
 @keyframes carouselScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ─── MEMBERSHIP ─── */
-.mem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.mem-card{padding:clamp(1.5rem,2.5vw,2rem);background:${bg};border:1px solid rgba(255,255,255,.05);position:relative;transition:all .35s ease}
-.mem-card:hover{border-color:${pk};transform:translateY(-3px);box-shadow:0 10px 36px rgba(0,0,0,.4)}
-.mem-pop{background:rgba(237,17,113,.03);border-color:rgba(237,17,113,.15)}
-.mem-badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:${pk};color:#fff;padding:3px 14px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.mem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.mem-card{padding:clamp(1.8rem,2.5vw,2.2rem);background:linear-gradient(180deg,${card} 0%,rgba(10,10,15,.9) 100%);border:1px solid rgba(255,255,255,.08);position:relative;transition:all .4s ${ease};overflow:hidden}
+.mem-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(211,222,37,.06),transparent 60%);opacity:0;transition:opacity .4s ease;pointer-events:none}
+.mem-card:hover{border-color:${vt};transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 24px rgba(211,222,37,.2)}
+.mem-card:hover::before{opacity:1}
+.mem-pop{background:linear-gradient(180deg,rgba(237,17,113,.08) 0%,${card} 100%);border-color:rgba(237,17,113,.35);box-shadow:0 12px 36px rgba(237,17,113,.15)}
+.mem-badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:${pk};color:#fff;padding:4px 16px;font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 14px rgba(237,17,113,.4)}
 .mem-name{font-size:14px;font-weight:700;margin-bottom:.3rem}
 .mem-price{margin-bottom:1rem;display:flex;align-items:baseline;gap:.3rem}
 .mem-price span{font-size:clamp(26px,4vw,32px);font-weight:800}
 .mem-price small{font-size:12px;color:${mt}}
-.mem-feats{border-top:1px solid rgba(255,255,255,.05);padding-top:.7rem;margin-bottom:1.1rem}
-.mem-feat{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem;font-size:13px;color:rgba(240,239,239,.7)}
-.dot{width:4px;height:4px;background:${pk};border-radius:50%;flex-shrink:0}
-.mem-btn{width:100%;padding:10px;background:transparent;color:${wh};border:1px solid rgba(255,255,255,.1);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-family:inherit;transition:all .3s ease}
-.mem-btn:hover{background:rgba(255,255,255,.05)}
-.mem-btn-pop{background:${pk};color:#fff;border:none}
-.mem-btn-pop:hover{background:#fff;color:${bg}}
+.mem-feats{border-top:1px solid rgba(255,255,255,.08);padding-top:.9rem;margin-bottom:1.2rem}
+.mem-feat{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem;font-size:13px;color:rgba(240,239,239,.75)}
+.dot{width:5px;height:5px;background:${vt};border-radius:50%;flex-shrink:0;box-shadow:0 0 8px rgba(211,222,37,.5)}
+.mem-btn{width:100%;padding:11px;background:transparent;color:${wh};border:1px solid rgba(255,255,255,.15);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-family:inherit;transition:all .3s ${ease}}
+.mem-btn:hover{background:${vt};color:${bg};border-color:${vt}}
+.mem-btn-pop{background:${pk};color:#fff;border:none;box-shadow:0 0 18px rgba(237,17,113,.3)}
+.mem-btn-pop:hover{background:${vt};color:${bg};box-shadow:0 0 22px rgba(211,222,37,.5)}
 
 /* ─── CTA ─── */
 .cta-section{position:relative;padding:clamp(5rem,12vh,9rem) 2rem;overflow:hidden;text-align:center;
-  background:linear-gradient(135deg,rgba(237,17,113,.08) 0%,${bg} 35%,${bg} 55%,rgba(211,222,37,.04) 100%);
-  border-top:1px solid rgba(237,17,113,.1);border-bottom:1px solid rgba(237,17,113,.1)}
-.cta-glow{position:absolute;top:-40%;left:-15%;width:500px;height:500px;background:radial-gradient(circle,rgba(237,17,113,.07) 0%,transparent 70%);border-radius:50%;pointer-events:none;animation:ctaPulse 8s ease-in-out infinite alternate}
-@keyframes ctaPulse{0%{transform:translate(0,0) scale(1)}50%{transform:translate(5%,5%) scale(1.1)}100%{transform:translate(-3%,3%) scale(.95)}}
+  background:linear-gradient(135deg,rgba(237,17,113,.1) 0%,${bg} 35%,${bg} 55%,rgba(211,222,37,.06) 100%);
+  border-top:1px solid rgba(237,17,113,.15);border-bottom:1px solid rgba(211,222,37,.15)}
+.cta-glow{position:absolute;top:-40%;left:-15%;width:500px;height:500px;background:radial-gradient(circle,rgba(237,17,113,.12) 0%,transparent 70%);border-radius:50%;pointer-events:none;animation:ctaPulse 8s ease-in-out infinite alternate;filter:blur(20px)}
+.cta-glow-2{position:absolute;bottom:-30%;right:-15%;width:480px;height:480px;background:radial-gradient(circle,rgba(211,222,37,.1) 0%,transparent 70%);border-radius:50%;pointer-events:none;animation:ctaPulse2 11s ease-in-out infinite alternate;filter:blur(20px)}
+@keyframes ctaPulse{0%{transform:translate(0,0) scale(1);opacity:.7}50%{transform:translate(5%,5%) scale(1.15);opacity:1}100%{transform:translate(-3%,3%) scale(.95);opacity:.8}}
+@keyframes ctaPulse2{0%{transform:translate(0,0) scale(1);opacity:.6}50%{transform:translate(-6%,-4%) scale(1.1);opacity:.9}100%{transform:translate(3%,-3%) scale(1.05);opacity:.7}}
 .cta-inner{position:relative;z-index:1;max-width:620px;margin:0 auto}
-.cta-heading{font-size:clamp(36px,8vw,76px);font-weight:900;line-height:.95;letter-spacing:-.04em;margin-bottom:.8rem}
-.cta-sub{font-size:clamp(15px,1.6vw,19px);color:rgba(240,239,239,.5);font-weight:300;line-height:1.7;max-width:460px;margin:0 auto 2.2rem}
+.cta-heading{font-size:clamp(36px,8vw,76px);font-weight:900;line-height:.95;letter-spacing:-.04em;margin-bottom:.8rem;text-shadow:0 0 40px rgba(237,17,113,.15)}
+.cta-sub{font-size:clamp(15px,1.6vw,19px);color:rgba(240,239,239,.55);font-weight:300;line-height:1.7;max-width:460px;margin:0 auto 2.2rem}
 .cta-note{margin-top:1rem;font-size:11px;color:${mt};letter-spacing:1px}
 
 /* ─── CONTACT ─── */
@@ -651,15 +682,47 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
       {!splashDone && (
         <div className={`splash ${splashFade ? 'splash-lift' : ''}`}>
           <div className="splash-stage">
-            {/* the rolling ball */}
-            <svg className="splash-ball" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <circle cx="50" cy="50" r="48" fill="#F0EFEF" />
-              <g fill="#0A0A0F">
-                <polygon points="50,22 62,31 58,46 42,46 38,31" />
-                <polygon points="22,46 34,37 38,52 30,65 18,58" />
-                <polygon points="78,46 82,58 70,65 62,52 66,37" />
-                <polygon points="38,68 62,68 58,82 42,82" />
+            {/* the rolling ball — Telstar truncated icosahedron pattern */}
+            <svg className="splash-ball" viewBox="-50 -50 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              {/* white sphere with subtle gradient for depth */}
+              <defs>
+                <radialGradient id="ballSphere" cx="35%" cy="30%" r="75%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="65%" stopColor="#f0efef" />
+                  <stop offset="100%" stopColor="#c8c8c8" />
+                </radialGradient>
+              </defs>
+              <circle cx="0" cy="0" r="48" fill="url(#ballSphere)" stroke="#0A0A0F" strokeWidth="0.8"/>
+              {/* center black pentagon (points up) */}
+              <polygon fill="#0A0A0F" points="0,-18 17.12,-5.56 10.58,14.56 -10.58,14.56 -17.12,-5.56"/>
+              {/* 5 hexagon outlines surrounding the central pentagon */}
+              <g fill="none" stroke="#0A0A0F" strokeWidth="1.6" strokeLinejoin="round">
+                {/* top hexagon (shares top edge w/ pentagon) */}
+                <polygon points="0,-18 17.12,-5.56 18,-22 8,-36 -8,-36 -18,-22"/>
+                {/* upper right hex (shares top-right edge) */}
+                <polygon points="17.12,-5.56 10.58,14.56 26,20 38,8 40,-12 18,-22"/>
+                {/* lower right hex (shares bottom-right edge) */}
+                <polygon points="10.58,14.56 -10.58,14.56 -4,32 14,38 28,28 26,20"/>
+                {/* lower left hex (shares bottom-left edge) */}
+                <polygon points="-10.58,14.56 -17.12,-5.56 -26,20 -28,28 -14,38 -4,32"/>
+                {/* upper left hex (shares top-left edge) */}
+                <polygon points="-17.12,-5.56 0,-18 -18,-22 -40,-12 -38,8 -26,20"/>
               </g>
+              {/* 5 partial outer pentagons at ball's rim (slightly visible due to sphere curvature) */}
+              <g fill="#0A0A0F" opacity="0.92">
+                {/* upper partial pentagon (top) */}
+                <polygon points="-8,-36 8,-36 4,-46 -4,-46"/>
+                {/* upper-right partial */}
+                <polygon points="38,8 40,-12 47,-4 44,10"/>
+                {/* lower-right partial */}
+                <polygon points="28,28 14,38 22,44 34,36"/>
+                {/* lower-left partial */}
+                <polygon points="-14,38 -28,28 -34,36 -22,44"/>
+                {/* upper-left partial */}
+                <polygon points="-40,-12 -38,8 -44,10 -47,-4"/>
+              </g>
+              {/* highlight reflection on upper-left */}
+              <ellipse cx="-16" cy="-22" rx="14" ry="6" fill="#ffffff" opacity="0.35" transform="rotate(-35 -16 -22)"/>
             </svg>
             {/* the logo */}
             <img
