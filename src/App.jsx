@@ -1,6 +1,55 @@
 import { useState, useEffect, useRef } from 'react';
+import { Gradient } from 'whatamesh';
 
 const BASE = import.meta.env.BASE_URL;
+
+/* magnetic-cursor effect: element subtly tracks cursor within its bounds */
+const useMagnetic = (strength = 0.35) => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || window.matchMedia('(hover: none)').matches) return;
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = (e.clientX - cx) * strength;
+      const dy = (e.clientY - cy) * strength;
+      el.style.transform = `translate(${dx}px, ${dy}px)`;
+    };
+    const onLeave = () => { el.style.transform = 'translate(0,0)'; };
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+    return () => { el.removeEventListener('mousemove', onMove); el.removeEventListener('mouseleave', onLeave); };
+  }, [strength]);
+  return ref;
+};
+
+/* count-up when element scrolls into view */
+const useCountUp = (target, duration = 1600) => {
+  const ref = useRef(null);
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      const start = performance.now();
+      const end = parseFloat(target) || 0;
+      const step = (now) => {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        setVal(eased * end);
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }, { threshold: 0.4 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [target, duration]);
+  return [ref, val];
+};
 
 /* ─── palette + shared ─── */
 const pk = '#ED1171';
@@ -12,9 +61,15 @@ const mt = '#7A7F8A';
 const ease = 'cubic-bezier(.25,.46,.45,.94)';
 
 /* ─── CTA button (reusable) ─── */
-const Btn = ({ href, big, children }) => (
-  <a href={href} target="_blank" rel="noopener noreferrer" className={big ? 'btn-cta btn-big' : 'btn-cta'}>{children}</a>
-);
+const Btn = ({ href, big, children }) => {
+  const ref = useMagnetic(0.25);
+  return (
+    <a ref={ref} href={href} target="_blank" rel="noopener noreferrer"
+       className={big ? 'btn-cta btn-big' : 'btn-cta'}>
+      <span className="btn-cta-inner">{children}</span>
+    </a>
+  );
+};
 
 /* ─── HEADER (CSS-only scroll transition — zero JS state) ─── */
 const Header = () => {
@@ -43,15 +98,24 @@ const Header = () => {
 };
 
 /* ─── STATS ─── */
+const StatItem = ({ num, suffix, prefix, label, i, noAnimate }) => {
+  const [ref, val] = useCountUp(noAnimate ? 0 : num);
+  return (
+    <div ref={ref} className={`rv d${i + 1}`}>
+      <div className="stat-val">
+        {noAnimate ? (<>{prefix || ''}{num}{suffix || ''}</>) : (<>{prefix || ''}{Math.round(val)}{suffix || ''}</>)}
+      </div>
+      <div className="stat-lbl">{label}</div>
+    </div>
+  );
+};
 const Stats = () => (
   <section className="stats-bar">
     <div className="stats-grid g4">
-      {[{ v: '200+', l: 'Players' }, { v: '4×', l: 'Weekly' }, { v: '7 AM', l: 'Kickoff' }, { v: '3+', l: 'Years' }].map((s, i) => (
-        <div key={i} className={`rv d${i + 1}`}>
-          <div className="stat-val">{s.v}</div>
-          <div className="stat-lbl">{s.l}</div>
-        </div>
-      ))}
+      <StatItem i={0} num={200} suffix="+" label="Players" />
+      <StatItem i={1} num={4} suffix="×" label="Weekly" />
+      <StatItem i={2} num="7 AM" noAnimate label="Kickoff" />
+      <StatItem i={3} num={3} suffix="+" label="Years" />
     </div>
   </section>
 );
@@ -349,6 +413,16 @@ const App = () => {
     return () => { clearTimeout(t); document.removeEventListener('touchstart', unlock); document.removeEventListener('click', unlock); };
   }, [splashDone]);
 
+  /* Stripe-style WebGL mesh gradient on hero */
+  useEffect(() => {
+    if (!splashDone) return;
+    try {
+      const g = new Gradient();
+      g.initGradient('#gradient-canvas');
+      return () => { try { g.pause?.(); } catch(_){} };
+    } catch(e) { console.warn('gradient init failed', e); }
+  }, [splashDone]);
+
   /* splash — ball rolls → logo reveals → splash lifts */
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -461,9 +535,15 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 
 /* ─── HERO ─── */
 .hero{position:relative;height:100vh;max-height:1000px;overflow:hidden;background:${bg}}
+.hero-gradient{position:absolute;inset:0;width:100%;height:100%;z-index:1;opacity:0;transition:opacity 1.4s ease;mix-blend-mode:screen;
+  --gradient-color-1:#ED1171;
+  --gradient-color-2:#D3DE25;
+  --gradient-color-3:#7038ff;
+  --gradient-color-4:#0A0A0F}
+.hero-gradient.isLoaded{opacity:.55}
 .hero-poster{position:absolute;inset:0;z-index:0;background-image:url('${BASE}images/21fc-hero-blue.jpg');background-size:cover;background-position:center;animation:kenBurns 18s ease-in-out infinite alternate;filter:saturate(.85) contrast(1.05)}
-.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:0;animation:videoFade 1s ease 1.6s forwards;pointer-events:none}
-.hero-grad{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(10,10,15,.6) 0%,rgba(10,10,15,.3) 30%,rgba(10,10,15,.3) 45%,rgba(10,10,15,.75) 75%,rgba(10,10,15,1) 100%)}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;opacity:0;animation:videoFade 1s ease 1.6s forwards;pointer-events:none;mix-blend-mode:luminosity}
+.hero-grad{position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(10,10,15,.6) 0%,rgba(10,10,15,.3) 30%,rgba(10,10,15,.3) 45%,rgba(10,10,15,.75) 75%,rgba(10,10,15,1) 100%)}
 @keyframes videoFade{to{opacity:1}}
 @keyframes kenBurns{0%{transform:scale(1.05) translate(0,0)}100%{transform:scale(1.18) translate(-2%,-1%)}}
 .hero-content{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:0 clamp(2rem,6vw,5rem) clamp(3rem,7vh,5.5rem)}
@@ -738,6 +818,13 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 
       {/* HERO */}
       <section className="hero">
+        <canvas
+          id="gradient-canvas"
+          className="hero-gradient"
+          data-js-darken-top=""
+          data-transition-in=""
+          aria-hidden="true"
+        />
         <div className="hero-poster" aria-hidden="true" />
         <video
           ref={heroVideoRef}
