@@ -538,8 +538,6 @@ const App = () => {
           const rate = parseFloat(el.dataset.rate || '0.15');
           el.style.setProperty('--prlx-y', `${(-n * rate * 100).toFixed(2)}px`);
         });
-        const hero = document.querySelector('.hero-poster');
-        if (hero) hero.style.transform = `scale(${1.05 + Math.min(y, 600) / 3000}) translateY(${y * 0.2}px)`;
         raf = null;
       });
     };
@@ -706,11 +704,9 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
   --gradient-color-3:#7038ff;
   --gradient-color-4:#0A0A0F}
 .hero-gradient.isLoaded{opacity:.55}
-.hero-poster{position:absolute;inset:0;z-index:0;background-image:url('${BASE}images/21fc-hero-blue.jpg');background-size:cover;background-position:center;animation:kenBurns 18s ease-in-out infinite alternate;filter:saturate(.85) contrast(1.05)}
-.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;opacity:0;animation:videoFade 1s ease 1.6s forwards;pointer-events:none;mix-blend-mode:luminosity}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;opacity:0;animation:videoFade 1s ease 1.6s forwards;pointer-events:none}
 .hero-grad{position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(10,10,15,.6) 0%,rgba(10,10,15,.3) 30%,rgba(10,10,15,.3) 45%,rgba(10,10,15,.75) 75%,rgba(10,10,15,1) 100%)}
 @keyframes videoFade{to{opacity:1}}
-@keyframes kenBurns{0%{transform:scale(1.05) translate(0,0)}100%{transform:scale(1.18) translate(-2%,-1%)}}
 .hero-content{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:0 clamp(2rem,6vw,5rem) clamp(3rem,7vh,5.5rem)}
 .hero-label{font-size:10px;font-weight:700;color:${pk};text-transform:uppercase;letter-spacing:3.5px;margin-bottom:10px;animation:fadeUp .5s ${ease} .1s both}
 .hero-h1{font-weight:900;line-height:.88;letter-spacing:-.05em;margin-bottom:.2em;animation:fadeUp .5s ${ease} .2s both}
@@ -993,7 +989,6 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
           data-transition-in=""
           aria-hidden="true"
         />
-        <div className="hero-poster" aria-hidden="true" />
         <video
           ref={heroVideoRef}
           className="hero-video"
