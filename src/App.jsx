@@ -145,6 +145,7 @@ const Header = () => {
         {['About', 'Schedule', 'Gallery', 'Join'].map(s => (
           <a key={s} href={`#${s.toLowerCase()}`} className="nav-link">{s}</a>
         ))}
+        <a href={BASE + 'world-cup.html'} className="nav-link nav-wc">World Cup</a>
         <a href="https://opensports.net/21fc" target="_blank" rel="noopener noreferrer" className="nav-btn">Book Now</a>
       </nav>
     </header>
@@ -692,6 +693,8 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .navL{display:flex;gap:1.5rem;align-items:center}
 .nav-link{color:rgba(240,239,239,.55);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:color .3s ease}
 .nav-link:hover{color:${pk}}
+.nav-wc{color:#D4AF37!important;font-weight:700;letter-spacing:1.5px}
+.nav-wc:hover{color:#fff!important;text-shadow:0 0 12px rgba(212,175,55,.4)}
 .nav-btn{position:relative;padding:8px 18px;background:${pk};color:#fff;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;text-decoration:none;overflow:hidden;box-shadow:0 0 14px rgba(237,17,113,.35);transition:all .3s ${ease}}
 .nav-btn:hover{background:${vt};color:${bg};box-shadow:0 0 22px rgba(211,222,37,.55);transform:translateY(-1px)}
 
