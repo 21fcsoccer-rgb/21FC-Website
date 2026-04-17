@@ -623,7 +623,22 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .wc-banner-glow{position:absolute;top:-40%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(212,175,55,.1) 0%,transparent 65%);border-radius:50%;pointer-events:none;animation:wcGlow 6s ease-in-out infinite alternate}
 @keyframes wcGlow{0%{transform:translate(0,0) scale(1);opacity:.6}100%{transform:translate(-3%,5%) scale(1.15);opacity:1}}
 .wc-banner-inner{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;max-width:1000px;margin:0 auto}
-.wc-banner-flags{font-size:clamp(1.1rem,2.5vw,1.8rem);flex-shrink:0;letter-spacing:.15em;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}
+.wc-banner-flags{font-size:clamp(1.1rem,2.5vw,1.8rem);flex-shrink:0;letter-spacing:.15em;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4));display:inline-flex;gap:.35em}
+.wc-banner-flags span{display:inline-block;animation:wcFlagWave 3.2s ease-in-out infinite;transform-origin:left center;will-change:transform}
+.wc-banner-flags span:nth-child(2){animation-delay:-.4s;animation-duration:3s}
+.wc-banner-flags span:nth-child(3){animation-delay:-.8s;animation-duration:3.4s}
+.wc-banner-flags span:nth-child(4){animation-delay:-1.2s;animation-duration:2.8s}
+.wc-banner-flags span:nth-child(5){animation-delay:-1.6s;animation-duration:3.6s}
+.wc-banner-flags span:nth-child(6){animation-delay:-2s;animation-duration:3.1s}
+.wc-banner-flags span:nth-child(7){animation-delay:-2.4s;animation-duration:3.3s}
+.wc-banner-flags span:nth-child(8){animation-delay:-2.8s;animation-duration:2.9s}
+@keyframes wcFlagWave{
+  0%,100%{transform:perspective(300px) rotateY(0deg) rotateZ(0deg) scaleX(1)}
+  20%{transform:perspective(300px) rotateY(-15deg) rotateZ(-2deg) scaleX(.96)}
+  40%{transform:perspective(300px) rotateY(8deg) rotateZ(1deg) scaleX(1.02)}
+  60%{transform:perspective(300px) rotateY(-6deg) rotateZ(-1deg) scaleX(.98)}
+  80%{transform:perspective(300px) rotateY(12deg) rotateZ(2deg) scaleX(1.01)}
+}
 .wc-banner-text{flex:1;min-width:200px}
 .wc-banner-eyebrow{font-family:'Red Hat Display',sans-serif;font-size:clamp(.5rem,1.2vw,.7rem);font-weight:800;letter-spacing:.3em;text-transform:uppercase;color:#FF3386;margin-bottom:.2rem}
 .wc-banner-title{font-family:'Red Hat Display',sans-serif;font-size:clamp(1.4rem,4vw,2.4rem);font-weight:900;line-height:1;letter-spacing:-.02em}
@@ -1012,7 +1027,7 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
       <a href={BASE + 'world-cup.html'} className="wc-banner rv" target="_self">
         <div className="wc-banner-glow" />
         <div className="wc-banner-inner">
-          <div className="wc-banner-flags">🇧🇷 🇦🇷 🇫🇷 🇺🇸 🇪🇸 🇨🇴 🇳🇱 🇲🇽</div>
+          <div className="wc-banner-flags"><span>🇧🇷</span><span>🇦🇷</span><span>🇫🇷</span><span>🇺🇸</span><span>🇪🇸</span><span>🇨🇴</span><span>🇳🇱</span><span>🇲🇽</span></div>
           <div className="wc-banner-text">
             <div className="wc-banner-eyebrow">NEW EVENT · STARTING MAY 11</div>
             <div className="wc-banner-title">21FC <span>WORLD CUP</span></div>
