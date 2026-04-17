@@ -616,6 +616,28 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 @media(prefers-reduced-motion:reduce){.prlx{transform:none!important}}
 
 /* ─── CURSOR SPOTLIGHT ─── soft glow follows mouse */
+
+/* ═══ WORLD CUP EVENT BANNER ═══ */
+.wc-banner{display:block;position:relative;overflow:hidden;padding:clamp(1.2rem,3vw,2rem) clamp(1.5rem,4vw,3rem);margin:0;background:linear-gradient(135deg,#0B3D2E 0%,${bg} 40%,${bg} 60%,rgba(212,175,55,.08) 100%);border-bottom:1px solid rgba(212,175,55,.12);border-top:1px solid rgba(212,175,55,.12);text-decoration:none;color:${wh};cursor:pointer;transition:background .4s ease}
+.wc-banner:hover{background:linear-gradient(135deg,rgba(11,61,46,.25) 0%,rgba(212,175,55,.06) 50%,${bg} 100%)}
+.wc-banner-glow{position:absolute;top:-40%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(212,175,55,.1) 0%,transparent 65%);border-radius:50%;pointer-events:none;animation:wcGlow 6s ease-in-out infinite alternate}
+@keyframes wcGlow{0%{transform:translate(0,0) scale(1);opacity:.6}100%{transform:translate(-3%,5%) scale(1.15);opacity:1}}
+.wc-banner-inner{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;max-width:1000px;margin:0 auto}
+.wc-banner-flags{font-size:clamp(1.1rem,2.5vw,1.8rem);flex-shrink:0;letter-spacing:.15em;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4))}
+.wc-banner-text{flex:1;min-width:200px}
+.wc-banner-eyebrow{font-family:'Red Hat Display',sans-serif;font-size:clamp(.5rem,1.2vw,.7rem);font-weight:800;letter-spacing:.3em;text-transform:uppercase;color:#FF3386;margin-bottom:.2rem}
+.wc-banner-title{font-family:'Red Hat Display',sans-serif;font-size:clamp(1.4rem,4vw,2.4rem);font-weight:900;line-height:1;letter-spacing:-.02em}
+.wc-banner-title span{color:#D4AF37;text-shadow:0 0 30px rgba(212,175,55,.2)}
+.wc-banner-sub{font-size:clamp(.6rem,1.3vw,.82rem);color:${mt};margin-top:.2rem;font-weight:600;letter-spacing:.08em}
+.wc-banner-cta{flex-shrink:0;font-family:'Red Hat Display',sans-serif;font-size:clamp(.65rem,1.2vw,.82rem);font-weight:800;letter-spacing:.25em;text-transform:uppercase;padding:clamp(.55rem,1vw,.8rem) clamp(1rem,2vw,2rem);background:#D4AF37;color:${bg};transition:all .3s ${ease};position:relative;overflow:hidden;animation:wcBtnPulse 2.5s ease-in-out infinite}
+.wc-banner-cta::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transition:left .6s ease}
+.wc-banner:hover .wc-banner-cta{background:#e8c84a;transform:translateY(-2px);box-shadow:0 0 24px rgba(212,175,55,.5);animation:none}
+.wc-banner:hover .wc-banner-cta::after{left:100%}
+@keyframes wcBtnPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,.4)}50%{box-shadow:0 0 0 10px rgba(212,175,55,0)}}
+.wc-banner-stripe{position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#009c3b,#D4AF37,#FF3386,#74acdf,#D4AF37,#009c3b);background-size:300% 100%;animation:stripeShift 8s linear infinite}
+@keyframes stripeShift{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+@media(max-width:700px){.wc-banner-inner{flex-direction:column;text-align:center;align-items:center}.wc-banner-flags{order:-1}}
+
 .cursor-spot{position:fixed;top:0;left:0;width:600px;height:600px;border-radius:50%;pointer-events:none;z-index:1;
   background:radial-gradient(circle,rgba(211,222,37,.08) 0%,rgba(237,17,113,.04) 30%,transparent 60%);
   mix-blend-mode:screen;transform:translate(-50%,-50%);will-change:transform;transition:opacity .3s ease}
@@ -985,6 +1007,22 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 
       <div className="site-wrap">
       <Header />
+
+      {/* ═══ WORLD CUP EVENT BANNER ═══ */}
+      <a href={BASE + 'world-cup.html'} className="wc-banner rv" target="_self">
+        <div className="wc-banner-glow" />
+        <div className="wc-banner-inner">
+          <div className="wc-banner-flags">🇧🇷 🇦🇷 🇫🇷 🇺🇸 🇪🇸 🇨🇴 🇳🇱 🇲🇽</div>
+          <div className="wc-banner-text">
+            <div className="wc-banner-eyebrow">NEW EVENT · STARTING MAY 11</div>
+            <div className="wc-banner-title">21FC <span>WORLD CUP</span></div>
+            <div className="wc-banner-sub">8 Countries · 6 Weeks · $500 Prize · 7AM Kickoff</div>
+          </div>
+          <div className="wc-banner-cta">Register Now →</div>
+        </div>
+        <div className="wc-banner-stripe" />
+      </a>
+
       <div className="prlx" data-rate="0.08"><Stats /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.18"><About /></div>
