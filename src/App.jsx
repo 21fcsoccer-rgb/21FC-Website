@@ -408,6 +408,110 @@ const TiltMemCard = ({ p, i }) => {
     </div>
   );
 };
+/* ─── SOCIAL / FOLLOW ALONG ─── */
+const InstaVideoPhone = ({ src, caption, likes, comments, featured }) => (
+  <div className={`phone-mockup${featured ? ' phone-featured' : ''}`}>
+    <div className="phone-frame">
+      <div className="phone-btns-l" />
+      <div className="phone-btn-r" />
+      <div className="phone-island" />
+      <div className="phone-screen">
+        <div className="ig-progress-bar"><div className="ig-progress-fill" /></div>
+        <video className="phone-video" src={src} autoPlay loop muted playsInline />
+        <div className="ig-overlay">
+          <div className="ig-bottom">
+            <div className="ig-user-row">
+              <div className="ig-avatar-ring"><div className="ig-avatar-inner" /></div>
+              <span className="ig-uname">21fc.soccer</span>
+              <span className="ig-follow-pill">Following</span>
+            </div>
+            <div className="ig-cap">{caption}</div>
+            <div className="ig-audio-row">♪ Original audio · 21fc.soccer</div>
+          </div>
+          <div className="ig-actions">
+            <div className="ig-action">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span>{likes}</span>
+            </div>
+            <div className="ig-action">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              <span>{comments}</span>
+            </div>
+            <div className="ig-action">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const InstaPostPhone = ({ img, likes, caption }) => (
+  <div className="phone-post">
+    <div className="phone-frame">
+      <div className="phone-island" />
+      <div className="phone-screen">
+        <div className="ig-ph">
+          <div className="ig-ph-av"><div className="ig-ph-av-i" /></div>
+          <span className="ig-ph-user">21fc.soccer</span>
+          <span className="ig-ph-dots">···</span>
+        </div>
+        <img className="ig-ph-img" src={img} alt="" loading="lazy" />
+        <div className="ig-ph-meta">
+          <span className="ig-ph-likes">{likes} likes</span>
+          <span className="ig-ph-cap">{caption}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const Social = () => (
+  <section id="social" className="section social-section">
+    <div className="container">
+      <div className="rv" style={{ textAlign: 'center', marginBottom: '1.2rem' }}>
+        <div className="accent-line" style={{ margin: '0 auto .6rem' }} />
+        <h2 className="sec-heading">Catch the Action</h2>
+        <p className="sec-sub">Behind the scenes, match highlights, and real moments from the pitch.</p>
+      </div>
+
+      <div className="phone-trio">
+        <div className="rv d2 phone-side-wrap">
+          <InstaVideoPhone src="images/social-2.mp4" caption="🎯 Feetwork never stops #21FC #soccer" likes="1.8K" comments="31" />
+        </div>
+        <div className="rv d1 phone-center-wrap">
+          <InstaVideoPhone src="images/social-1.mp4" caption="🏟️ Drone view. Clifton, NJ. 7AM. #21FC" likes="3.2K" comments="67" featured />
+        </div>
+        <div className="rv d3 phone-side-wrap">
+          <InstaVideoPhone src="images/social-3.mp4" caption="🔥 Player highlight reel. See you on the pitch. #21FC" likes="2.1K" comments="44" />
+        </div>
+      </div>
+
+      <div className="phone-posts-row rv d4">
+        <InstaPostPhone img="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=400&fit=crop" likes="1,284" caption="Game day energy ⚡ #21FC #soccer" />
+        <InstaPostPhone img="https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=400&h=400&fit=crop" likes="892" caption="Squad goals 🏆 #21FC" />
+        <InstaPostPhone img="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=400&h=400&fit=crop" likes="2,103" caption="The beautiful game 🌍 #soccer" />
+        <InstaPostPhone img="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=400&h=400&fit=crop" likes="1,567" caption="Community first 🤝 #21FC" />
+        <InstaPostPhone img="https://images.unsplash.com/photo-1551958219-acbc608c6377?w=400&h=400&fit=crop" likes="743" caption="Lock in 💪 7AM every Sunday" />
+        <InstaPostPhone img="https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=400&h=400&fit=crop" likes="1,890" caption="Next generation 🌟 #21FCYouth" />
+      </div>
+
+      <div className="rv d5 social-cta-wrap">
+        <a href="https://www.instagram.com/21fc.soccer" target="_blank" rel="noopener noreferrer" className="ig-cta-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+          Follow @21fc.soccer
+        </a>
+        <p className="social-note">1,200+ followers · New reels every week</p>
+      </div>
+    </div>
+  </section>
+);
+
 const Membership = () => (
   <section id="membership" className="section section-alt">
     <div className="container">
@@ -1030,6 +1134,72 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .mem-btn-pop{background:${pk};color:#fff;border:none;box-shadow:0 0 18px rgba(237,17,113,.4)}
 .mem-btn-pop:hover{background:linear-gradient(90deg,#d4af37,#ffe589,#d4af37)!important;color:#0a0a0f!important;box-shadow:0 0 28px rgba(212,175,55,.6)!important}
 
+/* ─── SOCIAL / PHONES SECTION ─── */
+.social-section{background:radial-gradient(ellipse 100% 70% at 50% 60%,rgba(237,17,113,.07) 0%,rgba(211,222,37,.04) 45%,transparent 75%),linear-gradient(180deg,rgba(18,14,28,.7) 0%,rgba(14,12,22,.6) 100%);border-top:1px solid rgba(237,17,113,.1);border-bottom:1px solid rgba(211,222,37,.08);overflow:hidden}
+.phone-trio{display:flex;align-items:flex-end;justify-content:center;gap:20px;padding:1rem 0 2rem;position:relative}
+.phone-mockup{width:155px;height:310px;position:relative;transition:transform .4s ${ease}}
+.phone-featured{width:195px;height:390px;transform:translateY(-24px)}
+.phone-side-wrap .phone-mockup{transform:rotate(-3deg) scale(.9) translateY(8px);transform-origin:bottom right}
+.phone-side-wrap:last-child .phone-mockup{transform:rotate(3deg) scale(.9) translateY(8px);transform-origin:bottom left}
+.phone-mockup:hover{transform:rotate(0deg) scale(.95) translateY(0)!important;transition-duration:.3s}
+.phone-center-wrap{position:relative;z-index:2;flex-shrink:0}
+.phone-side-wrap{flex-shrink:0}
+.phone-frame{width:100%;height:100%;background:linear-gradient(145deg,#1e1e30,#10101a);border-radius:38px;position:relative;overflow:hidden;box-shadow:0 0 0 1.5px rgba(255,255,255,.14),0 0 0 4px rgba(8,8,14,.95),0 0 0 5.5px rgba(255,255,255,.07),0 28px 80px rgba(0,0,0,.75),0 8px 32px rgba(0,0,0,.5),0 0 50px rgba(237,17,113,.08)}
+.phone-btns-l{position:absolute;left:-3px;top:21%;width:3.5px;height:28px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.06));border-radius:3px 0 0 3px;box-shadow:0 42px 0 rgba(255,255,255,.1),0 80px 0 rgba(255,255,255,.1)}
+.phone-btn-r{position:absolute;right:-3px;top:26%;width:3.5px;height:56px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.07));border-radius:0 3px 3px 0}
+.phone-island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:72px;height:20px;background:#06060c;border-radius:10px;z-index:20;box-shadow:inset 0 1px 2px rgba(0,0,0,.5)}
+.phone-featured .phone-island{width:88px;height:24px}
+.phone-screen{position:absolute;inset:0;overflow:hidden;border-radius:38px;background:#000}
+.phone-video{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.9) contrast(1.12) saturate(1.15)}
+.ig-progress-bar{position:absolute;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.2);z-index:15}
+.ig-progress-fill{height:100%;width:40%;background:rgba(255,255,255,.85);border-radius:1px}
+.ig-overlay{position:absolute;inset:0;display:flex;flex-direction:row;align-items:flex-end;padding:0 6px 22px;z-index:10;background:linear-gradient(to bottom,transparent 25%,rgba(0,0,0,.35) 65%,rgba(0,0,0,.65) 100%)}
+.ig-bottom{flex:1;display:flex;flex-direction:column;gap:6px;margin-right:6px;min-width:0}
+.ig-user-row{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.ig-avatar-ring{width:30px;height:30px;border-radius:50%;padding:2.5px;background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);flex-shrink:0}
+.ig-avatar-inner{width:100%;height:100%;border-radius:50%;background:#1a1a2a;border:1.5px solid #10101a}
+.ig-uname{font-size:11px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+.ig-follow-pill{font-size:9px;font-weight:700;color:#fff;padding:2px 7px;border:1px solid rgba(255,255,255,.5);border-radius:4px}
+.ig-cap{font-size:10px;color:rgba(255,255,255,.88);line-height:1.4;text-shadow:0 1px 2px rgba(0,0,0,.9);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ig-audio-row{display:flex;align-items:center;gap:5px;font-size:9px;color:rgba(255,255,255,.7);text-shadow:0 1px 2px rgba(0,0,0,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ig-actions{display:flex;flex-direction:column;align-items:center;gap:18px;padding-left:4px;flex-shrink:0}
+.ig-action{display:flex;flex-direction:column;align-items:center;gap:3px;color:#fff;font-size:10px;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+/* photo posts row */
+.phone-posts-row{display:flex;gap:16px;overflow-x:auto;padding:1.5rem .5rem .5rem;justify-content:flex-start;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;mask-image:linear-gradient(90deg,transparent 0%,black 6%,black 94%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 6%,black 94%,transparent 100%)}
+.phone-posts-row::-webkit-scrollbar{display:none}
+.phone-post{width:148px;height:296px;position:relative;flex-shrink:0;scroll-snap-align:center;transition:transform .4s ${ease}}
+.phone-post:hover{transform:translateY(-6px)}
+.phone-post .phone-island{width:58px;height:15px;top:9px;border-radius:8px}
+.phone-post .phone-screen{display:flex;flex-direction:column;background:#0f0f18}
+.ig-ph{display:flex;align-items:center;gap:6px;padding:32px 8px 6px;background:#0f0f18;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05)}
+.ig-ph-av{width:22px;height:22px;border-radius:50%;padding:2px;background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);flex-shrink:0}
+.ig-ph-av-i{width:100%;height:100%;border-radius:50%;background:#1a1a2a;border:1.5px solid #0f0f18}
+.ig-ph-user{font-size:9px;font-weight:800;color:#fff;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ig-ph-dots{color:rgba(255,255,255,.45);font-size:13px;flex-shrink:0;line-height:1}
+.ig-ph-img{width:100%;flex:1;min-height:0;object-fit:cover;display:block}
+.ig-ph-meta{padding:2px 8px 8px;background:#0f0f18;flex-shrink:0}
+.ig-ph-likes{display:block;font-size:9px;font-weight:800;color:#fff;margin-bottom:1px}
+.ig-ph-cap{display:block;font-size:8.5px;color:rgba(255,255,255,.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* CTA */
+.social-cta-wrap{display:flex;flex-direction:column;align-items:center;gap:.7rem;margin-top:1.2rem}
+.ig-cta-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);color:#fff;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:.3px;padding:14px 36px;border-radius:28px;box-shadow:0 4px 28px rgba(188,24,136,.4),0 0 0 1px rgba(255,255,255,.08);transition:all .3s ${ease}}
+.ig-cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(188,24,136,.55),0 0 0 1px rgba(255,255,255,.15)}
+.social-note{font-size:12px;color:rgba(240,239,239,.55);letter-spacing:.5px}
+@media(max-width:720px){
+  .phone-trio{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;justify-content:flex-start;padding:1rem 0 2rem;gap:14px;scrollbar-width:none}
+  .phone-trio::-webkit-scrollbar{display:none}
+  .phone-mockup{width:130px;height:260px}
+  .phone-featured{width:162px;height:324px}
+  .phone-side-wrap .phone-mockup,.phone-side-wrap:last-child .phone-mockup{transform:none}
+  .phone-center-wrap,.phone-side-wrap{scroll-snap-align:center}
+  .phone-post{width:116px;height:232px}
+  .phone-posts-row{gap:12px;padding:1.4rem 0 .5rem}
+}
+@media(min-width:900px){
+  .phone-mockup{width:175px;height:350px}
+  .phone-featured{width:210px;height:420px}
+}
+
 .mem-badge-gold{background:linear-gradient(90deg,#b8860b,#d4a017,#f0c040,#d4a017,#b8860b)!important;background-size:200% 100%!important;color:#0a0a0f!important;box-shadow:0 4px 18px rgba(212,160,23,.55),0 0 0 1px rgba(255,220,140,.15)!important;animation:badgePulseGold 2.4s ease-in-out infinite,goldShift 4s linear infinite!important}
 @keyframes badgePulseGold{
   0%,100%{box-shadow:0 4px 18px rgba(212,160,23,.55),0 0 0 1px rgba(255,220,140,.15)}
@@ -1436,6 +1606,8 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
       <div className="prlx" data-rate="0.15"><Schedule /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.2"><Gallery /></div>
+      <div className="glow-div" />
+      <div className="prlx" data-rate="0.14"><Social /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.1"><Membership /></div>
       <div className="glow-div" />
