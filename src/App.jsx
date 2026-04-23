@@ -686,11 +686,15 @@ const App = () => {
 /* ─── RESET ─── */
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Barlow Condensed',sans-serif;background:${bg};color:${wh};overflow-x:hidden;-webkit-font-smoothing:antialiased;font-weight:400;letter-spacing:.005em}
-h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,.fixture-day-badge,.wc-banner-title{font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:.005em}
-.sec-heading,.cta-heading{text-transform:uppercase;letter-spacing:.02em}
-.mem-name{text-transform:uppercase;letter-spacing:.1em!important;font-weight:600!important}
-.stat-lbl,.nav-link,.nav-btn,.sess-marq-item,.mem-btn,.btn-cta,.fixture-h-cell{font-family:'Barlow Condensed',sans-serif;font-weight:600}
+body{font-family:'Barlow Condensed',sans-serif;background:${bg};color:${wh};overflow-x:hidden;-webkit-font-smoothing:antialiased;font-weight:500;letter-spacing:.008em}
+h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,.fixture-day-badge,.wc-banner-title,.hero-heading,.hero-title{font-family:'Bebas Neue','Oswald',sans-serif;font-weight:400;letter-spacing:.025em}
+.sec-heading,.cta-heading{text-transform:uppercase;letter-spacing:.04em}
+.mem-name{text-transform:uppercase;letter-spacing:.18em!important;font-family:'Bebas Neue',sans-serif!important;font-weight:400!important;font-size:16px!important}
+.mem-price span{letter-spacing:.01em!important;font-size:clamp(32px,5vw,42px)!important}
+.stat-val{letter-spacing:.02em!important;font-size:clamp(32px,6vw,54px)!important}
+.stat-lbl,.nav-link,.nav-btn,.sess-marq-item,.mem-btn,.btn-cta,.fixture-h-cell{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.mem-feat{font-weight:500}
+.sec-sub{font-family:'Barlow Condensed',sans-serif;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
 
 /* ─── AMBIENT BACKGROUND ─── */
 .site-wrap{position:relative;overflow:hidden}
@@ -956,8 +960,8 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
   0%,100%{box-shadow:0 8px 48px rgba(237,17,113,.22),0 24px 64px rgba(0,0,0,.55),inset 0 0 24px rgba(237,17,113,.04)}
   50%{box-shadow:0 10px 56px rgba(237,17,113,.4),0 24px 72px rgba(0,0,0,.6),inset 0 0 32px rgba(237,17,113,.1)}
 }
-.mem-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:${pk};color:#fff;padding:5px 18px;font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 18px rgba(237,17,113,.55),0 0 0 1px rgba(255,255,255,.08);white-space:nowrap;z-index:2;animation:badgePulse 2.4s ease-in-out infinite}
-.mem-badge::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-100%);animation:badgeShine 3.6s ease-in-out infinite}
+.mem-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:${pk};color:#fff;padding:5px 18px;font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;box-shadow:0 4px 18px rgba(237,17,113,.55),0 0 0 1px rgba(255,255,255,.08);white-space:nowrap;z-index:2;animation:badgePulse 2.4s ease-in-out infinite;overflow:hidden;font-family:'Bebas Neue',sans-serif}
+.mem-badge::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-100%);animation:badgeShine 3.6s ease-in-out infinite;pointer-events:none}
 @keyframes badgePulse{
   0%,100%{box-shadow:0 4px 18px rgba(237,17,113,.55),0 0 0 1px rgba(255,255,255,.08)}
   50%{box-shadow:0 4px 24px rgba(237,17,113,.8),0 0 0 1px rgba(255,255,255,.14)}
