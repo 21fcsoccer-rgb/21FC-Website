@@ -993,42 +993,42 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 /* ═══ LEGENDARY TIER ═══ */
 .mem-legendary{
   background:linear-gradient(160deg,rgba(30,58,138,.25) 0%,rgba(12,20,40,.98) 45%,rgba(8,12,28,.97) 100%);
-  border-color:rgba(74,158,255,.55);
+  border-color:rgba(74,158,255,.5);
   box-shadow:
-    0 8px 48px rgba(74,158,255,.28),
-    0 24px 72px rgba(6,182,212,.14),
-    0 0 0 1px rgba(147,197,253,.15),
-    inset 0 0 40px rgba(30,58,138,.25);
-  animation:legendGlow 3.4s ease-in-out infinite;
+    0 6px 22px rgba(74,158,255,.18),
+    0 14px 38px rgba(0,0,0,.55),
+    0 0 0 1px rgba(147,197,253,.12),
+    inset 0 0 32px rgba(30,58,138,.22);
+  animation:legendGlow 4s ease-in-out infinite;
   position:relative;
 }
 .mem-legendary:hover{
-  border-color:rgba(147,197,253,.85)!important;
+  border-color:rgba(147,197,253,.75)!important;
   box-shadow:
-    0 20px 64px rgba(74,158,255,.45),
-    0 0 56px rgba(6,182,212,.35),
-    0 0 0 1px rgba(147,197,253,.4),
-    inset 0 0 48px rgba(74,158,255,.2)!important;
+    0 10px 32px rgba(74,158,255,.26),
+    0 16px 44px rgba(0,0,0,.6),
+    0 0 0 1px rgba(147,197,253,.28),
+    inset 0 0 40px rgba(74,158,255,.15)!important;
   animation:none;
 }
 @keyframes legendGlow{
-  0%,100%{box-shadow:0 8px 48px rgba(74,158,255,.28),0 24px 72px rgba(6,182,212,.14),0 0 0 1px rgba(147,197,253,.15),inset 0 0 40px rgba(30,58,138,.25)}
-  50%{box-shadow:0 12px 64px rgba(74,158,255,.45),0 24px 80px rgba(6,182,212,.28),0 0 0 1px rgba(147,197,253,.3),inset 0 0 56px rgba(74,158,255,.18)}
+  0%,100%{box-shadow:0 6px 22px rgba(74,158,255,.18),0 14px 38px rgba(0,0,0,.55),0 0 0 1px rgba(147,197,253,.12),inset 0 0 32px rgba(30,58,138,.22)}
+  50%{box-shadow:0 8px 28px rgba(74,158,255,.26),0 16px 42px rgba(0,0,0,.58),0 0 0 1px rgba(147,197,253,.2),inset 0 0 38px rgba(74,158,255,.16)}
 }
-/* aurora sweep behind content */
+/* aurora sweep behind content — bounded to card interior */
 .mem-aurora{
   position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
   background:
-    radial-gradient(ellipse 140% 80% at 20% 0%,rgba(74,158,255,.22) 0%,transparent 55%),
-    radial-gradient(ellipse 120% 80% at 85% 100%,rgba(6,182,212,.18) 0%,transparent 55%),
-    radial-gradient(ellipse 100% 60% at 50% 50%,rgba(147,51,234,.12) 0%,transparent 60%);
-  mask-image:linear-gradient(180deg,black 0%,black 70%,transparent 100%);
-  -webkit-mask-image:linear-gradient(180deg,black 0%,black 70%,transparent 100%);
-  animation:auroraShift 7s ease-in-out infinite alternate;
+    radial-gradient(ellipse 110% 60% at 20% 0%,rgba(74,158,255,.16) 0%,transparent 60%),
+    radial-gradient(ellipse 100% 60% at 85% 100%,rgba(6,182,212,.12) 0%,transparent 60%),
+    radial-gradient(ellipse 80% 50% at 50% 50%,rgba(147,51,234,.08) 0%,transparent 65%);
+  mask-image:linear-gradient(180deg,black 0%,black 75%,transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,black 0%,black 75%,transparent 100%);
+  animation:auroraShift 9s ease-in-out infinite alternate;
 }
 @keyframes auroraShift{
   0%{transform:translate(0,0) scale(1);filter:hue-rotate(0deg)}
-  100%{transform:translate(2%,-1%) scale(1.08);filter:hue-rotate(15deg)}
+  100%{transform:translate(1%,-.5%) scale(1.04);filter:hue-rotate(10deg)}
 }
 .mem-legendary > *:not(.mem-aurora):not(.mem-sparkles):not(.mem-emblem){position:relative;z-index:2}
 
