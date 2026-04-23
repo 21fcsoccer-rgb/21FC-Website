@@ -320,24 +320,31 @@ const Gallery = () => {
 };
 
 /* ─── MEMBERSHIP ─── */
-/* Legendary corner emblem — soccer star shield */
-const LegendaryEmblem = ({ pos }) => (
-  <svg className={`mem-emblem mem-emblem-${pos}`} viewBox="0 0 32 32" aria-hidden="true">
-    <defs>
-      <linearGradient id={`emb-grad-${pos}`} x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#93C5FD" />
-        <stop offset="50%" stopColor="#4A9EFF" />
-        <stop offset="100%" stopColor="#06B6D4" />
-      </linearGradient>
-    </defs>
-    {/* shield outline */}
-    <path d="M16 2 L28 6 L28 16 Q28 25 16 30 Q4 25 4 16 L4 6 Z"
-          fill="none" stroke={`url(#emb-grad-${pos})`} strokeWidth="1.4" />
-    {/* inner star */}
-    <path d="M16 9 L18 14 L23.5 14 L19 17.5 L21 23 L16 19.5 L11 23 L13 17.5 L8.5 14 L14 14 Z"
-          fill={`url(#emb-grad-${pos})`} opacity="0.9" />
-  </svg>
-);
+/* Rank emblem — soccer star shield, colored per tier */
+const TierEmblem = ({ pos, rank }) => {
+  const palettes = {
+    bronze:    ['#F4C68C', '#CD7F32', '#8B5A2B'],
+    gold:      ['#FFE589', '#D4AF37', '#8B6914'],
+    legendary: ['#93C5FD', '#4A9EFF', '#06B6D4'],
+  };
+  const [c1, c2, c3] = palettes[rank] || palettes.legendary;
+  const gid = `emb-${rank}-${pos}`;
+  return (
+    <svg className={`mem-emblem mem-emblem-${pos} mem-emblem-${rank}`} viewBox="0 0 32 32" aria-hidden="true">
+      <defs>
+        <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={c1} />
+          <stop offset="50%" stopColor={c2} />
+          <stop offset="100%" stopColor={c3} />
+        </linearGradient>
+      </defs>
+      <path d="M16 2 L28 6 L28 16 Q28 25 16 30 Q4 25 4 16 L4 6 Z"
+            fill="none" stroke={`url(#${gid})`} strokeWidth="1.4" />
+      <path d="M16 9 L18 14 L23.5 14 L19 17.5 L21 23 L16 19.5 L11 23 L13 17.5 L8.5 14 L14 14 Z"
+            fill={`url(#${gid})`} opacity="0.9" />
+    </svg>
+  );
+};
 
 /* floating sparkle particles for legendary card */
 const LegendarySparkles = () => (
@@ -354,24 +361,39 @@ const LegendarySparkles = () => (
 );
 
 const TiltMemCard = ({ p, i }) => {
-  const ref = useTilt(p.legendary ? 9 : 6);
-  const variantClass = p.legendary ? ' mem-legendary' : p.pop ? ' mem-pop' : p.badge ? ' mem-value' : '';
+  const ref = useTilt(p.rank === 'legendary' ? 9 : 6);
+  const variantClass =
+    p.rank === 'legendary' ? ' mem-legendary' :
+    p.rank === 'gold'      ? ' mem-gold' :
+    p.rank === 'bronze'    ? ' mem-bronze' :
+    ' mem-starter';
   return (
-    <div ref={ref} className={`rv d${i + 1} mem-card tilt-card${variantClass}`}>
+    <div ref={ref} className={`rv d${i + 1} mem-card tilt-card${variantClass}${p.pop ? ' mem-pop' : ''}`}>
       <div className="tilt-glow" />
-      {p.legendary && (
+      {p.rank === 'legendary' && (
         <>
           <div className="mem-aurora" />
           <LegendarySparkles />
-          <LegendaryEmblem pos="tl" />
-          <LegendaryEmblem pos="tr" />
-          <LegendaryEmblem pos="bl" />
-          <LegendaryEmblem pos="br" />
+          <TierEmblem pos="tl" rank="legendary" />
+          <TierEmblem pos="tr" rank="legendary" />
+          <TierEmblem pos="bl" rank="legendary" />
+          <TierEmblem pos="br" rank="legendary" />
+        </>
+      )}
+      {p.rank === 'gold' && (
+        <>
+          <TierEmblem pos="tl" rank="gold" />
+          <TierEmblem pos="tr" rank="gold" />
+        </>
+      )}
+      {p.rank === 'bronze' && (
+        <>
+          <TierEmblem pos="tl" rank="bronze" />
+          <TierEmblem pos="tr" rank="bronze" />
         </>
       )}
       {p.pop && <div className="mem-badge">Most Popular</div>}
-      {p.legendary && <div className="mem-badge mem-badge-legendary"><span>✦ {p.badge} ✦</span></div>}
-      {p.badge && !p.pop && !p.legendary && <div className="mem-badge mem-badge-gold">{p.badge}</div>}
+      {p.rank === 'legendary' && <div className="mem-badge mem-badge-legendary"><span>✦ {p.badge} ✦</span></div>}
       <div className="mem-name">{p.name}</div>
       <div className="mem-price"><span>{p.price}</span><small>{p.per}</small></div>
       <div className="mem-feats">
@@ -379,8 +401,8 @@ const TiltMemCard = ({ p, i }) => {
           <div key={fi} className="mem-feat"><span className="dot" />{f}</div>
         ))}
       </div>
-      <button className={`mem-btn${p.pop ? ' mem-btn-pop' : ''}${p.legendary ? ' mem-btn-legendary' : ''}`}>
-        {p.legendary ? 'Claim Legendary' : 'Choose Plan'}
+      <button className={`mem-btn mem-btn-${p.rank || 'starter'}${p.pop ? ' mem-btn-pop' : ''}`}>
+        {p.rank === 'legendary' ? 'Claim Legendary' : 'Choose Plan'}
       </button>
     </div>
   );
@@ -391,14 +413,14 @@ const Membership = () => (
       <div className="rv" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
         <div className="accent-line" style={{ margin: '0 auto .8rem' }} />
         <h2 className="sec-heading">Membership</h2>
-        <p className="sec-sub">Choose your commitment level</p>
+        <p className="sec-sub">Level up your game</p>
       </div>
       <div className="mem-grid g4">
         {[
-          { name: 'Drop-In',     price: '$15',  per: '/session', feats: ['Single match access', 'No commitment', 'Walk-on flexibility', 'Pay as you go'], pop: false },
-          { name: 'Bronze',      price: '$45',  per: '/month',   feats: ['4 sessions/month', 'Priority booking', 'Player community', 'Kit discounts'], pop: false },
-          { name: 'Pro',         price: '$160', per: '/month',   feats: ['Unlimited games all month', 'Priority booking', 'Player community access', 'Kit discounts'], pop: true },
-          { name: 'Season Pass', price: '$500', per: '/season',  feats: ['Full 3-month season', 'Unlimited games included', 'Reserved team slots', 'Exclusive legendary crest'], pop: false, legendary: true, badge: 'LEGENDARY' },
+          { name: 'Drop-In',     price: '$15',  per: '/session', feats: ['Single match access', 'No commitment', 'Walk-on flexibility', 'Pay as you go'] },
+          { name: 'Bronze',      price: '$45',  per: '/month',   feats: ['4 sessions/month', 'Priority booking', 'Player community', 'Kit discounts'], rank: 'bronze' },
+          { name: 'Pro',         price: '$160', per: '/month',   feats: ['Unlimited games all month', 'Priority booking', 'Player community access', 'Kit discounts'], pop: true, rank: 'gold' },
+          { name: 'Season Pass', price: '$500', per: '/season',  feats: ['Full 3-month season', 'Unlimited games included', 'Reserved team slots', 'Exclusive legendary crest'], rank: 'legendary', badge: 'LEGENDARY' },
         ].map((p, i) => <TiltMemCard key={i} p={p} i={i} />)}
       </div>
       <div className="rv mem-note">
@@ -950,16 +972,26 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px;padding-top:6px}
 .mem-card{padding:clamp(1.8rem,2.5vw,2.2rem);background:linear-gradient(160deg,rgba(36,36,56,.88) 0%,rgba(22,22,38,.92) 100%);border:1px solid rgba(255,255,255,.18);position:relative;transition:all .4s ${ease};overflow:visible;box-shadow:0 8px 32px rgba(0,0,0,.6),0 2px 0 rgba(255,255,255,.04) inset,0 0 0 1px rgba(255,255,255,.08)}
 .mem-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(211,222,37,.14),transparent 60%);opacity:0;transition:opacity .4s ease;pointer-events:none;border-radius:inherit}
-.mem-card::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.08) 50%,transparent 100%);transition:left .9s ${ease};pointer-events:none;overflow:hidden}
-.mem-card:hover{border-color:${vt};transform:translateY(-8px);box-shadow:0 24px 56px rgba(0,0,0,.65),0 0 40px rgba(211,222,37,.35),inset 0 0 0 1px rgba(211,222,37,.3)}
+.mem-card:hover{border-color:${vt};transform:translateY(-8px);box-shadow:0 24px 56px rgba(0,0,0,.65),0 0 40px rgba(211,222,37,.25),inset 0 0 0 1px rgba(211,222,37,.25)}
 .mem-card:hover::before{opacity:1}
-.mem-card:hover::after{left:100%}
-.mem-pop{background:linear-gradient(160deg,rgba(237,17,113,.3) 0%,rgba(35,18,32,.95) 55%,rgba(22,14,22,.95) 100%);border-color:rgba(237,17,113,.7);box-shadow:0 12px 52px rgba(237,17,113,.32),0 24px 64px rgba(0,0,0,.55),0 0 0 1px rgba(255,180,210,.2) inset,inset 0 0 24px rgba(237,17,113,.08);animation:memPopGlow 3.2s ease-in-out infinite}
-.mem-pop:hover{border-color:rgba(237,17,113,.9)!important;box-shadow:0 20px 64px rgba(237,17,113,.5),0 0 48px rgba(237,17,113,.35),inset 0 0 40px rgba(237,17,113,.14)!important;animation:none}
-@keyframes memPopGlow{
-  0%,100%{box-shadow:0 12px 52px rgba(237,17,113,.32),0 24px 64px rgba(0,0,0,.55),0 0 0 1px rgba(255,180,210,.2) inset,inset 0 0 24px rgba(237,17,113,.08)}
-  50%{box-shadow:0 14px 58px rgba(237,17,113,.45),0 24px 72px rgba(0,0,0,.6),0 0 0 1px rgba(255,180,210,.28) inset,inset 0 0 32px rgba(237,17,113,.14)}
+/* STARTER / Drop-In — clean neutral */
+.mem-starter:hover{border-color:rgba(255,255,255,.35);box-shadow:0 24px 56px rgba(0,0,0,.65),0 0 32px rgba(255,255,255,.08),inset 0 0 0 1px rgba(255,255,255,.15)}
+/* BRONZE tier */
+.mem-bronze{background:linear-gradient(160deg,rgba(205,127,50,.22) 0%,rgba(48,32,18,.95) 55%,rgba(30,20,12,.95) 100%);border-color:rgba(205,127,50,.5);box-shadow:0 8px 36px rgba(205,127,50,.2),0 24px 56px rgba(0,0,0,.55),0 0 0 1px rgba(244,198,140,.15) inset,inset 0 0 24px rgba(205,127,50,.05);animation:memBronzeGlow 3.6s ease-in-out infinite}
+.mem-bronze:hover{border-color:rgba(244,198,140,.75)!important;box-shadow:0 16px 52px rgba(205,127,50,.32),0 0 36px rgba(244,198,140,.28),inset 0 0 32px rgba(205,127,50,.12)!important;animation:none}
+@keyframes memBronzeGlow{
+  0%,100%{box-shadow:0 8px 36px rgba(205,127,50,.2),0 24px 56px rgba(0,0,0,.55),0 0 0 1px rgba(244,198,140,.15) inset,inset 0 0 24px rgba(205,127,50,.05)}
+  50%{box-shadow:0 10px 44px rgba(205,127,50,.3),0 24px 64px rgba(0,0,0,.6),0 0 0 1px rgba(244,198,140,.22) inset,inset 0 0 32px rgba(205,127,50,.12)}
 }
+/* GOLD tier (Pro) */
+.mem-gold{background:linear-gradient(160deg,rgba(212,175,55,.26) 0%,rgba(42,34,14,.95) 55%,rgba(26,20,10,.95) 100%);border-color:rgba(212,175,55,.6);box-shadow:0 10px 44px rgba(212,175,55,.28),0 24px 60px rgba(0,0,0,.55),0 0 0 1px rgba(255,229,137,.2) inset,inset 0 0 28px rgba(212,175,55,.08);animation:memGoldGlow 3.2s ease-in-out infinite}
+.mem-gold:hover{border-color:rgba(255,229,137,.85)!important;box-shadow:0 18px 60px rgba(212,175,55,.4),0 0 44px rgba(255,229,137,.35),inset 0 0 40px rgba(212,175,55,.15)!important;animation:none}
+@keyframes memGoldGlow{
+  0%,100%{box-shadow:0 10px 44px rgba(212,175,55,.28),0 24px 60px rgba(0,0,0,.55),0 0 0 1px rgba(255,229,137,.2) inset,inset 0 0 28px rgba(212,175,55,.08)}
+  50%{box-shadow:0 12px 52px rgba(212,175,55,.42),0 24px 68px rgba(0,0,0,.6),0 0 0 1px rgba(255,229,137,.3) inset,inset 0 0 36px rgba(212,175,55,.16)}
+}
+/* POP (Most Popular) now layers on top of gold */
+.mem-pop{box-shadow:0 12px 52px rgba(212,175,55,.32),0 24px 64px rgba(0,0,0,.55),0 0 0 1px rgba(255,229,137,.22) inset,inset 0 0 28px rgba(212,175,55,.1)}
 .mem-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:${pk};color:#fff;padding:5px 18px;font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;box-shadow:0 4px 18px rgba(237,17,113,.55),0 0 0 1px rgba(255,255,255,.08);white-space:nowrap;z-index:2;animation:badgePulse 2.4s ease-in-out infinite;overflow:hidden;font-family:'Bebas Neue',sans-serif}
 .mem-badge::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-100%);animation:badgeShine 3.6s ease-in-out infinite;pointer-events:none}
 @keyframes badgePulse{
@@ -973,17 +1005,24 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .mem-name{font-size:14px;font-weight:700;margin-bottom:.3rem;position:relative}
 .mem-price{margin-bottom:1rem;display:flex;align-items:baseline;gap:.3rem;position:relative}
 .mem-price span{font-size:clamp(26px,4vw,32px);font-weight:800;background:linear-gradient(180deg,${wh} 0%,rgba(240,239,239,.7) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.mem-pop .mem-price span{background:linear-gradient(180deg,#fff 0%,#ff92c5 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.mem-value .mem-price span{background:linear-gradient(180deg,#ffd970 0%,#b8860b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mem-bronze .mem-price span{background:linear-gradient(180deg,#ffd9a8 0%,#cd7f32 60%,#8b5a2b 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important;filter:drop-shadow(0 0 10px rgba(205,127,50,.4))}
+.mem-gold .mem-price span{background:linear-gradient(180deg,#fff4b8 0%,#d4af37 55%,#8b6914 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important;filter:drop-shadow(0 0 12px rgba(212,175,55,.5))}
+.mem-pop.mem-gold .mem-price span{background:linear-gradient(180deg,#fff4b8 0%,#d4af37 55%,#8b6914 100%)!important}
 .mem-price small{font-size:12px;color:${mt}}
 .mem-feats{border-top:1px solid rgba(255,255,255,.08);padding-top:.9rem;margin-bottom:1.2rem;position:relative}
 .mem-feat{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem;font-size:13px;color:rgba(240,239,239,.75)}
 .dot{width:5px;height:5px;background:${vt};border-radius:50%;flex-shrink:0;box-shadow:0 0 8px rgba(211,222,37,.5)}
+.mem-bronze .dot{background:#cd7f32!important;box-shadow:0 0 8px rgba(205,127,50,.7)!important}
+.mem-gold .dot{background:#d4af37!important;box-shadow:0 0 10px rgba(212,175,55,.8)!important}
 .mem-btn{width:100%;padding:13px;min-height:48px;background:transparent;color:${wh};border:1px solid rgba(255,255,255,.15);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-family:inherit;transition:all .3s ${ease}}
 .mem-btn:hover{background:${vt};color:${bg};border-color:${vt}}
 .mem-btn:active{transform:scale(.97)!important;transition-duration:.1s!important}
-.mem-btn-pop{background:${pk};color:#fff;border:none;box-shadow:0 0 18px rgba(237,17,113,.3)}
-.mem-btn-pop:hover{background:${vt};color:${bg};box-shadow:0 0 22px rgba(211,222,37,.5)}
+.mem-btn-bronze{border-color:rgba(205,127,50,.55);color:#f4c68c}
+.mem-btn-bronze:hover{background:linear-gradient(90deg,#8b5a2b 0%,#cd7f32 50%,#f4c68c 100%)!important;color:#fff!important;border-color:#cd7f32!important;box-shadow:0 0 22px rgba(205,127,50,.5)!important}
+.mem-btn-gold{border-color:rgba(212,175,55,.6);color:#ffe589;background:linear-gradient(90deg,rgba(139,105,20,.3) 0%,rgba(212,175,55,.3) 50%,rgba(139,105,20,.3) 100%)}
+.mem-btn-gold:hover{background:linear-gradient(90deg,#8b6914 0%,#d4af37 50%,#ffe589 100%)!important;color:#0a0a0f!important;border-color:#d4af37!important;box-shadow:0 0 26px rgba(212,175,55,.6)!important}
+.mem-btn-pop{background:${pk};color:#fff;border:none;box-shadow:0 0 18px rgba(237,17,113,.4)}
+.mem-btn-pop:hover{background:linear-gradient(90deg,#d4af37,#ffe589,#d4af37)!important;color:#0a0a0f!important;box-shadow:0 0 28px rgba(212,175,55,.6)!important}
 
 .mem-badge-gold{background:linear-gradient(90deg,#b8860b,#d4a017,#f0c040,#d4a017,#b8860b)!important;background-size:200% 100%!important;color:#0a0a0f!important;box-shadow:0 4px 18px rgba(212,160,23,.55),0 0 0 1px rgba(255,220,140,.15)!important;animation:badgePulseGold 2.4s ease-in-out infinite,goldShift 4s linear infinite!important}
 @keyframes badgePulseGold{
@@ -1040,21 +1079,32 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 }
 .mem-legendary > *:not(.mem-aurora):not(.mem-sparkles):not(.mem-emblem){position:relative;z-index:2}
 
-/* corner emblems */
+/* corner emblems (all tiers) */
 .mem-emblem{
-  position:absolute;width:22px;height:22px;opacity:.75;z-index:3;pointer-events:none;
-  filter:drop-shadow(0 0 6px rgba(74,158,255,.6));
-  animation:emblemPulse 2.6s ease-in-out infinite;
+  position:absolute;width:22px;height:22px;opacity:.8;z-index:3;pointer-events:none;
 }
 .mem-emblem-tl{top:10px;left:10px;animation-delay:0s}
 .mem-emblem-tr{top:10px;right:10px;animation-delay:.65s;transform:scaleX(-1)}
 .mem-emblem-bl{bottom:10px;left:10px;animation-delay:1.3s;transform:scaleY(-1)}
 .mem-emblem-br{bottom:10px;right:10px;animation-delay:1.95s;transform:scale(-1,-1)}
+/* per-rank emblem glow */
+.mem-emblem-bronze{filter:drop-shadow(0 0 5px rgba(205,127,50,.75));animation:emblemPulseBronze 3s ease-in-out infinite}
+.mem-emblem-gold{width:26px;height:26px;filter:drop-shadow(0 0 7px rgba(212,175,55,.85));animation:emblemPulseGold 2.6s ease-in-out infinite}
+.mem-emblem-legendary{filter:drop-shadow(0 0 6px rgba(74,158,255,.6));animation:emblemPulse 2.6s ease-in-out infinite}
+@keyframes emblemPulseBronze{
+  0%,100%{opacity:.6;filter:drop-shadow(0 0 4px rgba(205,127,50,.55))}
+  50%{opacity:1;filter:drop-shadow(0 0 9px rgba(244,198,140,.9))}
+}
+@keyframes emblemPulseGold{
+  0%,100%{opacity:.7;filter:drop-shadow(0 0 5px rgba(212,175,55,.7))}
+  50%{opacity:1;filter:drop-shadow(0 0 12px rgba(255,229,137,1))}
+}
 @keyframes emblemPulse{
   0%,100%{opacity:.55;filter:drop-shadow(0 0 4px rgba(74,158,255,.45))}
   50%{opacity:1;filter:drop-shadow(0 0 10px rgba(147,197,253,.9))}
 }
-.mem-legendary:hover .mem-emblem{animation-duration:1.4s}
+.mem-legendary:hover .mem-emblem,.mem-gold:hover .mem-emblem,.mem-bronze:hover .mem-emblem{animation-duration:1.4s}
+.mem-bronze > *:not(.mem-emblem),.mem-gold > *:not(.mem-emblem){position:relative;z-index:2}
 
 /* floating sparkles */
 .mem-sparkles{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
