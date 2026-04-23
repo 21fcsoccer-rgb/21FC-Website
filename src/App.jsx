@@ -892,18 +892,36 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 @keyframes carouselScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ─── MEMBERSHIP ─── */
-.mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.mem-card{padding:clamp(1.8rem,2.5vw,2.2rem);background:linear-gradient(160deg,rgba(16,16,28,.99) 0%,rgba(10,10,16,.95) 100%);border:1px solid rgba(255,255,255,.1);position:relative;transition:all .4s ${ease};overflow:hidden;box-shadow:0 4px 28px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.04)}
-.mem-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(211,222,37,.06),transparent 60%);opacity:0;transition:opacity .4s ease;pointer-events:none}
-.mem-card:hover{border-color:${vt};transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 24px rgba(211,222,37,.2)}
+.mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px;padding-top:6px}
+.mem-card{padding:clamp(1.8rem,2.5vw,2.2rem);background:linear-gradient(160deg,rgba(16,16,28,.99) 0%,rgba(10,10,16,.95) 100%);border:1px solid rgba(255,255,255,.1);position:relative;transition:all .4s ${ease};overflow:visible;box-shadow:0 4px 28px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.04)}
+.mem-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(211,222,37,.08),transparent 60%);opacity:0;transition:opacity .4s ease;pointer-events:none;border-radius:inherit}
+.mem-card::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.06) 50%,transparent 100%);transition:left .9s ${ease};pointer-events:none}
+.mem-card:hover{border-color:${vt};transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.55),0 0 32px rgba(211,222,37,.25),inset 0 0 0 1px rgba(211,222,37,.2)}
 .mem-card:hover::before{opacity:1}
-.mem-pop{background:linear-gradient(160deg,rgba(237,17,113,.12) 0%,rgba(15,12,22,.98) 55%,rgba(10,10,16,.95) 100%);border-color:rgba(237,17,113,.45);box-shadow:0 8px 48px rgba(237,17,113,.2),0 24px 64px rgba(0,0,0,.55)}
-.mem-badge{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:${pk};color:#fff;padding:4px 16px;font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 14px rgba(237,17,113,.4)}
-.mem-name{font-size:14px;font-weight:700;margin-bottom:.3rem}
-.mem-price{margin-bottom:1rem;display:flex;align-items:baseline;gap:.3rem}
-.mem-price span{font-size:clamp(26px,4vw,32px);font-weight:800}
+.mem-card:hover::after{left:100%}
+.mem-pop{background:linear-gradient(160deg,rgba(237,17,113,.14) 0%,rgba(15,12,22,.98) 55%,rgba(10,10,16,.95) 100%);border-color:rgba(237,17,113,.5);box-shadow:0 8px 48px rgba(237,17,113,.22),0 24px 64px rgba(0,0,0,.55),inset 0 0 24px rgba(237,17,113,.04);animation:memPopGlow 3.2s ease-in-out infinite}
+.mem-pop:hover{border-color:rgba(237,17,113,.75)!important;box-shadow:0 16px 56px rgba(237,17,113,.35),0 0 40px rgba(237,17,113,.3),inset 0 0 32px rgba(237,17,113,.08)!important;animation:none}
+@keyframes memPopGlow{
+  0%,100%{box-shadow:0 8px 48px rgba(237,17,113,.22),0 24px 64px rgba(0,0,0,.55),inset 0 0 24px rgba(237,17,113,.04)}
+  50%{box-shadow:0 10px 56px rgba(237,17,113,.4),0 24px 72px rgba(0,0,0,.6),inset 0 0 32px rgba(237,17,113,.1)}
+}
+.mem-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:${pk};color:#fff;padding:5px 18px;font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 18px rgba(237,17,113,.55),0 0 0 1px rgba(255,255,255,.08);white-space:nowrap;z-index:2;animation:badgePulse 2.4s ease-in-out infinite}
+.mem-badge::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-100%);animation:badgeShine 3.6s ease-in-out infinite}
+@keyframes badgePulse{
+  0%,100%{box-shadow:0 4px 18px rgba(237,17,113,.55),0 0 0 1px rgba(255,255,255,.08)}
+  50%{box-shadow:0 4px 24px rgba(237,17,113,.8),0 0 0 1px rgba(255,255,255,.14)}
+}
+@keyframes badgeShine{
+  0%{transform:translateX(-100%)}
+  60%,100%{transform:translateX(200%)}
+}
+.mem-name{font-size:14px;font-weight:700;margin-bottom:.3rem;position:relative}
+.mem-price{margin-bottom:1rem;display:flex;align-items:baseline;gap:.3rem;position:relative}
+.mem-price span{font-size:clamp(26px,4vw,32px);font-weight:800;background:linear-gradient(180deg,${wh} 0%,rgba(240,239,239,.7) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mem-pop .mem-price span{background:linear-gradient(180deg,#fff 0%,#ff92c5 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mem-value .mem-price span{background:linear-gradient(180deg,#ffd970 0%,#b8860b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .mem-price small{font-size:12px;color:${mt}}
-.mem-feats{border-top:1px solid rgba(255,255,255,.08);padding-top:.9rem;margin-bottom:1.2rem}
+.mem-feats{border-top:1px solid rgba(255,255,255,.08);padding-top:.9rem;margin-bottom:1.2rem;position:relative}
 .mem-feat{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem;font-size:13px;color:rgba(240,239,239,.75)}
 .dot{width:5px;height:5px;background:${vt};border-radius:50%;flex-shrink:0;box-shadow:0 0 8px rgba(211,222,37,.5)}
 .mem-btn{width:100%;padding:13px;min-height:48px;background:transparent;color:${wh};border:1px solid rgba(255,255,255,.15);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-family:inherit;transition:all .3s ${ease}}
@@ -912,9 +930,18 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .mem-btn-pop{background:${pk};color:#fff;border:none;box-shadow:0 0 18px rgba(237,17,113,.3)}
 .mem-btn-pop:hover{background:${vt};color:${bg};box-shadow:0 0 22px rgba(211,222,37,.5)}
 
-.mem-badge-gold{background:linear-gradient(90deg,#b8860b,#d4a017,#f0c040)!important;color:#0a0a0f!important;box-shadow:0 4px 14px rgba(212,160,23,.4)!important}
-.mem-value{background:linear-gradient(160deg,rgba(212,160,23,.1) 0%,rgba(15,12,22,.98) 55%,rgba(10,10,16,.95) 100%);border-color:rgba(212,160,23,.4);box-shadow:0 8px 40px rgba(212,160,23,.15),0 24px 64px rgba(0,0,0,.55)}
-.mem-value:hover{border-color:rgba(212,160,23,.7)!important;box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 24px rgba(212,160,23,.3)!important}
+.mem-badge-gold{background:linear-gradient(90deg,#b8860b,#d4a017,#f0c040,#d4a017,#b8860b)!important;background-size:200% 100%!important;color:#0a0a0f!important;box-shadow:0 4px 18px rgba(212,160,23,.55),0 0 0 1px rgba(255,220,140,.15)!important;animation:badgePulseGold 2.4s ease-in-out infinite,goldShift 4s linear infinite!important}
+@keyframes badgePulseGold{
+  0%,100%{box-shadow:0 4px 18px rgba(212,160,23,.55),0 0 0 1px rgba(255,220,140,.15)}
+  50%{box-shadow:0 4px 24px rgba(240,192,64,.85),0 0 0 1px rgba(255,220,140,.25)}
+}
+@keyframes goldShift{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+.mem-value{background:linear-gradient(160deg,rgba(212,160,23,.12) 0%,rgba(15,12,22,.98) 55%,rgba(10,10,16,.95) 100%);border-color:rgba(212,160,23,.45);box-shadow:0 8px 40px rgba(212,160,23,.18),0 24px 64px rgba(0,0,0,.55),inset 0 0 24px rgba(212,160,23,.04);animation:memValueGlow 3.6s ease-in-out infinite}
+.mem-value:hover{border-color:rgba(212,160,23,.75)!important;box-shadow:0 16px 56px rgba(212,160,23,.3),0 0 40px rgba(212,160,23,.25),inset 0 0 32px rgba(212,160,23,.08)!important;animation:none}
+@keyframes memValueGlow{
+  0%,100%{box-shadow:0 8px 40px rgba(212,160,23,.18),0 24px 64px rgba(0,0,0,.55),inset 0 0 24px rgba(212,160,23,.04)}
+  50%{box-shadow:0 10px 48px rgba(212,160,23,.32),0 24px 72px rgba(0,0,0,.6),inset 0 0 32px rgba(212,160,23,.1)}
+}
 .mem-note{text-align:center;margin-top:2rem;font-size:13px;color:rgba(240,239,239,.45);display:flex;align-items:center;justify-content:center;gap:.5rem}
 .mem-note strong{color:rgba(240,239,239,.75)}
 
