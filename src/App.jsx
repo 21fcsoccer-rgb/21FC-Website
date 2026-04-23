@@ -686,7 +686,11 @@ const App = () => {
 /* ─── RESET ─── */
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:'Barlow Condensed',sans-serif;background:${bg};color:${wh};overflow-x:hidden;-webkit-font-smoothing:antialiased;font-weight:400;letter-spacing:.005em}
+h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,.fixture-day-badge,.wc-banner-title{font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:.005em}
+.sec-heading,.cta-heading{text-transform:uppercase;letter-spacing:.02em}
+.mem-name{text-transform:uppercase;letter-spacing:.1em!important;font-weight:600!important}
+.stat-lbl,.nav-link,.nav-btn,.sess-marq-item,.mem-btn,.btn-cta,.fixture-h-cell{font-family:'Barlow Condensed',sans-serif;font-weight:600}
 
 /* ─── AMBIENT BACKGROUND ─── */
 .site-wrap{position:relative;overflow:hidden}
@@ -756,11 +760,11 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
   80%{transform:perspective(300px) rotateY(12deg) rotateZ(2deg) scaleX(1.01)}
 }
 .wc-banner-text{flex:1;min-width:200px}
-.wc-banner-eyebrow{font-family:'Red Hat Display',sans-serif;font-size:clamp(.5rem,1.2vw,.7rem);font-weight:800;letter-spacing:.3em;text-transform:uppercase;color:#FF3386;margin-bottom:.2rem}
-.wc-banner-title{font-family:'Red Hat Display',sans-serif;font-size:clamp(1.4rem,4vw,2.4rem);font-weight:900;line-height:1;letter-spacing:-.02em}
+.wc-banner-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:clamp(.5rem,1.2vw,.7rem);font-weight:800;letter-spacing:.3em;text-transform:uppercase;color:#FF3386;margin-bottom:.2rem}
+.wc-banner-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(1.4rem,4vw,2.4rem);font-weight:900;line-height:1;letter-spacing:-.02em}
 .wc-banner-title span{color:#D4AF37;text-shadow:0 0 30px rgba(212,175,55,.2)}
 .wc-banner-sub{font-size:clamp(.6rem,1.3vw,.82rem);color:${mt};margin-top:.2rem;font-weight:600;letter-spacing:.08em}
-.wc-banner-cta{flex-shrink:0;font-family:'Red Hat Display',sans-serif;font-size:clamp(.65rem,1.2vw,.82rem);font-weight:800;letter-spacing:.25em;text-transform:uppercase;padding:clamp(.55rem,1vw,.8rem) clamp(1rem,2vw,2rem);background:#D4AF37;color:${bg};transition:all .3s ${ease};position:relative;overflow:hidden;animation:wcBtnPulse 2.5s ease-in-out infinite}
+.wc-banner-cta{flex-shrink:0;font-family:'Barlow Condensed',sans-serif;font-size:clamp(.65rem,1.2vw,.82rem);font-weight:800;letter-spacing:.25em;text-transform:uppercase;padding:clamp(.55rem,1vw,.8rem) clamp(1rem,2vw,2rem);background:#D4AF37;color:${bg};transition:all .3s ${ease};position:relative;overflow:hidden;animation:wcBtnPulse 2.5s ease-in-out infinite}
 .wc-banner-cta::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transition:left .6s ease}
 .wc-banner:hover .wc-banner-cta{background:#e8c84a;transform:translateY(-2px);box-shadow:0 0 24px rgba(212,175,55,.5);animation:none}
 .wc-banner:hover .wc-banner-cta::after{left:100%}
@@ -786,7 +790,7 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 /* ─── SESSION MARQUEE ─── */
 .sess-marq{overflow:hidden;background:linear-gradient(90deg,transparent,rgba(237,17,113,.03) 20%,rgba(211,222,37,.03) 50%,rgba(237,17,113,.03) 80%,transparent);border-top:1px solid rgba(237,17,113,.08);border-bottom:1px solid rgba(211,222,37,.08);padding:1.2rem 0;position:relative;mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,black 10%,black 90%,transparent)}
 .sess-marq-track{display:flex;gap:0;white-space:nowrap;animation:sessScroll 35s linear infinite;width:fit-content}
-.sess-marq-item{display:inline-flex;align-items:center;gap:.8rem;padding:0 2.5rem;font-family:'Red Hat Display',sans-serif;font-size:clamp(16px,2.2vw,24px);font-weight:800;letter-spacing:2px;text-transform:uppercase;color:${wh};opacity:.85;border-right:1px solid rgba(255,255,255,.06)}
+.sess-marq-item{display:inline-flex;align-items:center;gap:.8rem;padding:0 2.5rem;font-family:'Barlow Condensed',sans-serif;font-size:clamp(16px,2.2vw,24px);font-weight:800;letter-spacing:2px;text-transform:uppercase;color:${wh};opacity:.85;border-right:1px solid rgba(255,255,255,.06)}
 .sess-marq-item:nth-child(3n){color:${vt}}
 .sess-marq-item:nth-child(3n+2){color:${pk}}
 .sess-marq-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor;flex-shrink:0}
