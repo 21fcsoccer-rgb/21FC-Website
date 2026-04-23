@@ -396,6 +396,7 @@ const TiltMemCard = ({ p, i }) => {
       {p.rank === 'legendary' && <div className="mem-badge mem-badge-legendary"><span>✦ {p.badge} ✦</span></div>}
       <div className="mem-name">{p.name}</div>
       <div className="mem-price"><span>{p.price}</span><small>{p.per}</small></div>
+      {p.save && <div className={`mem-save mem-save-${p.rank}`}>{p.save}</div>}
       <div className="mem-feats">
         {p.feats.map((f, fi) => (
           <div key={fi} className="mem-feat"><span className="dot" />{f}</div>
@@ -418,9 +419,9 @@ const Membership = () => (
       <div className="mem-grid g4">
         {[
           { name: 'Drop-In',     price: '$15',  per: '/session', feats: ['Single match access', 'No commitment', 'Walk-on flexibility', 'Pay as you go'] },
-          { name: 'Bronze',      price: '$45',  per: '/month',   feats: ['4 sessions/month', 'Priority booking', 'Player community', 'Kit discounts'], rank: 'bronze' },
-          { name: 'Pro',         price: '$160', per: '/month',   feats: ['Unlimited games all month', 'Priority booking', 'Player community access', 'Kit discounts'], pop: true, rank: 'gold' },
-          { name: 'Season Pass', price: '$500', per: '/season',  feats: ['Full 3-month season', 'Unlimited games included', 'Reserved team slots', 'Exclusive legendary crest'], rank: 'legendary', badge: 'LEGENDARY' },
+          { name: 'Bronze',      price: '$45',  per: '/month',   feats: ['4 sessions/month', 'Priority booking', 'Player community', 'Kit discounts'], rank: 'bronze', save: 'Save 25% vs drop-in' },
+          { name: 'Pro',         price: '$160', per: '/month',   feats: ['Unlimited games all month', 'Priority booking', 'Player community access', 'Kit discounts'], pop: true, rank: 'gold', save: 'Save up to 33%' },
+          { name: 'Season Pass', price: '$500', per: '/season',  feats: ['Full 3-month season', 'Unlimited games included', 'Reserved team slots', 'Exclusive legendary crest'], rank: 'legendary', badge: 'LEGENDARY', save: 'Save 30%+ over the season' },
         ].map((p, i) => <TiltMemCard key={i} p={p} i={i} />)}
       </div>
       <div className="rv mem-note">
@@ -1009,8 +1010,11 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .mem-price span{font-size:clamp(26px,4vw,32px);font-weight:800;background:linear-gradient(180deg,${wh} 0%,rgba(240,239,239,.7) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .mem-bronze .mem-price span{background:linear-gradient(180deg,#ffd9a8 0%,#cd7f32 60%,#8b5a2b 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important;color:transparent!important}
 .mem-gold .mem-price span{background:linear-gradient(180deg,#fff4b8 0%,#d4af37 55%,#8b6914 100%)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important;color:transparent!important}
-.mem-pop.mem-gold .mem-price span{background:linear-gradient(180deg,#fff4b8 0%,#d4af37 55%,#8b6914 100%)!important}
 .mem-price small{font-size:12px;color:${mt}}
+.mem-save{display:inline-block;margin-bottom:1rem;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1.5px;padding:3px 10px;border-radius:2px;position:relative;z-index:2}
+.mem-save-bronze{background:rgba(205,127,50,.18);color:#f4c68c;border:1px solid rgba(205,127,50,.4);box-shadow:0 0 12px rgba(205,127,50,.2)}
+.mem-save-gold{background:rgba(212,175,55,.2);color:#ffe589;border:1px solid rgba(212,175,55,.5);box-shadow:0 0 14px rgba(212,175,55,.28)}
+.mem-save-legendary{background:rgba(74,158,255,.2);color:#93c5fd;border:1px solid rgba(74,158,255,.5);box-shadow:0 0 14px rgba(74,158,255,.3)}
 .mem-feats{border-top:1px solid rgba(255,255,255,.08);padding-top:.9rem;margin-bottom:1.2rem;position:relative}
 .mem-feat{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem;font-size:13px;color:rgba(240,239,239,.75)}
 .dot{width:5px;height:5px;background:${vt};border-radius:50%;flex-shrink:0;box-shadow:0 0 8px rgba(211,222,37,.5)}
