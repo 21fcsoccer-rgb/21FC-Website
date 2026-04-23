@@ -323,9 +323,10 @@ const Gallery = () => {
 const TiltMemCard = ({ p, i }) => {
   const ref = useTilt(6);
   return (
-    <div ref={ref} className={`rv d${i + 1} mem-card tilt-card${p.pop ? ' mem-pop' : ''}`}>
+    <div ref={ref} className={`rv d${i + 1} mem-card tilt-card${p.pop ? ' mem-pop' : ''}${p.badge && !p.pop ? ' mem-value' : ''}`}>
       <div className="tilt-glow" />
-      {p.pop && <div className="mem-badge">Popular</div>}
+      {p.pop && <div className="mem-badge">Most Popular</div>}
+      {p.badge && !p.pop && <div className="mem-badge mem-badge-gold">{p.badge}</div>}
       <div className="mem-name">{p.name}</div>
       <div className="mem-price"><span>{p.price}</span><small>{p.per}</small></div>
       <div className="mem-feats">
@@ -347,10 +348,57 @@ const Membership = () => (
       </div>
       <div className="mem-grid g3">
         {[
-          { name: 'Drop-In', price: '$20', per: '/session', feats: ['Single match access', 'No commitment', 'Walk-on flexibility'], pop: false },
-          { name: 'Player', price: '$120', per: '/month', feats: ['Unlimited games', 'Priority booking', 'Player community', 'Kit discounts'], pop: true },
-          { name: 'Captain', price: '$200', per: '/month', feats: ['Reserved team slots', 'Coach access', 'Premium stats', 'Exclusive events'], pop: false },
+          { name: 'Drop-In', price: '$20', per: '/session', feats: ['Single match access', 'No commitment', 'Walk-on flexibility', 'Pay as you go'], pop: false },
+          { name: 'Pro', price: '$160', per: '/month', feats: ['Unlimited games all month', 'Priority booking', 'Player community access', 'Kit discounts'], pop: true },
+          { name: 'Season Pass', price: '$500', per: '/season', feats: ['Full 3-month season', 'Unlimited games included', 'Reserved team slots', 'Best value — save $-'], pop: false, badge: 'Best Value' },
         ].map((p, i) => <TiltMemCard key={i} p={p} i={i} />)}
+      </div>
+      <div className="rv mem-note">
+        <span>⚽</span> Season runs <strong>3 months</strong> — unlimited access, one flat price.
+      </div>
+    </div>
+  </section>
+);
+
+/* ─── REFERRAL PROGRAM ─── */
+const ReferralTier = ({ icon, reward, desc, highlight }) => (
+  <div className={`ref-tier rv${highlight ? ' ref-tier-hot' : ''}`}>
+    <div className="ref-icon">{icon}</div>
+    <div className="ref-reward">{reward}</div>
+    <div className="ref-desc">{desc}</div>
+    {highlight && <div className="ref-hot-badge">🔥 Best Reward</div>}
+  </div>
+);
+
+const Referral = () => (
+  <section id="referral" className="section ref-section">
+    <div className="ref-bg-glow" />
+    <div className="ref-bg-glow-2" />
+    <div className="container">
+      <div className="rv" style={{ textAlign: 'center', marginBottom: '2.8rem' }}>
+        <div className="accent-line" style={{ margin: '0 auto .8rem' }} />
+        <h2 className="sec-heading">Refer &amp; Earn</h2>
+        <p className="sec-sub">Bring your crew. Get rewarded on the pitch.</p>
+      </div>
+      <div className="ref-grid">
+        <ReferralTier
+          icon="👥"
+          reward="1 Free Game"
+          desc="Refer 2 or more new players and earn a free session — on us."
+          highlight={false}
+        />
+        <ReferralTier
+          icon="🏆"
+          reward="2 Free Games"
+          desc="Refer 5 new players and unlock two free sessions. Stack your squad, stack your rewards."
+          highlight={true}
+        />
+      </div>
+      <div className="rv ref-cta-wrap">
+        <p className="ref-fine">Rewards apply once referred players complete their first paid session. DM us on Instagram to claim.</p>
+        <a className="ref-cta-btn" href="https://instagram.com/21fc.soccer" target="_blank" rel="noreferrer">
+          Claim via Instagram →
+        </a>
       </div>
     </div>
   </section>
@@ -843,7 +891,32 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .mem-btn-pop{background:${pk};color:#fff;border:none;box-shadow:0 0 18px rgba(237,17,113,.3)}
 .mem-btn-pop:hover{background:${vt};color:${bg};box-shadow:0 0 22px rgba(211,222,37,.5)}
 
-/* ─── CTA ─── */
+.mem-badge-gold{background:linear-gradient(90deg,#b8860b,#d4a017,#f0c040)!important;color:#0a0a0f!important;box-shadow:0 4px 14px rgba(212,160,23,.4)!important}
+.mem-value{background:linear-gradient(160deg,rgba(212,160,23,.1) 0%,rgba(15,12,22,.98) 55%,rgba(10,10,16,.95) 100%);border-color:rgba(212,160,23,.4);box-shadow:0 8px 40px rgba(212,160,23,.15),0 24px 64px rgba(0,0,0,.55)}
+.mem-value:hover{border-color:rgba(212,160,23,.7)!important;box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 24px rgba(212,160,23,.3)!important}
+.mem-note{text-align:center;margin-top:2rem;font-size:13px;color:rgba(240,239,239,.45);display:flex;align-items:center;justify-content:center;gap:.5rem}
+.mem-note strong{color:rgba(240,239,239,.75)}
+
+/* ─── REFERRAL ─── */
+.ref-section{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(10,10,18,.98) 0%,rgba(14,12,22,.97) 50%,rgba(10,10,18,.98) 100%);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.03)}
+.ref-bg-glow{position:absolute;top:-20%;left:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(237,17,113,.08) 0%,transparent 70%);border-radius:50%;pointer-events:none;filter:blur(30px);animation:ctaPulse 12s ease-in-out infinite alternate}
+.ref-bg-glow-2{position:absolute;bottom:-20%;right:-10%;width:450px;height:450px;background:radial-gradient(circle,rgba(212,160,23,.07) 0%,transparent 70%);border-radius:50%;pointer-events:none;filter:blur(30px);animation:ctaPulse2 10s ease-in-out infinite alternate}
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:800px;margin:0 auto 2.5rem}
+.ref-tier{position:relative;padding:clamp(2rem,3vw,2.8rem);background:linear-gradient(160deg,rgba(16,16,28,.99) 0%,rgba(10,10,16,.95) 100%);border:1px solid rgba(255,255,255,.1);text-align:center;transition:all .4s ${ease};overflow:hidden}
+.ref-tier::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(211,222,37,.05),transparent 60%);opacity:0;transition:opacity .4s ease;pointer-events:none}
+.ref-tier:hover{border-color:rgba(211,222,37,.35);transform:translateY(-5px);box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 20px rgba(211,222,37,.15)}
+.ref-tier:hover::before{opacity:1}
+.ref-tier-hot{background:linear-gradient(160deg,rgba(237,17,113,.13) 0%,rgba(15,12,22,.98) 55%,rgba(10,10,16,.95) 100%);border-color:rgba(237,17,113,.4);box-shadow:0 8px 40px rgba(237,17,113,.15),0 24px 64px rgba(0,0,0,.5)}
+.ref-tier-hot:hover{border-color:rgba(237,17,113,.6)!important;box-shadow:0 16px 48px rgba(0,0,0,.55),0 0 28px rgba(237,17,113,.25)!important}
+.ref-icon{font-size:clamp(2.4rem,5vw,3.2rem);margin-bottom:1rem;line-height:1}
+.ref-reward{font-size:clamp(22px,3vw,28px);font-weight:900;margin-bottom:.5rem;letter-spacing:-.02em}
+.ref-desc{font-size:14px;color:rgba(240,239,239,.6);line-height:1.65;max-width:280px;margin:0 auto}
+.ref-hot-badge{display:inline-block;margin-top:1rem;background:${pk};color:#fff;padding:4px 14px;font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 14px rgba(237,17,113,.4)}
+.ref-cta-wrap{text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem}
+.ref-fine{font-size:12px;color:rgba(240,239,239,.35);max-width:440px;line-height:1.6}
+.ref-cta-btn{display:inline-block;padding:14px 36px;background:transparent;color:${wh};border:1px solid rgba(255,255,255,.2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;text-decoration:none;transition:all .3s ${ease}}
+.ref-cta-btn:hover{background:${pk};border-color:${pk};box-shadow:0 0 22px rgba(237,17,113,.4)}
+@media(max-width:600px){.ref-grid{grid-template-columns:1fr}}
 .cta-section{position:relative;padding:clamp(5rem,12vh,9rem) 2rem;overflow:hidden;text-align:center;
   background:linear-gradient(135deg,rgba(237,17,113,.1) 0%,${bg} 35%,${bg} 55%,rgba(211,222,37,.06) 100%);
   border-top:1px solid rgba(237,17,113,.15);border-bottom:1px solid rgba(211,222,37,.15)}
@@ -1075,6 +1148,8 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
       <div className="prlx" data-rate="0.2"><Gallery /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.1"><Membership /></div>
+      <div className="glow-div" />
+      <div className="prlx" data-rate="0.14"><Referral /></div>
       <div className="prlx" data-rate="0.22"><CTA /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.12"><Contact /></div>
