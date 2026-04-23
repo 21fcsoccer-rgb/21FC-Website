@@ -320,13 +320,58 @@ const Gallery = () => {
 };
 
 /* ─── MEMBERSHIP ─── */
+/* Legendary corner emblem — soccer star shield */
+const LegendaryEmblem = ({ pos }) => (
+  <svg className={`mem-emblem mem-emblem-${pos}`} viewBox="0 0 32 32" aria-hidden="true">
+    <defs>
+      <linearGradient id={`emb-grad-${pos}`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#93C5FD" />
+        <stop offset="50%" stopColor="#4A9EFF" />
+        <stop offset="100%" stopColor="#06B6D4" />
+      </linearGradient>
+    </defs>
+    {/* shield outline */}
+    <path d="M16 2 L28 6 L28 16 Q28 25 16 30 Q4 25 4 16 L4 6 Z"
+          fill="none" stroke={`url(#emb-grad-${pos})`} strokeWidth="1.4" />
+    {/* inner star */}
+    <path d="M16 9 L18 14 L23.5 14 L19 17.5 L21 23 L16 19.5 L11 23 L13 17.5 L8.5 14 L14 14 Z"
+          fill={`url(#emb-grad-${pos})`} opacity="0.9" />
+  </svg>
+);
+
+/* floating sparkle particles for legendary card */
+const LegendarySparkles = () => (
+  <div className="mem-sparkles" aria-hidden="true">
+    {Array.from({ length: 9 }).map((_, i) => (
+      <span key={i} className="mem-spark" style={{
+        left: `${(i * 11 + 7) % 95}%`,
+        top: `${(i * 17 + 5) % 90}%`,
+        animationDelay: `${(i * 0.4) % 3.5}s`,
+        animationDuration: `${3 + (i % 3)}s`,
+      }} />
+    ))}
+  </div>
+);
+
 const TiltMemCard = ({ p, i }) => {
-  const ref = useTilt(6);
+  const ref = useTilt(p.legendary ? 9 : 6);
+  const variantClass = p.legendary ? ' mem-legendary' : p.pop ? ' mem-pop' : p.badge ? ' mem-value' : '';
   return (
-    <div ref={ref} className={`rv d${i + 1} mem-card tilt-card${p.pop ? ' mem-pop' : ''}${p.badge && !p.pop ? ' mem-value' : ''}`}>
+    <div ref={ref} className={`rv d${i + 1} mem-card tilt-card${variantClass}`}>
       <div className="tilt-glow" />
+      {p.legendary && (
+        <>
+          <div className="mem-aurora" />
+          <LegendarySparkles />
+          <LegendaryEmblem pos="tl" />
+          <LegendaryEmblem pos="tr" />
+          <LegendaryEmblem pos="bl" />
+          <LegendaryEmblem pos="br" />
+        </>
+      )}
       {p.pop && <div className="mem-badge">Most Popular</div>}
-      {p.badge && !p.pop && <div className="mem-badge mem-badge-gold">{p.badge}</div>}
+      {p.legendary && <div className="mem-badge mem-badge-legendary"><span>✦ {p.badge} ✦</span></div>}
+      {p.badge && !p.pop && !p.legendary && <div className="mem-badge mem-badge-gold">{p.badge}</div>}
       <div className="mem-name">{p.name}</div>
       <div className="mem-price"><span>{p.price}</span><small>{p.per}</small></div>
       <div className="mem-feats">
@@ -334,7 +379,9 @@ const TiltMemCard = ({ p, i }) => {
           <div key={fi} className="mem-feat"><span className="dot" />{f}</div>
         ))}
       </div>
-      <button className={`mem-btn${p.pop ? ' mem-btn-pop' : ''}`}>Choose Plan</button>
+      <button className={`mem-btn${p.pop ? ' mem-btn-pop' : ''}${p.legendary ? ' mem-btn-legendary' : ''}`}>
+        {p.legendary ? 'Claim Legendary' : 'Choose Plan'}
+      </button>
     </div>
   );
 };
@@ -351,7 +398,7 @@ const Membership = () => (
           { name: 'Drop-In',     price: '$15',  per: '/session', feats: ['Single match access', 'No commitment', 'Walk-on flexibility', 'Pay as you go'], pop: false },
           { name: 'Bronze',      price: '$45',  per: '/month',   feats: ['4 sessions/month', 'Priority booking', 'Player community', 'Kit discounts'], pop: false },
           { name: 'Pro',         price: '$160', per: '/month',   feats: ['Unlimited games all month', 'Priority booking', 'Player community access', 'Kit discounts'], pop: true },
-          { name: 'Season Pass', price: '$500', per: '/season',  feats: ['Full 3-month season', 'Unlimited games included', 'Reserved team slots', 'Best value — save big'], pop: false, badge: 'Best Value' },
+          { name: 'Season Pass', price: '$500', per: '/season',  feats: ['Full 3-month season', 'Unlimited games included', 'Reserved team slots', 'Exclusive legendary crest'], pop: false, legendary: true, badge: 'LEGENDARY' },
         ].map((p, i) => <TiltMemCard key={i} p={p} i={i} />)}
       </div>
       <div className="rv mem-note">
@@ -942,6 +989,135 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
   0%,100%{box-shadow:0 8px 40px rgba(212,160,23,.18),0 24px 64px rgba(0,0,0,.55),inset 0 0 24px rgba(212,160,23,.04)}
   50%{box-shadow:0 10px 48px rgba(212,160,23,.32),0 24px 72px rgba(0,0,0,.6),inset 0 0 32px rgba(212,160,23,.1)}
 }
+
+/* ═══ LEGENDARY TIER ═══ */
+.mem-legendary{
+  background:linear-gradient(160deg,rgba(30,58,138,.25) 0%,rgba(12,20,40,.98) 45%,rgba(8,12,28,.97) 100%);
+  border-color:rgba(74,158,255,.55);
+  box-shadow:
+    0 8px 48px rgba(74,158,255,.28),
+    0 24px 72px rgba(6,182,212,.14),
+    0 0 0 1px rgba(147,197,253,.15),
+    inset 0 0 40px rgba(30,58,138,.25);
+  animation:legendGlow 3.4s ease-in-out infinite;
+  position:relative;
+}
+.mem-legendary:hover{
+  border-color:rgba(147,197,253,.85)!important;
+  box-shadow:
+    0 20px 64px rgba(74,158,255,.45),
+    0 0 56px rgba(6,182,212,.35),
+    0 0 0 1px rgba(147,197,253,.4),
+    inset 0 0 48px rgba(74,158,255,.2)!important;
+  animation:none;
+}
+@keyframes legendGlow{
+  0%,100%{box-shadow:0 8px 48px rgba(74,158,255,.28),0 24px 72px rgba(6,182,212,.14),0 0 0 1px rgba(147,197,253,.15),inset 0 0 40px rgba(30,58,138,.25)}
+  50%{box-shadow:0 12px 64px rgba(74,158,255,.45),0 24px 80px rgba(6,182,212,.28),0 0 0 1px rgba(147,197,253,.3),inset 0 0 56px rgba(74,158,255,.18)}
+}
+/* aurora sweep behind content */
+.mem-aurora{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 140% 80% at 20% 0%,rgba(74,158,255,.22) 0%,transparent 55%),
+    radial-gradient(ellipse 120% 80% at 85% 100%,rgba(6,182,212,.18) 0%,transparent 55%),
+    radial-gradient(ellipse 100% 60% at 50% 50%,rgba(147,51,234,.12) 0%,transparent 60%);
+  mask-image:linear-gradient(180deg,black 0%,black 70%,transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,black 0%,black 70%,transparent 100%);
+  animation:auroraShift 7s ease-in-out infinite alternate;
+}
+@keyframes auroraShift{
+  0%{transform:translate(0,0) scale(1);filter:hue-rotate(0deg)}
+  100%{transform:translate(2%,-1%) scale(1.08);filter:hue-rotate(15deg)}
+}
+.mem-legendary > *:not(.mem-aurora):not(.mem-sparkles):not(.mem-emblem){position:relative;z-index:2}
+
+/* corner emblems */
+.mem-emblem{
+  position:absolute;width:22px;height:22px;opacity:.75;z-index:3;pointer-events:none;
+  filter:drop-shadow(0 0 6px rgba(74,158,255,.6));
+  animation:emblemPulse 2.6s ease-in-out infinite;
+}
+.mem-emblem-tl{top:10px;left:10px;animation-delay:0s}
+.mem-emblem-tr{top:10px;right:10px;animation-delay:.65s;transform:scaleX(-1)}
+.mem-emblem-bl{bottom:10px;left:10px;animation-delay:1.3s;transform:scaleY(-1)}
+.mem-emblem-br{bottom:10px;right:10px;animation-delay:1.95s;transform:scale(-1,-1)}
+@keyframes emblemPulse{
+  0%,100%{opacity:.55;filter:drop-shadow(0 0 4px rgba(74,158,255,.45))}
+  50%{opacity:1;filter:drop-shadow(0 0 10px rgba(147,197,253,.9))}
+}
+.mem-legendary:hover .mem-emblem{animation-duration:1.4s}
+
+/* floating sparkles */
+.mem-sparkles{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.mem-spark{
+  position:absolute;width:3px;height:3px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.95) 0%,rgba(147,197,253,.6) 40%,transparent 70%);
+  box-shadow:0 0 8px rgba(147,197,253,.9),0 0 14px rgba(74,158,255,.5);
+  animation:sparkFloat 3.5s ease-in-out infinite;
+  opacity:0;
+}
+@keyframes sparkFloat{
+  0%{opacity:0;transform:translate(0,0) scale(.4)}
+  15%{opacity:1}
+  50%{opacity:1;transform:translate(6px,-10px) scale(1.2)}
+  85%{opacity:1}
+  100%{opacity:0;transform:translate(12px,-20px) scale(.4)}
+}
+
+/* legendary holographic badge */
+.mem-badge-legendary{
+  background:linear-gradient(90deg,#1e3a8a,#4a9eff,#06b6d4,#93c5fd,#4a9eff,#1e3a8a)!important;
+  background-size:300% 100%!important;
+  color:#fff!important;
+  padding:6px 22px!important;
+  font-size:10px!important;
+  letter-spacing:2.5px!important;
+  font-weight:900!important;
+  text-shadow:0 0 8px rgba(147,197,253,.9),0 1px 2px rgba(0,0,0,.5)!important;
+  box-shadow:
+    0 4px 20px rgba(74,158,255,.7),
+    0 0 0 1px rgba(147,197,253,.35),
+    inset 0 1px 0 rgba(255,255,255,.3)!important;
+  animation:legendShift 3s linear infinite,legendPulse 2s ease-in-out infinite!important;
+  top:-13px!important;
+}
+.mem-badge-legendary span{position:relative;z-index:1}
+@keyframes legendShift{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+@keyframes legendPulse{
+  0%,100%{box-shadow:0 4px 20px rgba(74,158,255,.7),0 0 0 1px rgba(147,197,253,.35),inset 0 1px 0 rgba(255,255,255,.3)}
+  50%{box-shadow:0 4px 32px rgba(147,197,253,1),0 0 0 1px rgba(147,197,253,.6),0 0 28px rgba(74,158,255,.8),inset 0 1px 0 rgba(255,255,255,.4)}
+}
+
+/* legendary button */
+.mem-btn-legendary{
+  background:linear-gradient(90deg,#1e3a8a 0%,#4a9eff 50%,#06b6d4 100%)!important;
+  background-size:200% 100%!important;
+  color:#fff!important;
+  border:none!important;
+  box-shadow:0 0 20px rgba(74,158,255,.5),inset 0 1px 0 rgba(255,255,255,.2)!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.3);
+  animation:legendBtnShift 4s linear infinite;
+}
+.mem-btn-legendary:hover{
+  background:linear-gradient(90deg,#06b6d4 0%,#93c5fd 50%,#4a9eff 100%)!important;
+  color:#0a0a14!important;
+  box-shadow:0 0 32px rgba(147,197,253,.8),inset 0 1px 0 rgba(255,255,255,.4)!important;
+  transform:translateY(-1px);
+}
+@keyframes legendBtnShift{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+
+/* legendary price gradient */
+.mem-legendary .mem-price span{
+  background:linear-gradient(180deg,#ffffff 0%,#93c5fd 50%,#06b6d4 100%)!important;
+  -webkit-background-clip:text!important;
+  -webkit-text-fill-color:transparent!important;
+  background-clip:text!important;
+  filter:drop-shadow(0 0 12px rgba(74,158,255,.5));
+}
+.mem-legendary .mem-name{color:#93c5fd;text-shadow:0 0 12px rgba(74,158,255,.4);letter-spacing:1.2px;font-weight:800}
+.mem-legendary .mem-feat{color:rgba(220,235,255,.82)}
+.mem-legendary .dot{background:#4a9eff!important;box-shadow:0 0 10px rgba(74,158,255,.9)!important}
 .mem-note{text-align:center;margin-top:2rem;font-size:13px;color:rgba(240,239,239,.45);display:flex;align-items:center;justify-content:center;gap:.5rem}
 .mem-note strong{color:rgba(240,239,239,.75)}
 
