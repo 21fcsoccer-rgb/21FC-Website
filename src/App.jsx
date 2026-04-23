@@ -346,11 +346,12 @@ const Membership = () => (
         <h2 className="sec-heading">Membership</h2>
         <p className="sec-sub">Choose your commitment level</p>
       </div>
-      <div className="mem-grid g3">
+      <div className="mem-grid g4">
         {[
-          { name: 'Drop-In', price: '$20', per: '/session', feats: ['Single match access', 'No commitment', 'Walk-on flexibility', 'Pay as you go'], pop: false },
-          { name: 'Pro', price: '$160', per: '/month', feats: ['Unlimited games all month', 'Priority booking', 'Player community access', 'Kit discounts'], pop: true },
-          { name: 'Season Pass', price: '$500', per: '/season', feats: ['Full 3-month season', 'Unlimited games included', 'Reserved team slots', 'Best value — save $-'], pop: false, badge: 'Best Value' },
+          { name: 'Drop-In',     price: '$15',  per: '/session', feats: ['Single match access', 'No commitment', 'Walk-on flexibility', 'Pay as you go'], pop: false },
+          { name: 'Bronze',      price: '$45',  per: '/month',   feats: ['4 sessions/month', 'Priority booking', 'Player community', 'Kit discounts'], pop: false },
+          { name: 'Pro',         price: '$160', per: '/month',   feats: ['Unlimited games all month', 'Priority booking', 'Player community access', 'Kit discounts'], pop: true },
+          { name: 'Season Pass', price: '$500', per: '/season',  feats: ['Full 3-month season', 'Unlimited games included', 'Reserved team slots', 'Best value — save big'], pop: false, badge: 'Best Value' },
         ].map((p, i) => <TiltMemCard key={i} p={p} i={i} />)}
       </div>
       <div className="rv mem-note">
@@ -660,7 +661,7 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .rv.d7{transition-delay:.56s}.rv.d8{transition-delay:.64s}.rv.d9{transition-delay:.72s}
 
 /* ─── PARALLAX ─── sections translate at different rates so they fall into each other */
-.prlx{--prlx-y:0px;transform:translate3d(0,var(--prlx-y),0);will-change:transform;transition:transform .1s linear}
+.prlx{--prlx-y:0px;transform:translate3d(0,var(--prlx-y),0);will-change:transform}
 @media(prefers-reduced-motion:reduce){.prlx{transform:none!important}}
 
 /* ─── CURSOR SPOTLIGHT ─── soft glow follows mouse */
@@ -796,7 +797,7 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 .stat-lbl{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:${mt};margin-top:.2rem}
 
 /* ─── SECTIONS ─── */
-.section{padding:clamp(4.5rem,8vh,7rem) clamp(1.5rem,5vw,4rem);position:relative;overflow:hidden}
+.section{padding:clamp(4.5rem,8vh,7rem) clamp(1.5rem,5vw,4rem);position:relative;overflow:visible}
 .section-alt{background:linear-gradient(160deg,rgba(16,16,28,.98) 0%,rgba(12,10,20,.97) 45%,rgba(16,14,26,.98) 100%);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.03)}
 /* per-section radial gradient accents — differentiate sections */
 #about{background:radial-gradient(ellipse 80% 60% at 90% 10%,rgba(237,17,113,.07) 0%,transparent 60%),${bg}}
@@ -871,7 +872,7 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 @keyframes carouselScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ─── MEMBERSHIP ─── */
-.mem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .mem-card{padding:clamp(1.8rem,2.5vw,2.2rem);background:linear-gradient(160deg,rgba(16,16,28,.99) 0%,rgba(10,10,16,.95) 100%);border:1px solid rgba(255,255,255,.1);position:relative;transition:all .4s ${ease};overflow:hidden;box-shadow:0 4px 28px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.04)}
 .mem-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(211,222,37,.06),transparent 60%);opacity:0;transition:opacity .4s ease;pointer-events:none}
 .mem-card:hover{border-color:${vt};transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 24px rgba(211,222,37,.2)}
@@ -982,6 +983,7 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
   .g2{grid-template-columns:1fr!important}
   .g4{grid-template-columns:repeat(2,1fr)!important}
   .g3{grid-template-columns:1fr!important}
+  .mem-grid{grid-template-columns:repeat(2,1fr)!important}
   .navL{display:none!important}
   .hero-h1 .big{font-size:clamp(44px,13vw,90px)}
   .hero-h1 .sub{font-size:clamp(26px,8vw,56px)}
@@ -1002,6 +1004,7 @@ body{font-family:'Red Hat Display',sans-serif;background:${bg};color:${wh};overf
 }
 @media(max-width:600px){
   .g4{grid-template-columns:1fr!important}
+  .mem-grid{grid-template-columns:1fr!important}
   .img-band{grid-template-columns:1fr}
   .img-band-cell:last-child{display:block}
   .fixture-row{grid-template-columns:1fr 1fr auto;padding:1rem .8rem}
