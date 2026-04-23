@@ -598,44 +598,72 @@ const CTA = () => (
 const Contact = () => {
   const [form, setForm] = useState({ name: '', email: '', msg: '' });
   const [sent, setSent] = useState(false);
+  const [copied, setCopied] = useState(false);
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  const buildMailtoHref = () => {
+    const subject = encodeURIComponent(`21FC Inquiry from ${form.name || 'Website Visitor'}`);
+    const body = encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.msg}`);
+    return `mailto:21fc.soccer@gmail.com?subject=${subject}&body=${body}`;
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
-    const subject = encodeURIComponent(`21FC Inquiry from ${form.name}`);
-    const body = encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.msg}`);
-    window.open(`mailto:21fc.soccer@gmail.com?subject=${subject}&body=${body}`, '_blank');
+    window.location.href = buildMailtoHref();
     setSent(true);
-    setTimeout(() => setSent(false), 4000);
+    setTimeout(() => setSent(false), 5000);
   };
+
+  const copyEmail = () => {
+    const email = '21fc.soccer@gmail.com';
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(email).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }).catch(() => {});
+    }
+  };
+
   return (
     <section id="join" className="section">
       <div className="container-sm">
         <div className="rv">
           <div className="accent-line" />
           <h2 className="sec-heading">Get in Touch</h2>
-          <p className="sec-sub">Questions? We're here.</p>
+          <p className="sec-sub">Questions? Reach out — we reply fast.</p>
         </div>
         <div className="contact-grid g2">
           <div>
-            {[
-              { l: 'Email',     v: '21fc.soccer@gmail.com' },
-              { l: 'Instagram', v: '@21fc.soccer' },
-              { l: 'Location',  v: 'Clifton, NJ' },
-              { l: 'Schedule',  v: 'Mon, Wed, Fri, Sun — 7 AM' },
-            ].map((x, i) => (
-              <div key={i} className={`rv d${i + 1} contact-item`}>
-                <div className="label" style={{ fontSize: '9px' }}>{x.l}</div>
-                <div className="meta-val">{x.v}</div>
+            <div className="rv d1 contact-item">
+              <div className="label" style={{ fontSize: '9px' }}>Email</div>
+              <div className="meta-val">
+                <a href="mailto:21fc.soccer@gmail.com" className="contact-email-link">21fc.soccer@gmail.com</a>
+                <button onClick={copyEmail} className="contact-copy-btn" aria-label="Copy email">
+                  {copied ? '✓ Copied' : 'Copy'}
+                </button>
               </div>
-            ))}
+            </div>
+            <div className="rv d2 contact-item">
+              <div className="label" style={{ fontSize: '9px' }}>Instagram</div>
+              <div className="meta-val"><a href="https://instagram.com/21fc.soccer" target="_blank" rel="noreferrer" className="contact-email-link">@21fc.soccer</a></div>
+            </div>
+            <div className="rv d3 contact-item">
+              <div className="label" style={{ fontSize: '9px' }}>Location</div>
+              <div className="meta-val">Clifton, NJ</div>
+            </div>
+            <div className="rv d4 contact-item">
+              <div className="label" style={{ fontSize: '9px' }}>Schedule</div>
+              <div className="meta-val">Mon, Wed, Fri, Sun — 7 AM</div>
+            </div>
           </div>
-          <form className="rv d2 contact-form" onSubmit={handleSubmit}>
-            <input type="text" placeholder="Your name" className="input" value={form.name} onChange={set('name')} required />
-            <input type="email" placeholder="your@email.com" className="input" value={form.email} onChange={set('email')} required />
-            <textarea placeholder="Your message" rows="3" className="input textarea" value={form.msg} onChange={set('msg')} required />
+          <form className="rv d2 contact-form" onSubmit={handleSubmit} aria-label="Contact 21FC">
+            <input type="text" placeholder="Your name" className="input" value={form.name} onChange={set('name')} required aria-label="Your name" />
+            <input type="email" placeholder="your@email.com" className="input" value={form.email} onChange={set('email')} required aria-label="Your email" />
+            <textarea placeholder="Your message" rows="3" className="input textarea" value={form.msg} onChange={set('msg')} required aria-label="Your message" />
             <button type="submit" className="btn-cta" style={{ alignSelf: 'flex-start' }}>
-              {sent ? '✓ Opening Mail…' : 'Send Message'}
+              {sent ? '✓ Message Sent' : 'Send Message'}
             </button>
+            <p className="contact-fine">Opens in your email app, pre-filled and addressed to 21fc.soccer@gmail.com.</p>
           </form>
         </div>
       </div>
@@ -825,7 +853,15 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .sec-sub{font-family:'Barlow Condensed',sans-serif;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
 
 /* ─── AMBIENT BACKGROUND ─── */
-.site-wrap{position:relative;overflow:hidden}
+.site-wrap{position:relative;overflow-x:clip;overflow-y:visible}
+/* sticky-scene (scroll-jacking): pin a section full-screen while user scrolls past it */
+.sticky-scene{position:relative;height:auto}
+@media(min-width:960px){
+  .sticky-scene{height:170vh}
+  .sticky-scene > .sticky-inner{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden;will-change:transform}
+  .sticky-scene > .sticky-inner > *{width:100%;max-height:100vh;overflow:auto;scrollbar-width:none}
+  .sticky-scene > .sticky-inner > *::-webkit-scrollbar{display:none}
+}
 .site-wrap::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;pointer-events:none;
   background:
     radial-gradient(ellipse 600px 600px at 10% 20%, rgba(237,17,113,.06) 0%, transparent 70%),
@@ -1391,6 +1427,11 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:2.5rem}
 .contact-item{margin-bottom:.8rem;padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.04)}
 .contact-form{display:flex;flex-direction:column;gap:.7rem}
+.contact-email-link{color:${wh};text-decoration:none;transition:color .2s ease;border-bottom:1px solid transparent}
+.contact-email-link:hover{color:${vt};border-bottom-color:${vt}}
+.contact-copy-btn{margin-left:.6rem;padding:3px 10px;background:rgba(211,222,37,.1);color:${vt};border:1px solid rgba(211,222,37,.35);font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;cursor:pointer;transition:all .25s ease;vertical-align:middle}
+.contact-copy-btn:hover{background:${vt};color:${bg};border-color:${vt}}
+.contact-fine{font-size:11px;color:rgba(240,239,239,.4);margin-top:.3rem;letter-spacing:.3px}
 .input{background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.07);color:${wh};padding:.5rem 0;font-size:14px;font-family:inherit;outline:none;transition:border-color .3s ease}
 .input:focus{border-bottom-color:${pk}}
 .textarea{border:1px solid rgba(255,255,255,.07);padding:.5rem;resize:none}
@@ -1599,7 +1640,7 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 
       <div className="prlx" data-rate="0.08"><Stats /></div>
       <div className="glow-div" />
-      <div className="prlx" data-rate="0.18"><About /></div>
+      <div className="sticky-scene"><div className="sticky-inner"><div className="prlx" data-rate="0.18"><About /></div></div></div>
       <div className="prlx" data-rate="0.12"><ImageBand /></div>
       <SessionMarquee />
       <div className="glow-div" />
@@ -1612,7 +1653,7 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
       <div className="prlx" data-rate="0.1"><Membership /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.14"><Referral /></div>
-      <div className="prlx" data-rate="0.22"><CTA /></div>
+      <div className="sticky-scene"><div className="sticky-inner"><div className="prlx" data-rate="0.22"><CTA /></div></div></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.12"><Contact /></div>
       <div className="glow-div" />
