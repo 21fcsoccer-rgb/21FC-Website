@@ -794,10 +794,12 @@ const App = () => {
     return () => { clearTimeout(timer); if (obs) obs.disconnect(); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /* parallax: scroll-linked transforms so sections fall into each other */
+  /* parallax: scroll-linked transforms so sections fall into each other
+     + sticky-scene progress tracking for scale/fade-in on pin */
   useEffect(() => {
     const els = Array.from(document.querySelectorAll('.prlx'));
     const rates = els.map(el => parseFloat(el.dataset.rate || '0.15'));
+    const scenes = Array.from(document.querySelectorAll('.sticky-scene > section'));
     let raf;
     const onScroll = () => {
       if (raf) return;
@@ -809,6 +811,26 @@ const App = () => {
           const center = rect.top + rect.height / 2 - vh / 2;
           const n = Math.max(-1.2, Math.min(1.2, center / vh));
           el.style.setProperty('--prlx-y', `${(-n * rates[i] * 100).toFixed(1)}px`);
+        }
+        // sticky scenes: compute how deep into the pinned-scene we are (0 -> 1 -> 0)
+        for (let i = 0; i < scenes.length; i++) {
+          const scene = scenes[i];
+          const parent = scene.parentElement;
+          if (!parent) continue;
+          const pr = parent.getBoundingClientRect();
+          // p represents how far we've scrolled through the scene — 0 at entry, 1 in middle, 0 on exit
+          const total = pr.height - vh;
+          let p;
+          if (pr.top > 0) {
+            // scene not yet pinned — entering
+            p = Math.max(0, Math.min(1, 1 - pr.top / vh * 2));
+          } else if (pr.bottom < vh) {
+            // scene leaving viewport
+            p = Math.max(0, Math.min(1, pr.bottom / vh));
+          } else {
+            p = 1;
+          }
+          scene.style.setProperty('--sticky-p', p.toFixed(3));
         }
         raf = null;
       });
@@ -853,20 +875,25 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .sec-sub{font-family:'Barlow Condensed',sans-serif;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
 
 /* ─── AMBIENT BACKGROUND ─── */
-.site-wrap{position:relative;overflow-x:clip;overflow-y:visible}
+.site-wrap{position:relative;overflow:clip}
 /* sticky-scene (scroll-jacking): pin a section full-screen while user scrolls past it */
-.sticky-scene{position:relative}
-@media(min-width:900px){
-  .sticky-scene{height:180vh}
-  .sticky-scene > section{
-    position:sticky;
-    top:0;
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    margin:0;
-  }
+.sticky-scene{position:relative;height:170vh}
+.sticky-scene > section{
+  position:sticky;
+  top:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  margin:0;
+  --sticky-p:0;
+  transform:scale(calc(.9 + var(--sticky-p) * .1));
+  opacity:calc(.5 + var(--sticky-p) * .5);
+  will-change:transform,opacity;
+}
+@media(max-width:720px){
+  .sticky-scene{height:auto}
+  .sticky-scene > section{position:static;height:auto;display:block;transform:none;opacity:1}
 }
 .site-wrap::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;pointer-events:none;
   background:
