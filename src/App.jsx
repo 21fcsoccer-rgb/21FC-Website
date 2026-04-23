@@ -421,33 +421,53 @@ const CTA = () => (
 );
 
 /* ─── CONTACT ─── */
-const Contact = () => (
-  <section id="join" className="section">
-    <div className="container-sm">
-      <div className="rv">
-        <div className="accent-line" />
-        <h2 className="sec-heading">Get in Touch</h2>
-        <p className="sec-sub">Questions? We're here.</p>
-      </div>
-      <div className="contact-grid g2">
-        <div>
-          {[{ l: 'Instagram', v: '@21fc.soccer' }, { l: 'Location', v: 'Clifton, NJ' }, { l: 'Schedule', v: 'Mon, Wed, Fri, Sun — 7 AM' }].map((x, i) => (
-            <div key={i} className={`rv d${i + 1} contact-item`}>
-              <div className="label" style={{ fontSize: '9px' }}>{x.l}</div>
-              <div className="meta-val">{x.v}</div>
-            </div>
-          ))}
+const Contact = () => {
+  const [form, setForm] = useState({ name: '', email: '', msg: '' });
+  const [sent, setSent] = useState(false);
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+  const handleSubmit = e => {
+    e.preventDefault();
+    const subject = encodeURIComponent(`21FC Inquiry from ${form.name}`);
+    const body = encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.msg}`);
+    window.open(`mailto:21fc.soccer@gmail.com?subject=${subject}&body=${body}`, '_blank');
+    setSent(true);
+    setTimeout(() => setSent(false), 4000);
+  };
+  return (
+    <section id="join" className="section">
+      <div className="container-sm">
+        <div className="rv">
+          <div className="accent-line" />
+          <h2 className="sec-heading">Get in Touch</h2>
+          <p className="sec-sub">Questions? We're here.</p>
         </div>
-        <form className="rv d2 contact-form" onSubmit={e => e.preventDefault()}>
-          <input type="text" placeholder="Your name" className="input" />
-          <input type="email" placeholder="your@email.com" className="input" />
-          <textarea placeholder="Your message" rows="3" className="input textarea" />
-          <button type="submit" className="btn-cta" style={{ alignSelf: 'flex-start' }}>Send Message</button>
-        </form>
+        <div className="contact-grid g2">
+          <div>
+            {[
+              { l: 'Email',     v: '21fc.soccer@gmail.com' },
+              { l: 'Instagram', v: '@21fc.soccer' },
+              { l: 'Location',  v: 'Clifton, NJ' },
+              { l: 'Schedule',  v: 'Mon, Wed, Fri, Sun — 7 AM' },
+            ].map((x, i) => (
+              <div key={i} className={`rv d${i + 1} contact-item`}>
+                <div className="label" style={{ fontSize: '9px' }}>{x.l}</div>
+                <div className="meta-val">{x.v}</div>
+              </div>
+            ))}
+          </div>
+          <form className="rv d2 contact-form" onSubmit={handleSubmit}>
+            <input type="text" placeholder="Your name" className="input" value={form.name} onChange={set('name')} required />
+            <input type="email" placeholder="your@email.com" className="input" value={form.email} onChange={set('email')} required />
+            <textarea placeholder="Your message" rows="3" className="input textarea" value={form.msg} onChange={set('msg')} required />
+            <button type="submit" className="btn-cta" style={{ alignSelf: 'flex-start' }}>
+              {sent ? '✓ Opening Mail…' : 'Send Message'}
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 /* ─── LOCATION ─── */
 const Location = () => (
