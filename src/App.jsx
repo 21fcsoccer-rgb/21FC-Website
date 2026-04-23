@@ -842,7 +842,7 @@ const App = () => {
 /* ─── RESET ─── */
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:'Barlow Condensed',sans-serif;background:${bg};color:${wh};overflow-x:hidden;-webkit-font-smoothing:antialiased;font-weight:500;letter-spacing:.008em;text-rendering:optimizeSpeed}
+body{font-family:'Barlow Condensed',sans-serif;background:${bg};color:${wh};-webkit-font-smoothing:antialiased;font-weight:500;letter-spacing:.008em;text-rendering:optimizeSpeed}
 h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,.fixture-day-badge,.wc-banner-title,.hero-heading,.hero-title{font-family:'Bebas Neue','Oswald',sans-serif;font-weight:400;letter-spacing:.025em}
 .sec-heading,.cta-heading{text-transform:uppercase;letter-spacing:.04em}
 .mem-name{text-transform:uppercase;letter-spacing:.18em!important;font-family:'Bebas Neue',sans-serif!important;font-weight:400!important;font-size:16px!important}
@@ -855,12 +855,18 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 /* ─── AMBIENT BACKGROUND ─── */
 .site-wrap{position:relative;overflow-x:clip;overflow-y:visible}
 /* sticky-scene (scroll-jacking): pin a section full-screen while user scrolls past it */
-.sticky-scene{position:relative;height:auto}
-@media(min-width:960px){
-  .sticky-scene{height:170vh}
-  .sticky-scene > .sticky-inner{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden;will-change:transform}
-  .sticky-scene > .sticky-inner > *{width:100%;max-height:100vh;overflow:auto;scrollbar-width:none}
-  .sticky-scene > .sticky-inner > *::-webkit-scrollbar{display:none}
+.sticky-scene{position:relative}
+@media(min-width:900px){
+  .sticky-scene{height:180vh}
+  .sticky-scene > section{
+    position:sticky;
+    top:0;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    margin:0;
+  }
 }
 .site-wrap::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;pointer-events:none;
   background:
@@ -1640,7 +1646,7 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 
       <div className="prlx" data-rate="0.08"><Stats /></div>
       <div className="glow-div" />
-      <div className="sticky-scene"><div className="sticky-inner"><div className="prlx" data-rate="0.18"><About /></div></div></div>
+      <div className="sticky-scene"><About /></div>
       <div className="prlx" data-rate="0.12"><ImageBand /></div>
       <SessionMarquee />
       <div className="glow-div" />
@@ -1653,7 +1659,7 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
       <div className="prlx" data-rate="0.1"><Membership /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.14"><Referral /></div>
-      <div className="sticky-scene"><div className="sticky-inner"><div className="prlx" data-rate="0.22"><CTA /></div></div></div>
+      <div className="sticky-scene"><CTA /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.12"><Contact /></div>
       <div className="glow-div" />
