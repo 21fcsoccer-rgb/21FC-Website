@@ -145,7 +145,6 @@ const Header = () => {
         {['About', 'Schedule', 'Gallery', 'Join'].map(s => (
           <a key={s} href={`#${s.toLowerCase()}`} className="nav-link">{s}</a>
         ))}
-        <a href={BASE + 'world-cup.html'} className="nav-link nav-wc">World Cup</a>
         <a href="https://opensports.net/21fc" target="_blank" rel="noopener noreferrer" className="nav-btn">Book Now</a>
       </nav>
     </header>
@@ -168,7 +167,7 @@ const Stats = () => (
   <section className="stats-bar">
     <div className="stats-grid g4">
       <StatItem i={0} num={200} suffix="+" label="Players" />
-      <StatItem i={1} num={4} suffix="×" label="Weekly" />
+      <StatItem i={1} num={3} suffix="×" label="Weekly" />
       <StatItem i={2} num="7 AM" noAnimate label="Kickoff" />
       <StatItem i={3} num={3} suffix="+" label="Years" />
     </div>
@@ -192,7 +191,7 @@ const About = () => (
         </p>
         <div className="about-meta">
           <div><span className="meta-label">Location</span><span className="meta-val">Clifton, NJ</span></div>
-          <div><span className="meta-label">Game Days</span><span className="meta-val">Mon · Wed · Fri · Sun</span></div>
+          <div><span className="meta-label">Game Days</span><span className="meta-val">Mon · Wed · Fri</span></div>
         </div>
       </div>
     </div>
@@ -217,10 +216,9 @@ const ImageBand = () => (
 /* ─── SCHEDULE — professional fixture roster ─── */
 const Schedule = () => {
   const matches = [
-    { day: 'MON', date: 'Every Week', time: '7:00 AM', type: 'Competitive', spots: '22', status: 'OPEN' },
-    { day: 'WED', date: 'Every Week', time: '7:00 AM', type: 'Competitive', spots: '22', status: 'OPEN' },
-    { day: 'FRI', date: 'Every Week', time: '7:00 AM', type: 'Competitive', spots: '22', status: 'OPEN' },
-    { day: 'SUN', date: 'Every Week', time: '7:00 AM', type: 'Open Run', spots: '30', status: 'OPEN' },
+    { day: 'MON', date: 'Every Week', time: '7:00 AM', type: 'Co-Ed', spots: '22', status: 'OPEN' },
+    { day: 'WED', date: 'Every Week', time: '7:00 AM', type: 'Co-Ed', spots: '22', status: 'OPEN' },
+    { day: 'FRI', date: 'Every Week', time: '7:00 AM', type: "Men's", spots: '22', status: 'OPEN' },
   ];
   return (
     <section id="schedule" className="section">
@@ -228,7 +226,7 @@ const Schedule = () => {
         <div className="rv">
           <div className="accent-line" />
           <h2 className="sec-heading">Match Schedule</h2>
-          <p className="sec-sub">Weekly fixtures · Indoor Turf · Clifton, NJ</p>
+          <p className="sec-sub">Weekly fixtures · Sports Domain Academy · Clifton, NJ</p>
         </div>
         {/* fixture board */}
         <div className="rv d1 fixture-board">
@@ -271,11 +269,11 @@ const Schedule = () => {
         <div className="rv d5 fixture-venue">
           <div className="fixture-venue-item">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Indoor Turf · Clifton, NJ
+            Sports Domain Academy (SDA) · Clifton, NJ
           </div>
           <div className="fixture-venue-item">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            Gates open 6:45 AM
+            Doors open 6:45 AM
           </div>
           <Btn href="https://opensports.net/21fc">Reserve Your Spot</Btn>
         </div>
@@ -402,9 +400,9 @@ const TiltMemCard = ({ p, i }) => {
           <div key={fi} className="mem-feat"><span className="dot" />{f}</div>
         ))}
       </div>
-      <button className={`mem-btn mem-btn-${p.rank || 'starter'}${p.pop ? ' mem-btn-pop' : ''}`}>
-        {p.rank === 'legendary' ? 'Claim Legendary' : 'Choose Plan'}
-      </button>
+      <a href="https://opensports.net/21fc" target="_blank" rel="noopener noreferrer" className={`mem-btn mem-btn-${p.rank || 'starter'}${p.pop ? ' mem-btn-pop' : ''}`}>
+        {p.pop ? 'Sign Up' : 'Book a Game'}
+      </a>
     </div>
   );
 };
@@ -493,7 +491,7 @@ const Social = () => (
         <InstaPostPhone img="https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=400&h=400&fit=crop" likes="892" caption="Squad goals 🏆 #21FC" />
         <InstaPostPhone img="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=400&h=400&fit=crop" likes="2,103" caption="The beautiful game 🌍 #soccer" />
         <InstaPostPhone img="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=400&h=400&fit=crop" likes="1,567" caption="Community first 🤝 #21FC" />
-        <InstaPostPhone img="https://images.unsplash.com/photo-1551958219-acbc608c6377?w=400&h=400&fit=crop" likes="743" caption="Lock in 💪 7AM every Sunday" />
+        <InstaPostPhone img="https://images.unsplash.com/photo-1551958219-acbc608c6377?w=400&h=400&fit=crop" likes="743" caption="Lock in 💪 7AM Mon·Wed·Fri" />
         <InstaPostPhone img="https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=400&h=400&fit=crop" likes="1,890" caption="Next generation 🌟 #21FCYouth" />
       </div>
 
@@ -517,19 +515,17 @@ const Membership = () => (
     <div className="container">
       <div className="rv" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
         <div className="accent-line" style={{ margin: '0 auto .8rem' }} />
-        <h2 className="sec-heading">Membership</h2>
-        <p className="sec-sub">Level up your game</p>
+        <h2 className="sec-heading">Pricing</h2>
+        <p className="sec-sub">Pay per game or lock in a monthly membership</p>
       </div>
-      <div className="mem-grid g4">
+      <div className="mem-grid mem-grid-2">
         {[
-          { name: 'Drop-In',     price: '$15',  per: '/session', feats: ['Single match access', 'No commitment', 'Walk-on flexibility', 'Pay as you go'] },
-          { name: 'Bronze',      price: '$45',  per: '/month',   feats: ['4 sessions/month', 'Priority booking', 'Player community', 'Kit discounts'], rank: 'bronze', save: 'Save 25% vs drop-in' },
-          { name: 'Pro',         price: '$160', per: '/month',   feats: ['Unlimited games all month', 'Priority booking', 'Player community access', 'Kit discounts'], pop: true, rank: 'gold', save: 'Save up to 33%' },
-          { name: 'Season Pass', price: '$500', per: '/season',  feats: ['Full 3-month season', 'Unlimited games included', 'Reserved team slots', 'Exclusive legendary crest'], rank: 'legendary', badge: 'LEGENDARY', save: 'Save 30%+ over the season' },
+          { name: 'Per Game',           price: '$16', per: '/game',  feats: ['Single game access', 'No commitment', 'Sign up on the OpenSports app', 'Pay as you go'] },
+          { name: 'Monthly Membership', price: '$80', per: '/month', feats: ['6 games included', '+1 FREE game when you join', 'Paid upfront', 'Runs 1st to last day of the month'], pop: true, rank: 'gold', save: '7 games your first month' },
         ].map((p, i) => <TiltMemCard key={i} p={p} i={i} />)}
       </div>
       <div className="rv mem-note">
-        <span>⚽</span> Season runs <strong>3 months</strong> — unlimited access, one flat price.
+        <span>⚽</span> Memberships begin on the <strong>1st</strong> and expire the <strong>last day</strong> of each month — sign up in the OpenSports app.
       </div>
     </div>
   </section>
@@ -555,25 +551,52 @@ const Referral = () => (
         <h2 className="sec-heading" style={{ fontSize: 'clamp(24px,4vw,36px)' }}>Refer &amp; Earn</h2>
         <p className="sec-sub" style={{ fontSize: 'clamp(12px,1.2vw,14px)', marginBottom: 0 }}>Bring your crew. Get rewarded.</p>
       </div>
-      <div className="ref-grid">
+      <div className="ref-grid ref-grid-single">
         <ReferralTier
           icon="👥"
           reward="1 Free Game"
-          desc="Refer 2 or more new players and earn a free session — on us."
-          highlight={false}
-        />
-        <ReferralTier
-          icon="🏆"
-          reward="2 Free Games"
-          desc="Refer 5 new players and unlock two free sessions. Stack your squad, stack your rewards."
+          desc="Refer 2 new players who sign up for a game — and your next game is on us."
           highlight={true}
         />
       </div>
       <div className="rv ref-cta-wrap">
-        <p className="ref-fine">Rewards apply once referred players complete their first paid session. DM us on Instagram to claim.</p>
+        <p className="ref-fine">Reward applies once both referred players sign up and play. DM us on Instagram to claim.</p>
         <a className="ref-cta-btn" href="https://instagram.com/21fc.soccer" target="_blank" rel="noreferrer">
           Claim via Instagram →
         </a>
+      </div>
+    </div>
+  </section>
+);
+
+/* ─── WE'RE HIRING ─── */
+const Hiring = () => (
+  <section id="hiring" className="section section-compact hire-section">
+    <div className="container">
+      <div className="rv" style={{ textAlign: 'center', marginBottom: '1.6rem' }}>
+        <div className="accent-line" style={{ margin: '0 auto .6rem' }} />
+        <h2 className="sec-heading">We're Hiring</h2>
+        <p className="sec-sub">Join the 21FC crew</p>
+      </div>
+      <div className="hire-grid">
+        {[
+          { icon: '📸', role: 'Photographers', desc: 'Capture matchday moments on the pitch.' },
+          { icon: '🎥', role: 'Videographers', desc: 'Shoot and cut highlight reels and social clips.' },
+          { icon: '🎽', role: 'Game Captains / Hosts', desc: 'Run the session, welcome players, keep games flowing.' },
+        ].map((h, i) => (
+          <div key={i} className={`rv d${i + 1} hire-card`}>
+            <div className="hire-icon">{h.icon}</div>
+            <div className="hire-role">{h.role}</div>
+            <div className="hire-desc">{h.desc}</div>
+          </div>
+        ))}
+      </div>
+      <div className="rv hire-cta-wrap">
+        <p className="hire-fine">Interested? DM us on Instagram or send us an email and tell us what you do.</p>
+        <div className="hire-cta-row">
+          <a className="hire-cta-btn" href="mailto:21fc.soccer@gmail.com?subject=21FC%20Hiring%20Interest">Email 21fc.soccer@gmail.com</a>
+          <a className="hire-cta-btn hire-cta-ig" href="https://instagram.com/21fc.soccer" target="_blank" rel="noreferrer">DM @21fc.soccer</a>
+        </div>
       </div>
     </div>
   </section>
@@ -653,7 +676,7 @@ const Contact = () => {
             </div>
             <div className="rv d4 contact-item">
               <div className="label" style={{ fontSize: '9px' }}>Schedule</div>
-              <div className="meta-val">Mon, Wed, Fri, Sun — 7 AM</div>
+              <div className="meta-val">Mon, Wed, Fri — 7 AM</div>
             </div>
           </div>
           <form className="rv d2 contact-form" onSubmit={handleSubmit} aria-label="Contact 21FC">
@@ -681,8 +704,8 @@ const Location = () => (
           <h2 className="sec-heading">Find Us</h2>
           <p className="sec-sub" style={{ marginBottom: '1.5rem' }}>Indoor turf in Clifton, NJ</p>
           {[
-            { l: 'Location', v: 'Clifton, NJ — Indoor Turf' },
-            { l: 'Game Days', v: 'Mon · Wed · Fri · Sun' },
+            { l: 'Location', v: 'Sports Domain Academy — Clifton, NJ' },
+            { l: 'Game Days', v: 'Mon · Wed · Fri' },
             { l: 'Kickoff', v: '7:00 AM Sharp' },
           ].map((x, i) => (
             <div key={i} className="loc-item">
@@ -725,7 +748,7 @@ const Footer = () => (
 
 /* ─── SESSION MARQUEE ─── horizontal auto-scroll of upcoming dates */
 const SessionMarquee = () => {
-  const items = ['TUE · 04.21 · 7AM', 'THU · 04.23 · 7AM', 'SAT · 04.25 · 9AM', 'SUN · 04.26 · 10AM', 'TUE · 04.28 · 7AM', 'THU · 04.30 · 7AM'];
+  const items = ['MON · CO-ED · 7AM', 'WED · CO-ED · 7AM', 'FRI · MEN\'S · 7AM', 'MON · CO-ED · 7AM', 'WED · CO-ED · 7AM', 'FRI · MEN\'S · 7AM'];
   const loop = [...items, ...items, ...items];
   return (
     <div className="sess-marq" aria-hidden="true">
@@ -865,7 +888,7 @@ const App = () => {
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{font-family:'Barlow Condensed',sans-serif;background:${bg};color:${wh};-webkit-font-smoothing:antialiased;font-weight:500;letter-spacing:.008em;text-rendering:optimizeSpeed}
-h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,.fixture-day-badge,.wc-banner-title,.hero-heading,.hero-title{font-family:'Bebas Neue','Oswald',sans-serif;font-weight:400;letter-spacing:.025em}
+h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,.fixture-day-badge,.hero-heading,.hero-title{font-family:'Bebas Neue','Oswald',sans-serif;font-weight:400;letter-spacing:.025em}
 .sec-heading,.cta-heading{text-transform:uppercase;letter-spacing:.04em}
 .mem-name{text-transform:uppercase;letter-spacing:.18em!important;font-family:'Bebas Neue',sans-serif!important;font-weight:400!important;font-size:16px!important}
 .mem-price span{letter-spacing:.01em!important;font-size:clamp(32px,5vw,42px)!important}
@@ -938,42 +961,6 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 
 /* ─── CURSOR SPOTLIGHT ─── soft glow follows mouse */
 
-/* ═══ WORLD CUP EVENT BANNER ═══ */
-.wc-banner{display:block;position:relative;overflow:hidden;padding:clamp(1.2rem,3vw,2rem) clamp(1.5rem,4vw,3rem);margin:0;background:linear-gradient(135deg,#0B3D2E 0%,${bg} 40%,${bg} 60%,rgba(212,175,55,.08) 100%);border-bottom:1px solid rgba(212,175,55,.12);border-top:1px solid rgba(212,175,55,.12);text-decoration:none;color:${wh};cursor:pointer;transition:background .4s ease}
-.wc-banner:hover{background:linear-gradient(135deg,rgba(11,61,46,.25) 0%,rgba(212,175,55,.06) 50%,${bg} 100%)}
-.wc-banner-glow{position:absolute;top:-40%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(212,175,55,.1) 0%,transparent 65%);border-radius:50%;pointer-events:none;animation:wcGlow 6s ease-in-out infinite alternate}
-@keyframes wcGlow{0%{transform:translate(0,0) scale(1);opacity:.6}100%{transform:translate(-3%,5%) scale(1.15);opacity:1}}
-.wc-banner-inner{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;max-width:1000px;margin:0 auto}
-.wc-banner-flags{font-size:clamp(1.1rem,2.5vw,1.8rem);flex-shrink:0;letter-spacing:.15em;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4));display:inline-flex;gap:.35em}
-.wc-banner-flags span{display:inline-block;animation:wcFlagWave 3.2s ease-in-out infinite;transform-origin:left center;will-change:transform}
-.wc-banner-flags span:nth-child(2){animation-delay:-.4s;animation-duration:3s}
-.wc-banner-flags span:nth-child(3){animation-delay:-.8s;animation-duration:3.4s}
-.wc-banner-flags span:nth-child(4){animation-delay:-1.2s;animation-duration:2.8s}
-.wc-banner-flags span:nth-child(5){animation-delay:-1.6s;animation-duration:3.6s}
-.wc-banner-flags span:nth-child(6){animation-delay:-2s;animation-duration:3.1s}
-.wc-banner-flags span:nth-child(7){animation-delay:-2.4s;animation-duration:3.3s}
-.wc-banner-flags span:nth-child(8){animation-delay:-2.8s;animation-duration:2.9s}
-@keyframes wcFlagWave{
-  0%,100%{transform:perspective(300px) rotateY(0deg) rotateZ(0deg) scaleX(1)}
-  20%{transform:perspective(300px) rotateY(-15deg) rotateZ(-2deg) scaleX(.96)}
-  40%{transform:perspective(300px) rotateY(8deg) rotateZ(1deg) scaleX(1.02)}
-  60%{transform:perspective(300px) rotateY(-6deg) rotateZ(-1deg) scaleX(.98)}
-  80%{transform:perspective(300px) rotateY(12deg) rotateZ(2deg) scaleX(1.01)}
-}
-.wc-banner-text{flex:1;min-width:200px}
-.wc-banner-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:clamp(.5rem,1.2vw,.7rem);font-weight:800;letter-spacing:.3em;text-transform:uppercase;color:#FF3386;margin-bottom:.2rem}
-.wc-banner-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(1.4rem,4vw,2.4rem);font-weight:900;line-height:1;letter-spacing:-.02em}
-.wc-banner-title span{color:#D4AF37;text-shadow:0 0 30px rgba(212,175,55,.2)}
-.wc-banner-sub{font-size:clamp(.6rem,1.3vw,.82rem);color:${mt};margin-top:.2rem;font-weight:600;letter-spacing:.08em}
-.wc-banner-cta{flex-shrink:0;font-family:'Barlow Condensed',sans-serif;font-size:clamp(.65rem,1.2vw,.82rem);font-weight:800;letter-spacing:.25em;text-transform:uppercase;padding:clamp(.55rem,1vw,.8rem) clamp(1rem,2vw,2rem);background:#D4AF37;color:${bg};transition:all .3s ${ease};position:relative;overflow:hidden;animation:wcBtnPulse 2.5s ease-in-out infinite}
-.wc-banner-cta::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transition:left .6s ease}
-.wc-banner:hover .wc-banner-cta{background:#e8c84a;transform:translateY(-2px);box-shadow:0 0 24px rgba(212,175,55,.5);animation:none}
-.wc-banner:hover .wc-banner-cta::after{left:100%}
-@keyframes wcBtnPulse{0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,.4)}50%{box-shadow:0 0 0 10px rgba(212,175,55,0)}}
-.wc-banner-stripe{position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#009c3b,#D4AF37,#FF3386,#74acdf,#D4AF37,#009c3b);background-size:300% 100%;animation:stripeShift 8s linear infinite}
-@keyframes stripeShift{0%{background-position:0% 50%}100%{background-position:300% 50%}}
-@media(max-width:700px){.wc-banner-inner{flex-direction:column;text-align:center;align-items:center}.wc-banner-flags{order:-1}}
-
 .cursor-spot{position:fixed;top:0;left:0;width:600px;height:600px;border-radius:50%;pointer-events:none;z-index:1;
   background:radial-gradient(circle,rgba(211,222,37,.08) 0%,rgba(237,17,113,.04) 30%,transparent 60%);
   mix-blend-mode:screen;transform:translate(-50%,-50%);will-change:transform;transition:opacity .3s ease}
@@ -1013,8 +1000,6 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .navL{display:flex;gap:1.5rem;align-items:center}
 .nav-link{color:rgba(240,239,239,.55);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:color .3s ease}
 .nav-link:hover{color:${pk}}
-.nav-wc{color:#D4AF37!important;font-weight:700;letter-spacing:1.5px}
-.nav-wc:hover{color:#fff!important;text-shadow:0 0 12px rgba(212,175,55,.4)}
 .nav-btn{position:relative;padding:8px 18px;background:${pk};color:#fff;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;text-decoration:none;overflow:hidden;box-shadow:0 0 14px rgba(237,17,113,.35);transition:all .3s ${ease}}
 .nav-btn:hover{background:${vt};color:${bg};box-shadow:0 0 22px rgba(211,222,37,.55);transform:translateY(-1px)}
 
@@ -1115,7 +1100,7 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .fixture-dur{font-size:10px;color:${mt};font-weight:500}
 .fixture-type-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:4px 10px;
   background:rgba(237,17,113,.06);color:${pk};border:1px solid rgba(237,17,113,.12);display:inline-block;width:fit-content}
-.fixture-type-badge[data-type="Open Run"]{background:rgba(211,222,37,.06);color:#D3DE25;border-color:rgba(211,222,37,.15)}
+.fixture-type-badge[data-type="Co-Ed"]{background:rgba(211,222,37,.06);color:#D3DE25;border-color:rgba(211,222,37,.15)}
 .fixture-spots{font-size:16px;font-weight:700}
 .fixture-spots-label{font-size:10px;color:${mt}}
 .fixture-status-dot{width:6px;height:6px;border-radius:50%;background:#2ECC71;display:inline-block;box-shadow:0 0 8px rgba(46,204,113,.4);flex-shrink:0}
@@ -1146,6 +1131,7 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 
 /* ─── MEMBERSHIP ─── */
 .mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px;padding-top:6px}
+.mem-grid-2{grid-template-columns:repeat(2,1fr);max-width:720px;margin-left:auto;margin-right:auto}
 .mem-card{padding:clamp(1.8rem,2.5vw,2.2rem);background:linear-gradient(160deg,rgba(36,36,56,.88) 0%,rgba(22,22,38,.92) 100%);border:1px solid rgba(255,255,255,.18);position:relative;transition:all .4s ${ease};overflow:visible;box-shadow:0 8px 32px rgba(0,0,0,.6),0 2px 0 rgba(255,255,255,.04) inset,0 0 0 1px rgba(255,255,255,.08)}
 .mem-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(211,222,37,.14),transparent 60%);opacity:0;transition:opacity .4s ease;pointer-events:none;border-radius:inherit}
 .mem-card:hover{border-color:${vt};transform:translateY(-8px);box-shadow:0 24px 56px rgba(0,0,0,.65),0 0 40px rgba(211,222,37,.25),inset 0 0 0 1px rgba(211,222,37,.25)}
@@ -1193,7 +1179,7 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .dot{width:5px;height:5px;background:${vt};border-radius:50%;flex-shrink:0;box-shadow:0 0 8px rgba(211,222,37,.5)}
 .mem-bronze .dot{background:#cd7f32!important;box-shadow:0 0 8px rgba(205,127,50,.7)!important}
 .mem-gold .dot{background:#d4af37!important;box-shadow:0 0 10px rgba(212,175,55,.8)!important}
-.mem-btn{width:100%;padding:13px;min-height:48px;background:transparent;color:${wh};border:1px solid rgba(255,255,255,.15);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-family:inherit;transition:all .3s ${ease}}
+.mem-btn{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;width:100%;padding:13px;min-height:48px;background:transparent;color:${wh};border:1px solid rgba(255,255,255,.15);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;font-family:inherit;transition:all .3s ${ease}}
 .mem-btn:hover{background:${vt};color:${bg};border-color:${vt}}
 .mem-btn:active{transform:scale(.97)!important;transition-duration:.1s!important}
 .mem-btn-bronze{border-color:rgba(205,127,50,.55);color:#f4c68c}
@@ -1429,6 +1415,7 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .ref-bg-glow{position:absolute;top:-20%;left:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(237,17,113,.08) 0%,transparent 70%);border-radius:50%;pointer-events:none;filter:blur(30px);animation:ctaPulse 12s ease-in-out infinite alternate}
 .ref-bg-glow-2{position:absolute;bottom:-20%;right:-10%;width:450px;height:450px;background:radial-gradient(circle,rgba(212,160,23,.07) 0%,transparent 70%);border-radius:50%;pointer-events:none;filter:blur(30px);animation:ctaPulse2 10s ease-in-out infinite alternate}
 .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:640px;margin:0 auto 1.5rem}
+.ref-grid-single{grid-template-columns:minmax(0,400px);justify-content:center}
 .ref-tier{position:relative;padding:clamp(1.2rem,2vw,1.6rem);background:linear-gradient(160deg,rgba(36,36,56,.88) 0%,rgba(22,22,38,.92) 100%);border:1px solid rgba(255,255,255,.18);text-align:center;transition:all .3s ${ease};overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.06)}
 .ref-tier::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(211,222,37,.1),transparent 60%);opacity:0;transition:opacity .3s ease;pointer-events:none}
 .ref-tier:hover{border-color:rgba(211,222,37,.55);transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.6),0 0 22px rgba(211,222,37,.25)}
@@ -1444,6 +1431,21 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .ref-cta-btn{display:inline-block;padding:10px 26px;background:transparent;color:${wh};border:1px solid rgba(255,255,255,.22);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.3px;text-decoration:none;transition:all .3s ${ease}}
 .ref-cta-btn:hover{background:${pk};border-color:${pk};box-shadow:0 0 20px rgba(237,17,113,.4)}
 @media(max-width:600px){.ref-grid{grid-template-columns:1fr}}
+/* ─── HIRING ─── */
+.hire-section{position:relative;overflow:hidden}
+.hire-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:820px;margin:0 auto 1.6rem}
+.hire-card{position:relative;padding:clamp(1.3rem,2.2vw,1.7rem);background:linear-gradient(160deg,rgba(36,36,56,.7) 0%,rgba(22,22,38,.8) 100%);border:1px solid rgba(255,255,255,.12);text-align:center;transition:all .3s ${ease}}
+.hire-card:hover{border-color:rgba(211,222,37,.5);transform:translateY(-4px);box-shadow:0 14px 34px rgba(0,0,0,.5),0 0 20px rgba(211,222,37,.18)}
+.hire-icon{font-size:clamp(1.8rem,3vw,2.2rem);margin-bottom:.5rem;line-height:1}
+.hire-role{font-family:'Barlow Condensed',sans-serif;font-size:clamp(15px,2vw,19px);font-weight:800;letter-spacing:.02em;text-transform:uppercase;margin-bottom:.35rem}
+.hire-desc{font-size:12px;color:rgba(240,239,239,.6);line-height:1.5;max-width:220px;margin:0 auto}
+.hire-cta-wrap{text-align:center;display:flex;flex-direction:column;align-items:center;gap:.8rem}
+.hire-fine{font-size:12px;color:rgba(240,239,239,.5);max-width:440px;line-height:1.55}
+.hire-cta-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.hire-cta-btn{display:inline-block;padding:12px 24px;background:transparent;color:${wh};border:1px solid rgba(255,255,255,.22);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.3px;text-decoration:none;transition:all .3s ${ease}}
+.hire-cta-btn:hover{background:${vt};border-color:${vt};color:${bg};box-shadow:0 0 20px rgba(211,222,37,.35)}
+.hire-cta-ig:hover{background:${pk};border-color:${pk};color:#fff;box-shadow:0 0 20px rgba(237,17,113,.4)}
+@media(max-width:640px){.hire-grid{grid-template-columns:1fr}}
 .cta-section{position:relative;padding:clamp(5rem,12vh,9rem) 2rem;overflow:hidden;text-align:center;
   background:linear-gradient(135deg,rgba(237,17,113,.1) 0%,${bg} 35%,${bg} 55%,rgba(211,222,37,.06) 100%);
   border-top:1px solid rgba(237,17,113,.15);border-bottom:1px solid rgba(211,222,37,.15)}
@@ -1656,21 +1658,6 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
       <div className="site-wrap">
       <Header />
 
-      {/* ═══ WORLD CUP EVENT BANNER ═══ */}
-      <a href={BASE + 'world-cup.html'} className="wc-banner rv" target="_self">
-        <div className="wc-banner-glow" />
-        <div className="wc-banner-inner">
-          <div className="wc-banner-flags"><span>🇧🇷</span><span>🇦🇷</span><span>🇫🇷</span><span>🇺🇸</span><span>🇪🇸</span><span>🇨🇴</span><span>🇳🇱</span><span>🇲🇽</span></div>
-          <div className="wc-banner-text">
-            <div className="wc-banner-eyebrow">NEW EVENT · STARTING MAY 11</div>
-            <div className="wc-banner-title">21FC <span>WORLD CUP</span></div>
-            <div className="wc-banner-sub">8 Countries · 6 Weeks · $500 Prize · 7AM Kickoff</div>
-          </div>
-          <div className="wc-banner-cta">Register Now →</div>
-        </div>
-        <div className="wc-banner-stripe" />
-      </a>
-
       <div className="prlx" data-rate="0.08"><Stats /></div>
       <div className="glow-div" />
       <div className="sticky-scene"><About /></div>
@@ -1686,6 +1673,8 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
       <div className="prlx" data-rate="0.1"><Membership /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.14"><Referral /></div>
+      <div className="glow-div" />
+      <div className="prlx" data-rate="0.1"><Hiring /></div>
       <div className="sticky-scene"><CTA /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.12"><Contact /></div>
