@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Gradient } from 'whatamesh';
+import { BrandGlyph, SectionBadge } from './brandMarks';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -152,10 +153,11 @@ const Header = () => {
 };
 
 /* ─── STATS ─── */
-const StatItem = ({ num, suffix, prefix, label, i, noAnimate }) => {
+const StatItem = ({ num, suffix, prefix, label, i, noAnimate, icon }) => {
   const [ref, val] = useCountUp(noAnimate ? 0 : num);
   return (
     <div ref={ref} className={`rv d${i + 1}`}>
+      <div className="stat-mark"><BrandGlyph type={icon} /></div>
       <div className="stat-val">
         {noAnimate ? (<>{prefix || ''}{num}{suffix || ''}</>) : (<>{prefix || ''}{Math.round(val)}{suffix || ''}</>)}
       </div>
@@ -166,10 +168,10 @@ const StatItem = ({ num, suffix, prefix, label, i, noAnimate }) => {
 const Stats = () => (
   <section className="stats-bar">
     <div className="stats-grid g4">
-      <StatItem i={0} num={200} suffix="+" label="Players" />
-      <StatItem i={1} num={3} suffix="×" label="Weekly" />
-      <StatItem i={2} num="7 AM" noAnimate label="Kickoff" />
-      <StatItem i={3} num={3} suffix="+" label="Years" />
+      <StatItem i={0} icon="community" num={200} suffix="+" label="Players" />
+      <StatItem i={1} icon="fixture" num={3} suffix="×" label="Weekly" />
+      <StatItem i={2} icon="club" num="7 AM" noAnimate label="Kickoff" />
+      <StatItem i={3} icon="membership" num={3} suffix="+" label="Years" />
     </div>
   </section>
 );
@@ -183,7 +185,7 @@ const About = () => (
       </div>
       <div className="rv d2 about-text">
         <div className="accent-line" />
-        <div className="label">Our Mission</div>
+        <SectionBadge icon="club">Our Mission</SectionBadge>
         <h2 className="sec-heading">Unite skilled players<br />in real competition</h2>
         <p className="sec-sub">
           21FC brings together dedicated players in a competitive, respectful, and community-driven environment.
@@ -225,6 +227,7 @@ const Schedule = () => {
       <div className="container">
         <div className="rv">
           <div className="accent-line" />
+          <SectionBadge icon="fixture">Official Fixtures</SectionBadge>
           <h2 className="sec-heading">Match Schedule</h2>
           <p className="sec-sub">Weekly fixtures · Sports Domain Academy · Clifton, NJ</p>
         </div>
@@ -300,6 +303,7 @@ const Gallery = () => {
     <section id="gallery" className="carousel-section">
       <div className="container-wide rv">
         <div className="accent-line" />
+        <SectionBadge icon="gallery">Club Gallery</SectionBadge>
         <h2 className="sec-heading">On the Pitch</h2>
         <p className="sec-sub">Matchday moments</p>
       </div>
@@ -470,6 +474,7 @@ const Social = () => (
     <div className="container">
       <div className="rv" style={{ textAlign: 'center', marginBottom: '1.2rem' }}>
         <div className="accent-line" style={{ margin: '0 auto .6rem' }} />
+        <SectionBadge icon="social">Follow Along</SectionBadge>
         <h2 className="sec-heading">Catch the Action</h2>
         <p className="sec-sub">Behind the scenes, match highlights, and real moments from the pitch.</p>
       </div>
@@ -515,6 +520,7 @@ const Membership = () => (
     <div className="container">
       <div className="rv" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
         <div className="accent-line" style={{ margin: '0 auto .8rem' }} />
+        <SectionBadge icon="membership">Members Only</SectionBadge>
         <h2 className="sec-heading">Pricing</h2>
         <p className="sec-sub">Pay per game or lock in a monthly membership</p>
       </div>
@@ -548,6 +554,7 @@ const Referral = () => (
     <div className="container">
       <div className="rv" style={{ textAlign: 'center', marginBottom: '1.6rem' }}>
         <div className="accent-line" style={{ margin: '0 auto .6rem' }} />
+        <SectionBadge icon="community">Bring Your Crew</SectionBadge>
         <h2 className="sec-heading" style={{ fontSize: 'clamp(24px,4vw,36px)' }}>Refer &amp; Earn</h2>
         <p className="sec-sub" style={{ fontSize: 'clamp(12px,1.2vw,14px)', marginBottom: 0 }}>Bring your crew. Get rewarded.</p>
       </div>
@@ -575,6 +582,7 @@ const Hiring = () => (
     <div className="container">
       <div className="rv" style={{ textAlign: 'center', marginBottom: '1.6rem' }}>
         <div className="accent-line" style={{ margin: '0 auto .6rem' }} />
+        <SectionBadge icon="community">Join The Crew</SectionBadge>
         <h2 className="sec-heading">We're Hiring</h2>
         <p className="sec-sub">Join the 21FC crew</p>
       </div>
@@ -609,6 +617,7 @@ const CTA = () => (
     <div className="cta-glow-2" />
     <div className="rv cta-inner">
       <div className="accent-line" style={{ margin: '0 auto 1.5rem' }} />
+      <div style={{ display: 'flex', justifyContent: 'center' }}><SectionBadge icon="club">Join The Club</SectionBadge></div>
       <h2 className="cta-heading"><SplitText stagger={80}>Ready to Play?</SplitText></h2>
       <p className="cta-sub">The most competitive pickup soccer community in New Jersey.<br />200+ players show up every week.</p>
       <Btn href="https://opensports.net/21fc" big>Join Now</Btn>
@@ -652,6 +661,7 @@ const Contact = () => {
       <div className="container-sm">
         <div className="rv">
           <div className="accent-line" />
+          <SectionBadge icon="contact">Contact 21FC</SectionBadge>
           <h2 className="sec-heading">Get in Touch</h2>
           <p className="sec-sub">Questions? Reach out — we reply fast.</p>
         </div>
@@ -701,6 +711,7 @@ const Location = () => (
       <div className="loc-grid g2">
         <div className="rv">
           <div className="accent-line" />
+          <SectionBadge icon="location">Venue</SectionBadge>
           <h2 className="sec-heading">Find Us</h2>
           <p className="sec-sub" style={{ marginBottom: '1.5rem' }}>Indoor turf in Clifton, NJ</p>
           {[
@@ -1068,6 +1079,16 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .accent-line{width:56px;height:3px;background:linear-gradient(90deg,${pk},${vt});margin-bottom:.9rem;box-shadow:0 0 16px rgba(237,17,113,.7),0 0 24px rgba(211,222,37,.3)}
 .label{font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:${pk};margin-bottom:.4rem;text-shadow:0 0 16px rgba(237,17,113,.35)}
 .sec-heading{font-size:clamp(28px,5vw,48px);font-weight:800;line-height:1.1;letter-spacing:-.025em;margin-bottom:.2rem;text-shadow:0 2px 32px rgba(237,17,113,.3),0 0 64px rgba(211,222,37,.12)}
+/* ─── BRAND MARKS · SECTION BADGES · STAT ICONS (Codex handoff) ─── */
+.stat-mark{width:34px;height:34px;margin:0 auto .45rem;color:${pk};filter:drop-shadow(0 0 12px rgba(237,17,113,.28))}
+.section-badge{display:inline-flex;align-items:center;gap:.48rem;margin-bottom:.5rem;color:${pk};font-family:'Oswald',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;text-shadow:0 0 16px rgba(237,17,113,.35)}
+.section-badge-icon{display:inline-grid;place-items:center;width:28px;height:28px;border:1px solid rgba(237,17,113,.32);background:linear-gradient(160deg,rgba(237,17,113,.11),rgba(211,222,37,.04));box-shadow:0 0 18px rgba(237,17,113,.16),inset 0 0 14px rgba(255,255,255,.03)}
+.brand-glyph{display:block;width:100%;height:100%;overflow:visible}
+.brand-glyph .glyph-panel{fill:rgba(255,255,255,.035);stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.brand-glyph .glyph-line{fill:none;stroke:${wh};stroke-opacity:.78;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.brand-glyph .glyph-accent{fill:none;stroke:${vt};stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.brand-glyph .glyph-accent-fill{fill:${vt};fill-opacity:.88}
+.brand-glyph text{font-family:'Oswald',sans-serif;font-size:16px;font-weight:800;fill:${wh};letter-spacing:0}
 .sec-sub{font-size:clamp(14px,1.4vw,16px);font-weight:500;line-height:1.8;color:rgba(240,239,239,.78);margin-top:.3rem;margin-bottom:2rem}
 
 /* ─── ABOUT ─── */
