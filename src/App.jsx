@@ -143,8 +143,15 @@ const Header = () => {
     <header ref={ref} className="hdr">
       <img src={BASE + 'images/logo-full-white.png'} alt="21FC" className="hdr-logo" />
       <nav className="navL">
-        {['About', 'Schedule', 'Gallery', 'Join'].map(s => (
-          <a key={s} href={`#${s.toLowerCase()}`} className="nav-link">{s}</a>
+        {[
+          { l: 'About', h: '#about' },
+          { l: 'Schedule', h: '#schedule' },
+          { l: 'Gallery', h: '#gallery' },
+          { l: 'Membership', h: '#membership' },
+          { l: 'Merch', h: '#merch', soon: true },
+          { l: 'Join', h: '#join' },
+        ].map(({ l, h, soon }) => (
+          <a key={l} href={h} className={`nav-link${soon ? ' nav-soon' : ''}`}>{l}{soon && <span className="nav-soon-tag">SOON</span>}</a>
         ))}
         <a href="https://opensports.net/21fc" target="_blank" rel="noopener noreferrer" className="nav-btn">Book Now</a>
       </nav>
@@ -610,6 +617,67 @@ const Hiring = () => (
   </section>
 );
 
+/* ─── "THIS IS 21FC" — iPhone-framed showcase video (autoplays on scroll) ─── */
+const ShowcasePhone = () => {
+  const vref = useRef(null);
+  useEffect(() => {
+    const v = vref.current;
+    if (!v) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { v.play().catch(() => {}); }
+      else { try { v.pause(); } catch (_) {} }
+    }, { threshold: 0.35 });
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <section id="showcase" className="section showcase-section">
+      <div className="container">
+        <div className="rv" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div className="accent-line" style={{ margin: '0 auto .6rem' }} />
+          <SectionBadge icon="social">This is 21FC</SectionBadge>
+          <h2 className="sec-heading">This is 21FC</h2>
+          <p className="sec-sub">Press play on a 7 AM.</p>
+        </div>
+        <div className="rv showcase-phone-wrap">
+          <div className="showcase-glow" />
+          <div className="showcase-phone">
+            <div className="showcase-notch" />
+            <video
+              ref={vref}
+              className="showcase-video"
+              src={BASE + 'images/social-1.mp4'}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={BASE + 'images/DSC08634.jpg'}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ─── MERCH (teaser) ─── */
+const Merch = () => (
+  <section id="merch" className="section section-compact merch-section">
+    <div className="container">
+      <div className="rv" style={{ textAlign: 'center' }}>
+        <div className="accent-line" style={{ margin: '0 auto .6rem' }} />
+        <SectionBadge icon="membership">21FC Merch</SectionBadge>
+        <h2 className="sec-heading">Kit &amp; Merch</h2>
+        <p className="sec-sub" style={{ maxWidth: 440, margin: '0 auto 1.2rem', textTransform: 'none', letterSpacing: 'normal' }}>Jerseys, training tops, and matchday gear — dropping soon. Follow for first access to the drop.</p>
+        <div className="merch-soon-badge">Coming Soon</div>
+        <div style={{ marginTop: '1.5rem' }}>
+          <a href="https://instagram.com/21fc.soccer" target="_blank" rel="noreferrer" className="ghost-btn">Follow for the drop</a>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
 /* ─── BIG CTA ─── */
 const CTA = () => (
   <section className="cta-section">
@@ -779,6 +847,7 @@ const App = () => {
   const [splashDone, setSplashDone] = useState(false);
   const [splashFade, setSplashFade] = useState(false);
   const heroVideoRef = useRef(null);
+  const heroSrc = BASE + (typeof window !== 'undefined' && window.innerWidth <= 768 ? 'images/hero-bg-mobile.mp4' : 'images/hero-bg.mp4');
 
   /* after splash lifts, force-play the video (iOS sometimes pauses autoplay) */
   useEffect(() => {
@@ -1009,8 +1078,12 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .hdr-logo{height:46px;width:auto;transition:height .4s ${ease}}
 .hdr-solid .hdr-logo{height:34px}
 .navL{display:flex;gap:1.5rem;align-items:center}
-.nav-link{color:rgba(240,239,239,.55);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:color .3s ease}
-.nav-link:hover{color:${pk}}
+.nav-link{position:relative;color:rgba(240,239,239,.55);text-decoration:none;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:color .3s ease;padding-bottom:3px}
+.nav-link::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,${pk},${vt});transform:scaleX(0);transform-origin:left center;transition:transform .34s ${ease};box-shadow:0 0 10px rgba(237,17,113,.5)}
+.nav-link:hover{color:${wh}}
+.nav-link:hover::after{transform:scaleX(1)}
+.nav-link.nav-soon{color:rgba(240,239,239,.38)}
+.nav-link .nav-soon-tag{font-size:7px;font-weight:800;letter-spacing:1px;color:${vt};vertical-align:super;margin-left:3px;opacity:.85}
 .nav-btn{position:relative;padding:8px 18px;background:${pk};color:#fff;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;text-decoration:none;overflow:hidden;box-shadow:0 0 14px rgba(237,17,113,.35);transition:all .3s ${ease}}
 .nav-btn:hover{background:${vt};color:${bg};box-shadow:0 0 22px rgba(211,222,37,.55);transform:translateY(-1px)}
 
@@ -1103,9 +1176,12 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 
 /* ─── IMAGE BAND ─── */
 .img-band{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;background:${bg}}
-.img-band-cell{overflow:hidden;height:clamp(150px,20vw,260px)}
+.img-band-cell{position:relative;overflow:hidden;height:clamp(150px,20vw,260px);transition:box-shadow .4s ease,transform .4s ease}
 .img-band-cell img{width:100%;height:100%;object-fit:cover;filter:brightness(.8);transition:all .5s ease}
-.img-band-cell:hover img{filter:brightness(1);transform:scale(1.03)}
+.img-band-cell::after{content:'';position:absolute;inset:0;border:2px solid transparent;box-shadow:inset 0 0 0 rgba(237,17,113,0);transition:border-color .4s ease,box-shadow .4s ease;pointer-events:none}
+.img-band-cell:hover{box-shadow:0 0 30px rgba(237,17,113,.4),0 0 60px rgba(211,222,37,.12);z-index:2}
+.img-band-cell:hover img{filter:brightness(1.08) saturate(1.1);transform:scale(1.05)}
+.img-band-cell:hover::after{border-color:rgba(237,17,113,.55);box-shadow:inset 0 0 22px rgba(237,17,113,.18)}
 
 /* ─── SCHEDULE — fixture roster ─── */
 .fixture-board{background:linear-gradient(180deg,rgba(36,36,56,.88) 0%,rgba(22,22,38,.92) 100%);border:1px solid rgba(237,17,113,.35);overflow:hidden;box-shadow:0 12px 64px rgba(0,0,0,.6),0 0 0 1px rgba(237,17,113,.12),0 0 40px rgba(237,17,113,.12),0 2px 0 rgba(255,255,255,.04) inset}
@@ -1142,7 +1218,7 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .carousel-track:hover{animation-play-state:paused}
 .carousel-card{width:clamp(260px,30vw,380px);height:clamp(180px,22vw,260px);flex-shrink:0;overflow:hidden;position:relative;cursor:pointer;border:1px solid rgba(255,255,255,.05);transition:border-color .4s ease,box-shadow .4s ease}
 .carousel-card img{width:100%;height:100%;object-fit:cover;filter:brightness(.72) saturate(.9);transition:all .6s ${ease}}
-.carousel-card:hover{border-color:${vt};box-shadow:0 0 30px rgba(211,222,37,.25)}
+.carousel-card:hover{border-color:${pk};box-shadow:0 0 40px rgba(237,17,113,.45),0 0 75px rgba(211,222,37,.14)}
 .carousel-card:hover img{filter:brightness(1.08) saturate(1.15);transform:scale(1.06)}
 .carousel-card-overlay{position:absolute;inset:0;border:2px solid transparent;transition:all .4s ease;pointer-events:none;
   background:linear-gradient(transparent 60%,rgba(10,10,15,.4) 100%)}
@@ -1467,6 +1543,16 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 .hire-cta-btn:hover{background:${vt};border-color:${vt};color:${bg};box-shadow:0 0 20px rgba(211,222,37,.35)}
 .hire-cta-ig:hover{background:${pk};border-color:${pk};color:#fff;box-shadow:0 0 20px rgba(237,17,113,.4)}
 @media(max-width:640px){.hire-grid{grid-template-columns:1fr}}
+/* ─── MERCH ─── */
+.merch-section{position:relative;overflow:hidden}
+.merch-soon-badge{display:inline-block;font-family:'Oswald',sans-serif;font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:${vt};padding:9px 22px;border:1px solid rgba(211,222,37,.4);background:rgba(211,222,37,.05);box-shadow:0 0 24px rgba(211,222,37,.12)}
+/* ─── SHOWCASE PHONE (This is 21FC) ─── */
+.showcase-section{position:relative;overflow:hidden}
+.showcase-phone-wrap{position:relative;display:flex;justify-content:center;align-items:center;padding:1rem 0}
+.showcase-phone{position:relative;width:min(300px,78vw);aspect-ratio:9/19.5;background:#050509;border:2px solid #23232e;border-radius:46px;padding:9px;box-shadow:0 0 0 2px #0a0a12,0 30px 80px rgba(0,0,0,.65),0 0 60px rgba(237,17,113,.18);z-index:2}
+.showcase-video{width:100%;height:100%;object-fit:cover;border-radius:38px;display:block;background:#000}
+.showcase-notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:36%;height:22px;background:#050509;border-radius:0 0 16px 16px;z-index:3}
+.showcase-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(460px,90vw);height:460px;background:radial-gradient(circle,rgba(237,17,113,.2),rgba(211,222,37,.05) 40%,transparent 68%);filter:blur(34px);z-index:1;pointer-events:none;animation:ctaPulse 9s ease-in-out infinite alternate}
 .cta-section{position:relative;padding:clamp(5rem,12vh,9rem) 2rem;overflow:hidden;text-align:center;
   background:linear-gradient(135deg,rgba(237,17,113,.1) 0%,${bg} 35%,${bg} 55%,rgba(211,222,37,.06) 100%);
   border-top:1px solid rgba(237,17,113,.15);border-bottom:1px solid rgba(211,222,37,.15)}
@@ -1538,7 +1624,8 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
   .g4{grid-template-columns:repeat(2,1fr)!important}
   .g3{grid-template-columns:1fr!important}
   .mem-grid{grid-template-columns:repeat(2,1fr)!important}
-  .navL{display:none!important}
+  .navL{gap:.6rem}
+  .navL .nav-link{display:none}
   .hero-h1 .big{font-size:clamp(44px,13vw,90px)}
   .hero-h1 .sub{font-size:clamp(26px,8vw,56px)}
   .cta-heading{font-size:clamp(30px,9vw,60px)}
@@ -1558,6 +1645,8 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
 }
 @media(max-width:600px){
   .g4{grid-template-columns:1fr!important}
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important;row-gap:1.5rem}
+  .stats-grid > div:not(:last-child)::after{display:none}
   .mem-grid{grid-template-columns:1fr!important}
   .img-band{grid-template-columns:1fr}
   .img-band-cell:last-child{display:block}
@@ -1658,7 +1747,7 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
           poster={BASE + 'images/DSC08619.jpg'}
           onCanPlay={(e) => { try { e.currentTarget.play(); } catch(_){} }}
         >
-          <source src={BASE + 'images/hero-bg.mp4'} type="video/mp4" />
+          <source src={heroSrc} type="video/mp4" />
         </video>
         <div className="hero-grad" />
         <div className="hero-content">
@@ -1689,6 +1778,8 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
       <div className="glow-div" />
       <div className="prlx" data-rate="0.2"><Gallery /></div>
       <div className="glow-div" />
+      <div className="sticky-scene"><ShowcasePhone /></div>
+      <div className="glow-div" />
       <div className="prlx" data-rate="0.14"><Social /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.1"><Membership /></div>
@@ -1696,6 +1787,8 @@ h1,h2,h3,h4,h5,h6,.sec-heading,.cta-heading,.stat-val,.mem-name,.mem-price span,
       <div className="prlx" data-rate="0.14"><Referral /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.1"><Hiring /></div>
+      <div className="glow-div" />
+      <div className="prlx" data-rate="0.12"><Merch /></div>
       <div className="sticky-scene"><CTA /></div>
       <div className="glow-div" />
       <div className="prlx" data-rate="0.12"><Contact /></div>
